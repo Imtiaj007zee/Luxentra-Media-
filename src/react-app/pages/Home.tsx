@@ -167,7 +167,7 @@ export default function HomePage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
                 <Video className="w-8 h-8 text-white" />
               </div>
-              <div className="text-4xl font-bold text-zinc-900 mb-2">$75</div>
+              <div className="text-4xl font-bold text-zinc-900 mb-2">$55</div>
               <h3 className="text-2xl font-semibold mb-3">Cinematic Video</h3>
               <p className="text-zinc-600 leading-relaxed">
                 Professional walkthrough video with cinematic editing to showcase the property's best
@@ -190,7 +190,7 @@ export default function HomePage() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
                 <Box className="w-8 h-8 text-white" />
               </div>
-              <div className="text-4xl font-bold text-zinc-900 mb-2">$55</div>
+              <div className="text-4xl font-bold text-zinc-900 mb-2">$75</div>
               <h3 className="text-2xl font-semibold mb-3">3D Virtual Tour</h3>
               <p className="text-zinc-600 leading-relaxed">
                 Interactive 3D walkthrough that lets buyers explore the property from anywhere.
