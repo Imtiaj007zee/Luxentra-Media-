@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 type AddOn = { id: string; name: string; price: number; icon: typeof Box; };
 const ADD_ONS: AddOn[] = [
-  { id: "3d_tour", name: "3D Virtual Tour", price: 55, icon: Box },
-  { id: "video", name: "Walkthrough/Cinematic Video", price: 75, icon: Video },
+  { id: "3d_tour", name: "3D Virtual Tour", price: 75, icon: Box },
+  { id: "video", name: "Walkthrough/Cinematic Video", price: 55, icon: Video },
   { id: "drone", name: "Drone Photos & Video", price: 65, icon: Plane },
 ];
 const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
