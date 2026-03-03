@@ -186,7 +186,7 @@ export default function HomePage() {
               </p>
             </div>
           <div className="grid md:grid-cols-3 gap-6">
-           <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
+          <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl md:col-span-3">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
                 <Box className="w-8 h-8 text-white" />
               </div>
