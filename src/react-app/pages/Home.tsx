@@ -108,6 +108,7 @@ export default function HomePage() {
 
 
              {/* Drone */}
+            
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                 <Plane className="w-8 h-8 text-white" />
@@ -117,7 +118,10 @@ export default function HomePage() {
               <p className="text-zinc-600 leading-relaxed">Stunning aerial perspectives that capture the property and surrounding neighborhood.</p>
             </div>
 
+            
             {/* 3D Virtual Tour */}
+
+            
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
                 <Box className="w-8 h-8 text-white" />
@@ -131,6 +135,8 @@ export default function HomePage() {
 
             
             {/* Virtual Staging */}
+
+          
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 mb-4">
                 <Layers className="w-8 h-8 text-white" />
@@ -147,6 +153,7 @@ export default function HomePage() {
             </div>
 
             {/* Cinematic Video */}
+          
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
                 <Video className="w-8 h-8 text-white" />
