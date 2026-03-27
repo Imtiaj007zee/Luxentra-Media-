@@ -100,6 +100,7 @@ export default function HomePage() {
             </h2>
             <p className="text-xl text-zinc-600 max-w-2xl mx-auto">Enhance your package with premium upgrades tailored to your listing's needs.</p>
           </div>
+          </section>
 
           <div className="grid md:grid-cols-3 gap-6">
 
