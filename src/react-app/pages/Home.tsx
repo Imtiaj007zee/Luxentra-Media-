@@ -25,10 +25,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="text-xl font-semibold tracking-tight">LuxEntra Media</div>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#package" className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors">
+            <a href="#package" className="text-sm text-zinc-700 font-medium px-4 py-2 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
               Package
             </a>
-            <a href="#addons" className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors">
+            <a href="#addons" className="text-sm text-zinc-700 font-medium px-4 py-2 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
               Add-ons
             </a>
             <Link
