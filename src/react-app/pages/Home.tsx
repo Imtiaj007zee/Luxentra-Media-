@@ -91,16 +91,28 @@ export default function HomePage() {
       </section>
 
       <section id="addons" className="py-32 px-6 lg:px-8 bg-gradient-to-b from-zinc-50 to-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20">
-            <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-4">Modular Upgrades</div>
-             <h2 className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]" style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Optional Add-ons
-          
-            </h2>
-            <p className="text-xl text-zinc-600 max-w-2xl mx-auto">Enhance your package with premium upgrades tailored to your listing's needs.</p>
-          </div>
-          </section>
+  <div className="max-w-6xl mx-auto">
+    <div className="text-center mb-20">
+      <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-4">
+        Modular Upgrades
+      </div>
+
+      <h2
+        className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+        style={{
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}
+      >
+        Optional Add-ons
+      </h2>
+
+      <p className="text-xl text-zinc-600 max-w-2xl mx-auto">
+        Enhance your package with premium upgrades tailored to your listing's needs.
+      </p>
+    </div>
+  </div>
+</section>
 
           <div className="grid md:grid-cols-3 gap-6">
 
