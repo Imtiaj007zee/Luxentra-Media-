@@ -162,7 +162,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                 <Plane className="w-8 h-8 text-white" />
