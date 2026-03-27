@@ -158,8 +158,8 @@ export default function HomePage() {
                 1 Twilight Photo Included
               </h3>
               <p className="leading-relaxed text-zinc-600">
-                One stunning twilight exterior shot—the hero image that makes
-                your listing unforgettable.
+                One stunning twilight exterior shot that makes your listing
+                unforgettable.
               </p>
             </div>
 
@@ -167,8 +167,8 @@ export default function HomePage() {
               <Box className="mb-4 h-10 w-10 text-zinc-900" />
               <h3 className="mb-3 text-2xl font-semibold">2D Floor Plans</h3>
               <p className="leading-relaxed text-zinc-600">
-                Clean black &amp; white floor plans for every floor, giving
-                buyers a clear understanding of the space.
+                Clean black and white floor plans for every floor, giving buyers
+                a clear understanding of the space.
               </p>
             </div>
 
@@ -185,9 +185,9 @@ export default function HomePage() {
               <Shield className="mb-4 h-10 w-10 text-zinc-900" />
               <h3 className="mb-3 text-2xl font-semibold">Premium Delivery</h3>
               <p className="leading-relaxed text-zinc-600">
-                Private branded one-click gallery with high-res + MLS-optimized
-                files. Full listing usage rights. Free light/color/exposure
-                revisions.
+                Private branded one-click gallery with high-resolution and
+                MLS-optimized files, full listing usage rights, and free light,
+                color, and exposure revisions.
               </p>
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function HomePage() {
               </div>
               <div className="mb-2 text-4xl font-bold text-zinc-900">$99</div>
               <h3 className="mb-3 text-2xl font-semibold">
-                Drone Photos &amp; Video
+                Drone Photos and Video
               </h3>
               <p className="leading-relaxed text-zinc-600">
                 Stunning aerial perspectives that capture the property and
@@ -263,9 +263,8 @@ export default function HomePage() {
               </div>
               <h3 className="mb-3 text-2xl font-semibold">Virtual Staging</h3>
               <p className="mb-4 leading-relaxed text-zinc-600">
-                Transform vacant rooms into beautifully furnished spaces.
-                Photorealistic digital staging delivered within 24 hours,
-                helping buyers visualize the full potential of every listing.
+                Transform vacant rooms into beautifully furnished spaces with
+                photorealistic digital staging delivered within 24 hours.
               </p>
               <ul className="space-y-1 text-sm text-zinc-600">
                 <li>
@@ -326,8 +325,8 @@ export default function HomePage() {
 
           <div className="space-y-6 text-lg leading-relaxed text-zinc-600">
             <p>
-              All files delivered in high-resolution and MLS-optimized formats,
-              ready for web and print.
+              All files are delivered in high-resolution and MLS-optimized
+              formats, ready for web and print.
             </p>
             <p>
               Every package includes full usage rights for listing purposes,
