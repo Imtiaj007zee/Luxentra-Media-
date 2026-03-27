@@ -33,7 +33,7 @@ export default function HomePage() {
             </a>
             <Link
               to="/order"
-              className="text-sm bg-zinc-900 text-white px-4 py-2 rounded-full hover:bg-zinc-800 transition-all flex items-center gap-2"
+              className="text-sm px-4 py-2 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/10 backdrop-blur-md border border-zinc-300/50 text-zinc-900 shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:bg-white/30 flex items-center gap-2 font-medium"
             >
               <ShoppingCart className="w-4 h-4" />
               Order Now
@@ -66,7 +66,7 @@ export default function HomePage() {
           </p>
           <Link
             to="/order"
-            className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105"
+            className="inline-block text-lg px-10 py-4 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/10 backdrop-blur-md border border-white/30 text-zinc-900 shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)] font-medium"
           >
             Start Your Order
           </Link>
@@ -139,7 +139,7 @@ export default function HomePage() {
           <div className="text-center">
             <Link
               to="/order"
-              className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105"
+              className="inline-block text-lg px-10 py-4 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/10 backdrop-blur-md border border-white/30 text-zinc-900 shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)] font-medium"
             >
               Select Package
             </Link>
@@ -216,7 +216,7 @@ export default function HomePage() {
           <div className="mt-12 text-center">
             <Link
               to="/order"
-              className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105"
+              className="inline-block text-lg px-10 py-4 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/10 backdrop-blur-md border border-white/30 text-zinc-900 shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:bg-white/20 hover:shadow-[0_12px_40px_rgba(0,0,0,0.18)] font-medium"
             >
               Customize Your Package
             </Link>
