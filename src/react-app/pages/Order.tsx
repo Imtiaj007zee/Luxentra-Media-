@@ -1,22 +1,31 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart } from "lucide-react";
+import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers } from "lucide-react";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
 import { Label } from "@/react-app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/react-app/components/ui/select";
 
-type AddOn = { id: string; name: string; price: number; icon: typeof Box; };
+type AddOn = { id: string; name: string; price: number; icon: typeof Box; description?: string; };
+
 const ADD_ONS: AddOn[] = [
-  { id: "video", name: "Walkthrough/Cinematic Video", price: 55, icon: Video },
-  { id: "drone", name: "Drone Photos & Video", price: 65, icon: Plane },
-  { id: "3d_tour", name: "3D Virtual Tour", price: 75, icon: Box },
+  { id: "video", name: "Walkthrough/Cinematic Video", price: 150, icon: Video },
+  { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
+  { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
 ];
+
+const VIRTUAL_STAGING_TIERS = [
+  { id: "staging_1", label: "1 Room", price: 40 },
+  { id: "staging_3", label: "3 Rooms", price: 99 },
+  { id: "staging_5", label: "5 Rooms", price: 149 },
+];
+
 const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 
 export default function OrderPage() {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
+  const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
@@ -27,10 +36,18 @@ export default function OrderPage() {
     setSelectedAddOns(newSet);
   };
 
+  const stagingPrice = selectedStagingTier
+    ? VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price || 0
+    : 0;
+
   const standardPackagePrice = 175;
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => sum + (ADD_ONS.find((a) => a.id === id)?.price || 0), 0);
-  const totalPrice = standardPackagePrice + addOnsTotal;
-  const selectedAddOnNames = Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean).join(", ");
+  const totalPrice = standardPackagePrice + addOnsTotal + stagingPrice;
+
+  const selectedAddOnNames = [
+    ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
+    selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
+  ].filter(Boolean).join(", ");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +58,7 @@ export default function OrderPage() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" }); setSelectedAddOns(new Set()); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -75,6 +92,7 @@ export default function OrderPage() {
                   </div>
                 </div>
               </div>
+
               <h2 className="text-2xl font-semibold mb-4">Optional Add-ons</h2>
               <div className="space-y-3">
                 {ADD_ONS.map((addOn) => { const Icon = addOn.icon; const isSelected = selectedAddOns.has(addOn.id); return (
@@ -86,12 +104,53 @@ export default function OrderPage() {
                     </div>
                   </div>
                 );})}
+
+                {/* Virtual Staging */}
+                <div className={`border rounded-2xl p-4 transition-all ${selectedStagingTier ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200"}`}>
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedStagingTier ? "bg-zinc-900" : "bg-zinc-100"}`}>
+                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-white" : "text-zinc-600"}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">Virtual Staging</h3>
+                      <p className="text-sm text-zinc-500">Photorealistic digital staging, delivered in 24hrs</p>
+                    </div>
+                    {selectedStagingTier && (
+                      <span className="font-bold">${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price}</span>
+                    )}
+                  </div>
+                  <div className="flex gap-2 ml-14">
+                    {VIRTUAL_STAGING_TIERS.map((tier) => (
+                      <button
+                        key={tier.id}
+                        type="button"
+                        onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
+                        className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium border-2 transition-all ${
+                          selectedStagingTier === tier.id
+                            ? "bg-zinc-900 text-white border-zinc-900"
+                            : "bg-white text-zinc-700 border-zinc-200 hover:border-zinc-400"
+                        }`}
+                      >
+                        {tier.label}
+                        <br />
+                        <span className="font-bold">${tier.price}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
+
               <div className="mt-8 bg-gradient-to-br from-zinc-50 to-zinc-100 border border-zinc-200 rounded-2xl p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><ShoppingCart className="w-5 h-5" /> Order Summary</h3>
                 <div className="space-y-2 text-sm mb-4">
                   <div className="flex justify-between"><span className="text-zinc-600">Standard Package</span><span className="font-medium">${standardPackagePrice}</span></div>
                   {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-zinc-600">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
+                  {selectedStagingTier && (
+                    <div className="flex justify-between">
+                      <span className="text-zinc-600">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
+                      <span className="font-medium">${stagingPrice}</span>
+                    </div>
+                  )}
                 </div>
                 <div className="pt-4 border-t border-zinc-300"><div className="flex justify-between text-xl font-bold"><span>Total</span><span>${totalPrice}</span></div></div>
               </div>
