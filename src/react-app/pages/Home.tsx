@@ -91,31 +91,28 @@ export default function HomePage() {
       </section>
 
       <section id="addons" className="py-32 px-6 lg:px-8 bg-gradient-to-b from-zinc-50 to-white">
-  <div className="max-w-6xl mx-auto">
-    <div className="text-center mb-20">
-      <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-4">
-        Modular Upgrades
-      </div>
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-20">
+            <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-4">
+              Modular Upgrades
+            </div>
 
-      <h2
-        className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-        style={{
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}
-      >
-        Optional Add-ons
-      </h2>
+            <h2
+              className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+              style={{
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              Optional Add-ons
+            </h2>
 
-      <p className="text-xl text-zinc-600 max-w-2xl mx-auto">
-        Enhance your package with premium upgrades tailored to your listing's needs.
-      </p>
-    </div>
-  </div>
-</section>
+            <p className="text-xl text-zinc-600 max-w-2xl mx-auto">
+              Enhance your package with premium upgrades tailored to your listing's needs.
+            </p>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                 <Plane className="w-8 h-8 text-white" />
@@ -157,7 +154,6 @@ export default function HomePage() {
               <h3 className="text-2xl font-semibold mb-3">Cinematic Video</h3>
               <p className="text-zinc-600 leading-relaxed">Professional walkthrough video with cinematic editing to showcase the property's best features.</p>
             </div>
-
           </div>
 
           <div className="mt-12 text-center">
