@@ -162,152 +162,8 @@ export default function HomePage() {
             </p>
           </div>
 
-
-    
-            <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
-                <Plane className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-zinc-900 mb-2">$99</div>
-              <h3 className="text-2xl font-semibold mb-3">Drone Photos & Video</h3>
-              <p className="text-zinc-600 leading-relaxed">
-                Stunning aerial perspectives that capture the property and surrounding neighborhood.
-              </p>
-            </div>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
-                <Box className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-zinc-900 mb-2">$99</div>
-              <h3 className="text-2xl font-semibold mb-3">3D Virtual Tour</h3>
-              <p className="text-zinc-600 leading-relaxed">
-                Interactive 3D walkthrough that lets buyers explore the property from anywhere.
-              </p>
-            </div>
-          </div>
-
-<div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 mb-4">
-                <Layers className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-3">Virtual Staging</h3>
-              <p className="text-zinc-600 leading-relaxed mb-4">
-                Transform vacant rooms into beautifully furnished spaces. Photorealistic digital staging delivered within 24 hours - helping buyers visualize the full potential of every listing.
-              </p>
-              <ul className="text-sm text-zinc-600 space-y-1">
-                <li>• 1 room - <span className="font-semibold text-zinc-900">$40</span></li>
-                <li>• 3 rooms - <span className="font-semibold text-zinc-900">$99</span></li>
-                <li>• 5 rooms - <span className="font-semibold text-zinc-900">$149</span></li>
-              </ul>
-            </div>
-
-        <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
-                <Video className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-4xl font-bold text-zinc-900 mb-2">$150</div>
-              <h3 className="text-2xl font-semibold mb-3">Cinematic Video</h3>
-              <p className="text-zinc-600 leading-relaxed">
-                Professional walkthrough video with cinematic editing to showcase the property's best
-                features.
-              </p>
-            </div>
-
-
-          <div className="mt-12 text-center">
-            <Link
-              to="/order"
-              className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105"
-            >
-              Customize Your Package
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Delivery Note Section */}
-      <section className="py-32 px-6 lg:px-8 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-8 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Everything You Need,
-            <br />
-            Delivered Perfectly
-          </h2>
-          <div className="space-y-6 text-lg text-zinc-600 leading-relaxed">
-            <p>
-              All files delivered in high-resolution and MLS-optimized formats, ready for web and
-              print.
-            </p>
-            <p>
-              Every package includes full usage rights for listing purposes, hosted in a private
-              branded gallery for easy one-click access.
-            </p>
-            <p className="text-zinc-500">
-              Free revisions for light, color, and exposure adjustments to ensure perfection.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact CTA Section */}
-      <section className="py-32 px-6 lg:px-8 bg-gradient-to-b from-zinc-50 to-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl md:text-6xl font-semibold tracking-tight mb-8 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(0,0,0,0.08)]" style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Ready to Elevate
-            <br />
-            Your Listings?
-          </h2>
-          <p className="text-xl text-zinc-600 mb-12">
-            Let's create stunning media that makes your properties impossible to ignore.
-          </p>
-          <Link
-            to="/order"
-            className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105 mb-12"
-          >
-            Start Your Order
-          </Link>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-zinc-600">
-            <a
-              href="mailto:luxentra.media@gmail.com"
-              className="flex items-center gap-2 hover:text-zinc-900 transition-colors"
-            >
-              <Mail className="w-5 h-5" />
-              luxentra.media@gmail.com
-            </a>
-            <a
-              href="tel:+13478371257"
-              className="flex items-center gap-2 hover:text-zinc-900 transition-colors"
-            >
-              <Phone className="w-5 h-5" />
-              +1 (347) 837-1257
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">
-            © 2025 LuxEntra Media. All rights reserved.
-          </div>
-          <div className="flex items-center gap-6 text-sm text-zinc-600">
-            <a href="mailto:luxentra.media@gmail.com" className="hover:text-zinc-900 transition-colors">
-              Contact
-            </a>
-            <Link to="/order" className="hover:text-zinc-900 transition-colors">
-              Order Now
-            </Link>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
-          
-            <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                 <Plane className="w-8 h-8 text-white" />
               </div>
@@ -317,6 +173,7 @@ export default function HomePage() {
                 Stunning aerial perspectives that capture the property and surrounding neighborhood.
               </p>
             </div>
+
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
                 <Box className="w-8 h-8 text-white" />
@@ -327,6 +184,7 @@ export default function HomePage() {
                 Interactive 3D walkthrough that lets buyers explore the property from anywhere.
               </p>
             </div>
+
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 mb-4">
                 <Layers className="w-8 h-8 text-white" />
@@ -341,20 +199,21 @@ export default function HomePage() {
                 <li>• 5 rooms — <span className="font-semibold text-zinc-900">$149</span></li>
               </ul>
             </div>
-          </div>
-<div className="grid md:grid-cols-3 gap-6">
+
             <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all hover:shadow-xl">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
                 <Video className="w-8 h-8 text-white" />
               </div>
               <div className="text-4xl font-bold text-zinc-900 mb-2">$150</div>
-              <h3 className="text-2xl font-semibold mb-3">Walkthrough/Cinematic Video</h3>
+              <h3 className="text-2xl font-semibold mb-3">Cinematic Video</h3>
               <p className="text-zinc-600 leading-relaxed">
-                Professional walkthrough video with cinematic editing to showcase the property's best features.
+                Professional walkthrough video with cinematic editing to showcase the property's best
+                features.
               </p>
             </div>
+          </div>
 
-                    <div className="mt-12 text-center">
+          <div className="mt-12 text-center">
             <Link
               to="/order"
               className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105"
