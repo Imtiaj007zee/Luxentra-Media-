@@ -269,14 +269,14 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-zinc-600">
             <a
               href="mailto:luxentra.media@gmail.com"
-              className="flex items-center gap-2 hover:text-zinc-900 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"
             >
               <Mail className="w-5 h-5" />
               luxentra.media@gmail.com
             </a>
             <a
               href="tel:+13478371257"
-              className="flex items-center gap-2 hover:text-zinc-900 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"
             >
               <Phone className="w-5 h-5" />
               +1 (347) 837-1257
