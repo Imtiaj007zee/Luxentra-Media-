@@ -23,7 +23,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-200/50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="text-xl font-semibold tracking-tight">LuxEntra Media</div>
+          <Link to="/" className="text-xl font-semibold tracking-tight hover:opacity-70 transition-opacity cursor-pointer">LuxEntra Media</Link>
           <nav className="hidden md:flex items-center gap-8">
             <a href="#package" className="text-sm text-zinc-700 font-medium px-4 py-2 rounded-full transition-all active:scale-95 hover:scale-105 bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 hover:shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
               Package
