@@ -292,10 +292,10 @@ export default function HomePage() {
             © 2025 LuxEntra Media. All rights reserved.
           </div>
           <div className="flex items-center gap-6 text-sm text-zinc-600">
-            <a href="mailto:luxentra.media@gmail.com" className="hover:text-zinc-900 transition-colors">
+            <a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium">
               Contact
             </a>
-            <Link to="/order" className="hover:text-zinc-900 transition-colors">
+            <Link to="/order" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium">
               Order Now
             </Link>
           </div>
