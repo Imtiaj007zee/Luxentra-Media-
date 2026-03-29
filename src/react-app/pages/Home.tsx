@@ -12,6 +12,7 @@ export default function HomePage() {
   }, []);
 
   const heroOpacity = Math.max(0, 1 - scrollY / 600);
+  const isScrolled = scrollY > 80;
   const heroScale = Math.max(0.92, 1 - scrollY / 3000);
   const videoParallax = scrollY * 0.4;
 
@@ -20,7 +21,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="text-xl font-semibold tracking-tight text-white drop-shadow-lg">LuxEntra Media</div>
+          <div className={`text-xl font-semibold tracking-tight drop-shadow-lg ${isScrolled ? "text-zinc-900" : "text-white"}`}>LuxEntra Media</div>
           <nav className="hidden md:flex items-center gap-8">
             <a href="#package" className="text-sm text-white/80 hover:text-white transition-colors drop-shadow">Package</a>
             <a href="#addons" className="text-sm text-white/80 hover:text-white transition-colors drop-shadow">Add-ons</a>
