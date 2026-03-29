@@ -71,8 +71,14 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Spacer to push content below sticky hero */}
-      <div className="h-screen" />
+      {/* Second hero panel - slides over video */}
+      <div className="h-screen flex items-center justify-center bg-transparent">
+        <div className="text-center px-6" style={{ opacity: Math.min(1, Math.max(0, (scrollY - 300) / 300)) }}>
+          <h2 className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tight leading-none text-white drop-shadow-2xl">
+            Elevate<br />Every Listing
+          </h2>
+        </div>
+      </div>
 
       {/* Rest of content over the video */}
       <div className="relative z-10 bg-white">
