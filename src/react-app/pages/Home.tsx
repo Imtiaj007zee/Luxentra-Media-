@@ -25,20 +25,6 @@ export default function HomePage() {
     o.stop(ctx.currentTime + 0.08);
   };
 
-  const playClick = () => {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    o.type = 'sine';
-    o.frequency.setValueAtTime(600, ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.1);
-    g.gain.setValueAtTime(0.15, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-    o.start(ctx.currentTime);
-    o.stop(ctx.currentTime + 0.12);
-  };
 
   const heroOpacity = Math.max(0, 1 - scrollY / 600);
   const isScrolled = scrollY > 80;
@@ -52,9 +38,9 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`text-xl font-semibold tracking-tight transition-colors duration-300 cursor-pointer ${isScrolled ? "text-zinc-900" : "text-white drop-shadow-lg"}`}>LuxEntra Media</a>
           <nav className="hidden md:flex items-center gap-3">
-            <a href="#package" onClick={playClick} className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Package</a>
-            <a href="#addons" onClick={playClick} className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Add-ons</a>
-            <Link to="/order" onClick={playClick} className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-2 font-medium ${isScrolled ? "bg-zinc-900 border-zinc-900 text-white hover:bg-zinc-700" : "bg-white text-zinc-900 border-white hover:bg-zinc-100"}`}>
+            <a href="#package" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Package</a>
+            <a href="#addons" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Add-ons</a>
+            <Link to="/order" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-2 font-medium ${isScrolled ? "bg-zinc-900 border-zinc-900 text-white hover:bg-zinc-700" : "bg-white text-zinc-900 border-white hover:bg-zinc-100"}`}>
               <ShoppingCart className="w-4 h-4" />
               Order Now
             </Link>
@@ -93,7 +79,7 @@ export default function HomePage() {
           </p>
           <Link
             to="/order"
-            onClick={playClick}
+           
             className="inline-block bg-white text-zinc-900 text-lg px-10 py-4 rounded-full hover:bg-zinc-100 transition-all hover:scale-110 font-medium"
           >
             Start Your Order
@@ -168,7 +154,7 @@ export default function HomePage() {
               <p className="text-xl text-zinc-600 max-w-2xl mx-auto">Enhance your package with premium upgrades tailored to your listing's needs.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover} onClick={playClick}>
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                   <Plane className="w-8 h-8 text-white" />
                 </div>
@@ -176,7 +162,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-semibold mb-3">Drone Photos & Video</h3>
                 <p className="text-zinc-600 leading-relaxed">Stunning aerial perspectives that capture the property and surrounding neighborhood.</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover} onClick={playClick}>
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
                   <Box className="w-8 h-8 text-white" />
                 </div>
@@ -184,7 +170,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-semibold mb-3">3D Virtual Tour</h3>
                 <p className="text-zinc-600 leading-relaxed">Interactive 3D walkthrough that lets buyers explore the property from anywhere.</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover} onClick={playClick}>
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 mb-4">
                   <Layers className="w-8 h-8 text-white" />
                 </div>
@@ -198,7 +184,7 @@ export default function HomePage() {
                   <li>• 5 rooms - <span className="font-semibold text-zinc-900">$149</span></li>
                 </ul>
               </div>
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover} onClick={playClick}>
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
                   <Video className="w-8 h-8 text-white" />
                 </div>
