@@ -18,7 +18,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-zinc-900">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="text-xl font-semibold tracking-tight text-white drop-shadow-lg">LuxEntra Media</div>
           <nav className="hidden md:flex items-center gap-8">
