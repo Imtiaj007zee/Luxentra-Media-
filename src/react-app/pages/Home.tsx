@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Camera, Video, Plane, Box, Clock, Shield, Mail, Phone, Sunset, ShoppingCart, Layers } from "lucide-react";
 
