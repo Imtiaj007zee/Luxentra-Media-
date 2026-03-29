@@ -19,13 +19,13 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-zinc-900">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/90 backdrop-blur-xl border-b border-zinc-200/50" : "bg-transparent"}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className={`text-xl font-semibold tracking-tight drop-shadow-lg ${isScrolled ? "text-zinc-900" : "text-white"}`}>LuxEntra Media</div>
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#package" className="text-sm text-white/80 hover:text-white transition-colors drop-shadow">Package</a>
-            <a href="#addons" className="text-sm text-white/80 hover:text-white transition-colors drop-shadow">Add-ons</a>
-            <Link to="/order" className="text-sm bg-white text-zinc-900 px-4 py-2 rounded-full hover:bg-zinc-100 transition-all flex items-center gap-2 font-medium">
+          <div className={`text-xl font-semibold tracking-tight transition-colors duration-300 ${isScrolled ? "text-zinc-900" : "text-white drop-shadow-lg"}`}>LuxEntra Media</div>
+          <nav className="hidden md:flex items-center gap-3">
+            <a href="#package" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Package</a>
+            <a href="#addons" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Add-ons</a>
+            <Link to="/order" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 flex items-center gap-2 font-medium ${isScrolled ? "bg-zinc-900 border-zinc-900 text-white hover:bg-zinc-700" : "bg-white text-zinc-900 border-white hover:bg-zinc-100"}`}>
               <ShoppingCart className="w-4 h-4" />
               Order Now
             </Link>
