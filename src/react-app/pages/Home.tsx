@@ -21,7 +21,7 @@ export default function HomePage() {
       {/* Header */}
             <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/90 backdrop-blur-xl border-b border-zinc-200/50" : "bg-transparent"}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className={`text-xl font-semibold tracking-tight transition-colors duration-300 ${isScrolled ? "text-zinc-900" : "text-white drop-shadow-lg"}`}>LuxEntra Media</div>
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`text-xl font-semibold tracking-tight transition-colors duration-300 cursor-pointer ${isScrolled ? "text-zinc-900" : "text-white drop-shadow-lg"}`}>LuxEntra Media</a>
           <nav className="hidden md:flex items-center gap-3">
             <a href="#package" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Package</a>
             <a href="#addons" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Add-ons</a>
@@ -71,9 +71,9 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Second hero panel - slides over video */}
-      <div className="h-screen flex items-center justify-center bg-transparent">
-        <div className="text-center px-6" style={{ opacity: Math.min(1, Math.max(0, (scrollY - 300) / 300)) }}>
+      {/* Second hero panel - text stays centered as you scroll */}
+      <div className="h-screen flex items-center justify-center bg-transparent relative">
+        <div className="text-center px-6 sticky top-1/2" style={{ opacity: Math.min(1, Math.max(0, (scrollY - 200) / 300)) }}>
           <h2 className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tight leading-none text-white drop-shadow-2xl">
             Elevate<br />Every Listing
           </h2>
