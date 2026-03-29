@@ -64,7 +64,7 @@ export default function HomePage() {
           </p>
           <Link
             to="/order"
-            className="inline-block bg-white text-zinc-900 text-lg px-10 py-4 rounded-full hover:bg-zinc-100 transition-all hover:scale-105 font-medium"
+            className="inline-block bg-white text-zinc-900 text-lg px-10 py-4 rounded-full hover:bg-zinc-100 transition-all hover:scale-110 font-medium"
           >
             Start Your Order
           </Link>
@@ -122,7 +122,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="text-center">
-              <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105">Select Package</Link>
+              <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-110">Select Package</Link>
             </div>
           </div>
         </section>
@@ -138,7 +138,7 @@ export default function HomePage() {
               <p className="text-xl text-zinc-600 max-w-2xl mx-auto">Enhance your package with premium upgrades tailored to your listing's needs.</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer">
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                   <Plane className="w-8 h-8 text-white" />
                 </div>
@@ -146,7 +146,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-semibold mb-3">Drone Photos & Video</h3>
                 <p className="text-zinc-600 leading-relaxed">Stunning aerial perspectives that capture the property and surrounding neighborhood.</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer">
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 mb-4">
                   <Box className="w-8 h-8 text-white" />
                 </div>
@@ -154,7 +154,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-semibold mb-3">3D Virtual Tour</h3>
                 <p className="text-zinc-600 leading-relaxed">Interactive 3D walkthrough that lets buyers explore the property from anywhere.</p>
               </div>
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer">
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 mb-4">
                   <Layers className="w-8 h-8 text-white" />
                 </div>
@@ -168,7 +168,7 @@ export default function HomePage() {
                   <li>• 5 rooms - <span className="font-semibold text-zinc-900">$149</span></li>
                 </ul>
               </div>
-              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer">
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 mb-4">
                   <Video className="w-8 h-8 text-white" />
                 </div>
@@ -178,7 +178,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="mt-12 text-center">
-              <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105">Customize Your Package</Link>
+              <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-110">Customize Your Package</Link>
             </div>
           </div>
         </section>
@@ -204,7 +204,7 @@ export default function HomePage() {
               Ready to Elevate<br />Your Listings?
             </h2>
             <p className="text-xl text-zinc-600 mb-12">Let's create stunning media that makes your properties impossible to ignore.</p>
-            <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105 mb-12">Start Your Order</Link>
+            <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-110 mb-12">Start Your Order</Link>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-zinc-600">
               <a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 hover:text-zinc-900 transition-colors">
                 <Mail className="w-5 h-5" />
