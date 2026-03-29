@@ -115,7 +115,7 @@ export default function HomePage() {
                 <h3 className="text-2xl font-semibold mb-3">12-Hour Delivery</h3>
                 <p className="text-zinc-600 leading-relaxed">Fast turnaround without compromising quality. Get your media within 12 hours of the shoot.</p>
               </div>
-              <div className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 hover:border-zinc-300 transition-all">
+              <div className="bg-zinc-50 rounded-3xl p-8 border border-zinc-200 hover:border-zinc-300 transition-all md:col-span-2 md:w-1/2 md:mx-auto">
                 <Shield className="w-10 h-10 text-zinc-900 mb-4" />
                 <h3 className="text-2xl font-semibold mb-3">Premium Delivery</h3>
                 <p className="text-zinc-600 leading-relaxed">Private branded one-click gallery with high-res and MLS-optimized files. Full listing usage rights. Free light/color/exposure revisions.</p>
