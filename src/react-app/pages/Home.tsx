@@ -53,13 +53,13 @@ export default function HomePage() {
           style={{ opacity: heroOpacity, transform: `scale(${heroScale})` }}
         >
           <div className="inline-block mb-4 text-xs uppercase tracking-widest text-white/70 font-medium">
-            Luxury Real Estate Media
+            A Luxury Real Estate Media
           </div>
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tight leading-none mb-6 text-white drop-shadow-2xl">
             LuxEntra<br />Media
           </h1>
           <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Your one-stop solution for your listing.
+            Your one-stop solution for your every listing.
           </p>
           <Link
             to="/order"
