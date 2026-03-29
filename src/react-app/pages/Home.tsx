@@ -59,7 +59,7 @@ export default function HomePage() {
             LuxEntra<br />Media
           </h1>
           <p className="text-xl md:text-2xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Your one-stop solution for luxury real estate media.
+            Your one-stop solution for your listing.
           </p>
           <Link
             to="/order"
