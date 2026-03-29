@@ -93,6 +93,7 @@ export default function HomePage() {
           </p>
           <Link
             to="/order"
+            onClick={playClick}
             className="inline-block bg-white text-zinc-900 text-lg px-10 py-4 rounded-full hover:bg-zinc-100 transition-all hover:scale-110 font-medium"
           >
             Start Your Order

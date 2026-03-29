@@ -49,6 +49,53 @@ export default function OrderPage() {
     selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
   ].filter(Boolean).join(", ");
 
+  const playClick = () => {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(600, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.1);
+    g.gain.setValueAtTime(0.15, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.12);
+  };
+
+  const playAddOn = () => {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(400, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
+    g.gain.setValueAtTime(0.1, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    o.start(ctx.currentTime);
+    o.stop(ctx.currentTime + 0.1);
+  };
+
+  const playSubmit = () => {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+    }
+    const src = ctx.createBufferSource();
+    const g = ctx.createGain();
+    src.buffer = buf;
+    src.connect(g);
+    g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    src.start();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -96,7 +143,7 @@ export default function OrderPage() {
               <h2 className="text-2xl font-semibold mb-4">Optional Add-ons</h2>
               <div className="space-y-3">
                 {ADD_ONS.map((addOn) => { const Icon = addOn.icon; const isSelected = selectedAddOns.has(addOn.id); return (
-                  <div key={addOn.id} className={`border rounded-2xl p-4 cursor-pointer transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`} onClick={() => toggleAddOn(addOn.id)}>
+                  <div key={addOn.id} className={`border rounded-2xl p-4 cursor-pointer transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`} onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? "bg-zinc-900" : "bg-zinc-100"}`}><Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-zinc-600"}`} /></div>
                       <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.price}</span></div></div>
@@ -169,7 +216,7 @@ export default function OrderPage() {
                   <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger><SelectContent><SelectItem value="House/Single-Family">House/Single-Family</SelectItem><SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem><SelectItem value="Luxury Home">Luxury Home</SelectItem><SelectItem value="Commercial">Commercial</SelectItem><SelectItem value="Multi-Family">Multi-Family</SelectItem><SelectItem value="Rental Listing">Rental Listing</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select>
                 </div>
                 <div className="space-y-2"><Label className="text-base font-medium">Additional Details <span className="text-zinc-500 font-normal">(optional)</span></Label><Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." /></div>
-                <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-lg bg-zinc-900 hover:bg-zinc-800 rounded-full">{isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}</Button>
+                <Button type="submit" disabled={isSubmitting} onClick={playSubmit} className="w-full h-14 text-lg bg-zinc-900 hover:bg-zinc-800 rounded-full">{isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}</Button>
               </form>
             </div>
           </div>
