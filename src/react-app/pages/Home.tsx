@@ -128,12 +128,19 @@ export default function HomePage() {
 
         {/* Scroll indicator */}
         <div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
           style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
         >
-          <span className="text-white/60 text-xs uppercase tracking-widest font-medium">Scroll</span>
-          <div className="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-1.5">
-            <div className="w-1.5 h-1.5 bg-white/80 rounded-full animate-bounce" />
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-1.5 relative overflow-hidden">
+            <div
+              className="w-1.5 h-1.5 bg-white rounded-full"
+              style={{ animation: "scrollDot 1.8s ease-in-out infinite" }}
+            />
+          </div>
+          <div style={{ animation: "arrowFade 1.8s ease-in-out infinite" }}>
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+              <path d="M1 1L8 8L15 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.6"/>
+            </svg>
           </div>
         </div>
       </div>
