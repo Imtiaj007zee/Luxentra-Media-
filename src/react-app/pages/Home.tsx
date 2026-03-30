@@ -125,6 +125,17 @@ export default function HomePage() {
             Start Your Order
           </Link>
         </div>
+
+        {/* Scroll indicator */}
+        <div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+          style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
+        >
+          <span className="text-white/60 text-xs uppercase tracking-widest font-medium">Scroll</span>
+          <div className="w-6 h-10 border-2 border-white/40 rounded-full flex items-start justify-center p-1.5">
+            <div className="w-1.5 h-1.5 bg-white/80 rounded-full animate-bounce" />
+          </div>
+        </div>
       </div>
 
       {/* Second hero panel - text stays centered as you scroll */}
