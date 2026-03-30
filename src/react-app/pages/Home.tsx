@@ -127,15 +127,9 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Second hero panel - text gets pushed up by white content */}
-      <div className="h-screen relative">
-        <div
-          className="absolute inset-0 flex items-center justify-center text-center px-6"
-          style={{
-            transform: `translateY(${Math.min(0, -(scrollY - window.innerHeight) * 0.5)}px)`,
-            opacity: Math.min(1, Math.max(0, (scrollY - 100) / 200)),
-          }}
-        >
+      {/* Second hero panel - text stays centered as you scroll */}
+      <div className="h-screen flex items-center justify-center bg-transparent relative">
+        <div className="text-center px-6 sticky top-1/2" style={{ opacity: Math.min(1, Math.max(0, (scrollY - 200) / 300)) }}>
           <h2 className="text-6xl md:text-8xl lg:text-9xl font-semibold tracking-tight leading-none text-white drop-shadow-2xl">
             Elevate<br />Every Listing
           </h2>
