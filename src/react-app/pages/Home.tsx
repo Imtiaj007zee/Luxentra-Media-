@@ -55,8 +55,12 @@ export default function HomePage() {
           muted
           loop
           playsInline
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          x5-video-player-type="h5"
+          preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: `translateY(${videoParallax}px)` }}
+          style={{ transform: typeof window !== "undefined" && window.innerWidth > 768 ? `translateY(${videoParallax}px)` : "none" }}
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>
