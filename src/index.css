@@ -22,18 +22,26 @@ video {
 }
 
 @keyframes scrollDot {
-  0% { transform: translateY(0); opacity: 1; }
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(10px); opacity: 0.3; }
+}
   100% { transform: translateY(20px); opacity: 0; }
 }
 
 @keyframes scrollDot {
-  0% { transform: translateY(0); opacity: 1; }
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(10px); opacity: 0.3; }
+}
   75% { transform: translateY(18px); opacity: 0; }
   76% { transform: translateY(0); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes arrowFade {
-  0%, 100% { transform: translateY(0); opacity: 0.4; }
+
   50% { transform: translateY(4px); opacity: 1; }
+}
+
+@keyframes mouseJump {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }

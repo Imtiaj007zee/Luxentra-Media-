@@ -124,24 +124,18 @@ export default function HomePage() {
           >
             Start Your Order
           </Link>
-        </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator - close to Start Your Order button */}
         <div
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20"
-          style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
+          className="flex flex-col items-center gap-2 mt-8"
+          style={{ opacity: Math.max(0, 1 - scrollY / 200), animation: "mouseJump 1.5s ease-in-out infinite" }}
         >
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-1.5 relative overflow-hidden">
-            <div
-              className="w-1.5 h-1.5 bg-white rounded-full"
-              style={{ animation: "scrollDot 1.8s ease-in-out infinite" }}
+          <svg width="28" height="44" viewBox="0 0 28 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="26" height="42" rx="13" stroke="white" strokeOpacity="0.6" strokeWidth="2"/>
+            <rect x="12" y="8" width="4" height="8" rx="2" fill="white" fillOpacity="0.8"
+              style={{ animation: "scrollDot 1.5s ease-in-out infinite" }}
             />
-          </div>
-          <div style={{ animation: "arrowFade 1.8s ease-in-out infinite" }}>
-            <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
-              <path d="M1 1L8 8L15 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.6"/>
-            </svg>
-          </div>
+          </svg>
         </div>
       </div>
 
