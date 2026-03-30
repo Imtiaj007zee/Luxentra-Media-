@@ -1,9 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { Camera, Video, Plane, Box, Clock, Shield, Mail, Phone, Sunset, ShoppingCart, Layers } from "lucide-react";
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    const tryPlay = () => {
+      video.play().catch(() => {});
+    };
+
+    tryPlay();
+    document.addEventListener("touchstart", tryPlay, { once: true });
+    document.addEventListener("click", tryPlay, { once: true });
+    
+    return () => {
+      document.removeEventListener("touchstart", tryPlay);
+      document.removeEventListener("click", tryPlay);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
@@ -51,16 +70,15 @@ export default function HomePage() {
       {/* Video Hero Section - sticky for 2 screens */}
       <div className="sticky top-0 h-screen overflow-hidden z-0">
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          x5-video-player-type="h5"
+          poster="/og-image.png"
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: typeof window !== "undefined" && window.innerWidth > 768 ? `translateY(${videoParallax}px)` : "none" }}
+          style={{ transform: window.innerWidth > 768 ? `translateY(${videoParallax}px)` : "none" }}
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>
