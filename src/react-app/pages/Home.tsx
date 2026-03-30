@@ -125,19 +125,20 @@ export default function HomePage() {
             Start Your Order
           </Link>
 
-        {/* Scroll indicator */}
-        <div
-          className="flex flex-col items-center gap-2 mt-8"
-          style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
-        >
-          <span className="text-white/60 text-xs uppercase tracking-widest font-medium">Scroll Down</span>
-          <div style={{ animation: "mouseJump 1.5s ease-in-out infinite" }}>
-            <svg width="28" height="44" viewBox="0 0 28 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="1" y="1" width="26" height="42" rx="13" stroke="white" strokeOpacity="0.6" strokeWidth="2"/>
-              <rect x="12" y="8" width="4" height="8" rx="2" fill="white" fillOpacity="0.8"
-                style={{ animation: "scrollDot 1.5s ease-in-out infinite" }}
-              />
-            </svg>
+          {/* Scroll indicator */}
+          <div
+            className="flex flex-col items-center gap-2 mt-8"
+            style={{ opacity: Math.max(0, 1 - scrollY / 200) }}
+          >
+            <span className="text-white/60 text-xs uppercase tracking-widest font-medium">Scroll Down</span>
+            <div style={{ animation: "mouseJump 1.5s ease-in-out infinite" }}>
+              <svg width="28" height="44" viewBox="0 0 28 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="26" height="42" rx="13" stroke="white" strokeOpacity="0.6" strokeWidth="2"/>
+                <rect x="12" y="8" width="4" height="8" rx="2" fill="white" fillOpacity="0.8"
+                  style={{ animation: "scrollDot 1.5s ease-in-out infinite" }}
+                />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
