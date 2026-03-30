@@ -9,17 +9,35 @@ export default function HomePage() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    
+
+    video.muted = true;
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
     const tryPlay = () => {
+      video.muted = true;
       video.play().catch(() => {});
     };
 
     tryPlay();
+
+    const interval = setInterval(() => {
+      if (video.paused) {
+        tryPlay();
+      } else {
+        clearInterval(interval);
+      }
+    }, 500);
+
     document.addEventListener("touchstart", tryPlay, { once: true });
+    document.addEventListener("scroll", tryPlay, { once: true });
     document.addEventListener("click", tryPlay, { once: true });
-    
+
     return () => {
+      clearInterval(interval);
       document.removeEventListener("touchstart", tryPlay);
+      document.removeEventListener("scroll", tryPlay);
       document.removeEventListener("click", tryPlay);
     };
   }, []);
