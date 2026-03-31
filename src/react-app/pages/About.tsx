@@ -32,7 +32,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Team Member - Shamrat Neero */}
+      {/* Creative Director - Shamrat Neero */}
       <section className="py-24 px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -55,7 +55,7 @@ export default function AboutPage() {
 
             {/* Details */}
             <div>
-              <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-3">Team Member</div>
+              <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-3">Creative Director</div>
               <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Shamrat Neero</h2>
               <p className="text-lg text-zinc-500 mb-8">Cinematic Director · FPV Drone Specialist</p>
 
@@ -90,7 +90,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Team Member - Imtiaj Sharker Zishan */}
+      {/* Creative Director - Imtiaj Sharker Zishan */}
       <section className="py-24 px-6 lg:px-8 bg-zinc-50">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
