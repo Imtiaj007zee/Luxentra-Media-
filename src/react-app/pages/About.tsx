@@ -19,15 +19,87 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <div className="pt-32 pb-24 px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* Hero */}
+      <div className="pt-32 pb-20 px-6 lg:px-8 bg-gradient-to-b from-zinc-50 to-white">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-4">Our Story</div>
-          <h1 className="text-5xl md:text-7xl font-semibold tracking-tight mb-8 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent" style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            About Us
+          <h1 className="text-5xl md:text-7xl font-semibold tracking-tight mb-6 bg-gradient-to-br from-zinc-900 via-zinc-700 to-zinc-900 bg-clip-text text-transparent" style={{ WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            Meet the Team
           </h1>
-          <p className="text-xl text-zinc-500">Coming soon — we're building this page step by step.</p>
+          <p className="text-xl text-zinc-500 max-w-2xl mx-auto">
+            The creative minds behind LuxEntra Media — passionate about elevating every listing through cinematic storytelling.
+          </p>
         </div>
       </div>
+
+      {/* Team Member - Shamrat Neero */}
+      <section className="py-24 px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+
+            {/* Photo */}
+            <div className="relative">
+              <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100">
+                <img
+                  src="/Neero.JPG"
+                  alt="Shamrat Neero"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Floating badge */}
+              <div className="absolute -bottom-6 -right-6 bg-zinc-900 text-white px-6 py-4 rounded-2xl shadow-xl">
+                <div className="text-2xl font-bold">8+</div>
+                <div className="text-xs text-zinc-400 uppercase tracking-widest">Years Experience</div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div>
+              <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-3">Team Member</div>
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Shamrat Neero</h2>
+              <p className="text-lg text-zinc-500 mb-8">Cinematic Director · FPV Drone Specialist</p>
+
+              <p className="text-zinc-600 leading-relaxed mb-10 text-lg">
+                A cinematic filmmaker with over 8 years of experience in visual storytelling and commercial production. Shamrat has collaborated with 30+ national and international brands, blending creativity, motion, and precision to craft immersive visual experiences.
+              </p>
+
+              {/* Key Highlights */}
+              <div className="space-y-4 mb-10">
+                <h3 className="text-sm uppercase tracking-widest text-zinc-400 font-medium">Key Highlights</h3>
+                {[
+                  "30+ Brand Collaborations (DJI, bKash, Grameenphone)",
+                  "8+ Years in Cinematic & Commercial Production",
+                  "Specialized in FPV Drone & Dynamic Camera Work",
+                  "Expertise in Storytelling, Color, and Visual Direction",
+                ].map((highlight, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-2.5 flex-shrink-0" />
+                    <p className="text-zinc-700">{highlight}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Signature Line */}
+              <blockquote className="border-l-4 border-zinc-900 pl-6 py-2">
+                <p className="text-xl italic text-zinc-700 leading-relaxed">
+                  "We don't just capture visuals, we create cinematic experiences."
+                </p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-24 px-6 lg:px-8 bg-zinc-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">Ready to Work With Us?</h2>
+          <p className="text-xl text-zinc-600 mb-10">Let's create stunning media that makes your properties impossible to ignore.</p>
+          <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105">
+            Start Your Order
+          </Link>
+        </div>
+      </section>
 
       <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
