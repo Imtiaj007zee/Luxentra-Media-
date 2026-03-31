@@ -120,8 +120,44 @@ export default function OrderPage() {
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-zinc-900 rounded-xl flex items-center justify-center"><Camera className="w-6 h-6 text-white" /></div>
                   <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2"><h3 className="text-xl font-semibold">Standard Listing Media Package</h3><span className="text-xl font-bold">${standardPackagePrice}</span></div>
-                    <ul className="text-sm text-zinc-600 space-y-1"><li>• 25–45 MLS-ready photos</li><li>• 1 twilight photo</li><li>• 2D black & white floor plans</li><li>• 12-hour delivery</li><li>• Private branded gallery</li><li>• Free revisions</li></ul>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-xl font-semibold">{specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}</h3>
+                      <div className="text-right">
+                        <span className="text-xl font-bold">${standardPackagePrice}</span>
+                        {specialPlan && <span className="block text-sm text-zinc-400 line-through">$175</span>}
+                      </div>
+                    </div>
+                    {specialPlan && (
+                      <p className="text-sm text-emerald-600 font-medium mb-3">✓ Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
+                    )}
+                    <ul className="text-sm text-zinc-600 space-y-1">
+                      {specialPlan ? (
+                        <>
+                          <li>• Up to 1,999 sq ft properties</li>
+                          <li>• 20–45 professionally edited images</li>
+                          <li>• Full interior + exterior coverage</li>
+                          <li>• Same-day or 24-hour delivery</li>
+                          <li>• Priority scheduling</li>
+                          <li>• Walkthrough / Cinematic Video</li>
+                          <li>• Private online gallery (one-click download)</li>
+                          <li>• 3 Virtual Staging images or Drone coverage</li>
+                        </>
+                      ) : (
+                        <>
+                          <li>• 25–45 MLS-ready photos</li>
+                          <li>• 1 twilight photo</li>
+                          <li>• 2D black & white floor plans</li>
+                          <li>• 12-hour delivery</li>
+                          <li>• Private branded gallery</li>
+                          <li>• Free revisions</li>
+                        </>
+                      )}
+                    </ul>
+                    {specialPlan && (
+                      <button type="button" onClick={() => window.history.replaceState({}, "", "/order")} className="mt-4 text-xs text-zinc-400 hover:text-zinc-700 underline underline-offset-2 transition-colors">
+                        ← Switch to Standard Package ($175)
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
