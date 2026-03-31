@@ -90,6 +90,70 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Team Member - Imtiaj Sharker Zishan */}
+      <section className="py-24 px-6 lg:px-8 bg-zinc-50">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+
+            {/* Details */}
+            <div>
+              <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-3">Founder</div>
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Imtiaj Sharker Zishan</h2>
+              <p className="text-lg text-zinc-500 mb-2">Known as <span className="font-medium text-zinc-700">Zee</span></p>
+              <p className="text-lg text-zinc-500 mb-8">Founder · Photographer & Cinematographer</p>
+
+              <p className="text-zinc-600 leading-relaxed mb-4 text-lg">
+                A photographer and cinematographer with 6+ years of experience, Imtiaj specializes in capturing people, spaces, and moments with clarity and intention. Since stepping into commercial work in 2018, he has developed a strong portfolio across weddings, events, portraits, and corporate productions.
+              </p>
+              <p className="text-zinc-600 leading-relaxed mb-10 text-lg">
+                His approach blends technical precision with a clean, modern visual style, delivering content that is both impactful and purpose-driven.
+              </p>
+
+              {/* Key Highlights */}
+              <div className="space-y-4 mb-10">
+                <h3 className="text-sm uppercase tracking-widest text-zinc-400 font-medium">Key Highlights</h3>
+                {[
+                  "6+ Years of Photography & Cinematography Experience",
+                  "25+ Weddings & Large-Scale Events Covered",
+                  "Professional Headshots & Portrait Specialist",
+                  "Corporate & Institutional Projects (BMCC, NYC)",
+                  "Experience with Celebrity & High-Profile Events",
+                ].map((highlight, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-2.5 flex-shrink-0" />
+                    <p className="text-zinc-700">{highlight}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Signature Line */}
+              <blockquote className="border-l-4 border-zinc-900 pl-6 py-2">
+                <p className="text-xl italic text-zinc-700 leading-relaxed">
+                  "Precision in every frame, purpose in every shot."
+                </p>
+              </blockquote>
+            </div>
+
+            {/* Photo */}
+            <div className="relative">
+              <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100">
+                <img
+                  src="/Zee2.JPG"
+                  alt="Imtiaj Sharker Zishan"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Floating badge */}
+              <div className="absolute -bottom-6 -left-6 bg-zinc-900 text-white px-6 py-4 rounded-2xl shadow-xl">
+                <div className="text-2xl font-bold">6+</div>
+                <div className="text-xs text-zinc-400 uppercase tracking-widest">Years Experience</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-24 px-6 lg:px-8 bg-zinc-50">
         <div className="max-w-4xl mx-auto text-center">
