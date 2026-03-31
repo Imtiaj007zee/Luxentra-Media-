@@ -169,7 +169,7 @@ export default function AboutPage() {
                 />
               </div>
               <div className="absolute -bottom-6 -right-6 bg-zinc-900 text-white px-6 py-4 rounded-2xl shadow-xl">
-                <div className="text-2xl font-bold">3+</div>
+                <div className="text-2xl font-bold">4+</div>
                 <div className="text-xs text-zinc-400 uppercase tracking-widest">Years Experience</div>
               </div>
             </div>
