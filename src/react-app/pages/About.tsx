@@ -154,6 +154,65 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Team Member - Asgar Hossain Mahmud */}
+      <section className="py-24 px-6 lg:px-8 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+
+            {/* Photo */}
+            <div className="relative">
+              <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100">
+                <img
+                  src="/Asgar.JPG"
+                  alt="Asgar Hossain Mahmud"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="absolute -bottom-6 -right-6 bg-zinc-900 text-white px-6 py-4 rounded-2xl shadow-xl">
+                <div className="text-2xl font-bold">3+</div>
+                <div className="text-xs text-zinc-400 uppercase tracking-widest">Years Experience</div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div>
+              <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-3">Founder</div>
+              <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Asgar Hossain Mahmud</h2>
+              <p className="text-lg text-zinc-500 mb-8">Managing Director · Visual Storyteller</p>
+
+              <p className="text-zinc-600 leading-relaxed mb-4 text-lg">
+                A creative professional with 3+ years of experience, Asgar specializes in managing productions and crafting visual stories through landscapes and portraits. With a strong background in event and shoot management, he has worked closely with production teams to ensure smooth execution from planning to final delivery.
+              </p>
+              <p className="text-zinc-600 leading-relaxed mb-10 text-lg">
+                His work combines organizational precision with a natural eye for color, composition, and storytelling, bringing both structure and creativity to every project.
+              </p>
+
+              <div className="space-y-4 mb-10">
+                <h3 className="text-sm uppercase tracking-widest text-zinc-400 font-medium">Key Highlights</h3>
+                {[
+                  "3+ Years of Experience in Production & Event Management",
+                  "Founder & Managing Director Experience",
+                  "Expertise in Shoot Coordination & On-Set Management",
+                  "Strong Visual Storytelling in Landscape & Portrait Work",
+                  "Skilled in Color, Composition, and Creative Direction",
+                ].map((highlight, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 mt-2.5 flex-shrink-0" />
+                    <p className="text-zinc-700">{highlight}</p>
+                  </div>
+                ))}
+              </div>
+
+              <blockquote className="border-l-4 border-zinc-900 pl-6 py-2">
+                <p className="text-xl italic text-zinc-700 leading-relaxed">
+                  "Where vision meets execution."
+                </p>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-24 px-6 lg:px-8 bg-zinc-50">
         <div className="max-w-4xl mx-auto text-center">
