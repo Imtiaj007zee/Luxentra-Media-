@@ -142,7 +142,7 @@ export default function OrderPage() {
                           <li>• Priority scheduling</li>
                           <li>• Walkthrough / Cinematic Video</li>
                           <li>• Private online gallery (one-click download)</li>
-                          <li>• 3 Virtual Staging images or Drone coverage</li>
+                          <li>• Virtual Staging images or Drone coverage</li>
                         </>
                       ) : (
                         <>
@@ -156,7 +156,7 @@ export default function OrderPage() {
                       )}
                     </ul>
                     {specialPlan && (
-                      <button type="button" onClick={() => setOverrideToStandard(true)} className="mt-4 text-xs text-zinc-400 hover:text-zinc-700 underline underline-offset-2 transition-colors">
+                      <button type="button" onClick={() => setOverrideToStandard(true)} className="mt-4 inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-full border border-zinc-300 text-zinc-600 hover:bg-zinc-100 hover:border-zinc-400 hover:text-zinc-900 transition-all">
                         ← Switch to Standard Package ($175)
                       </button>
                     )}

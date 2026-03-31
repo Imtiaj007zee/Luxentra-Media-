@@ -39,7 +39,7 @@ const features = [
   "Priority scheduling",
   "Walkthrough / Cinematic Video",
   "Private online gallery (one-click download)",
-  "3 Virtual Staging images or Drone coverage",
+  "Virtual Staging images or Drone coverage",
 ];
 
 export default function SpecialPage() {
