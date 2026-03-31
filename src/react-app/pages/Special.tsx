@@ -145,6 +145,7 @@ export default function SpecialPage() {
                 {/* CTA */}
                 <Link
                   to="/order"
+                  state={{ specialPlan: { name: plan.name, price: plan.price, volume: plan.volume, savings: plan.savings } }}
                   className={`mt-10 block text-center py-3.5 rounded-full text-sm font-medium transition-all hover:scale-105 ${
                     plan.highlight
                       ? "bg-white text-zinc-900 hover:bg-zinc-100"

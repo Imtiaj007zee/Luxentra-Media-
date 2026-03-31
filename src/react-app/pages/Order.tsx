@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers } from "lucide-react";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
@@ -27,6 +27,8 @@ export default function OrderPage() {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" });
+  const location = useLocation();
+  const specialPlan = (location.state as any)?.specialPlan || null;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -93,6 +95,21 @@ export default function OrderPage() {
       <div className="pt-32 pb-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 mb-8"><ArrowLeft className="w-4 h-4" /> Back to Home</Link>
+          {/* Special Plan Banner */}
+          {specialPlan && (
+            <div className="mb-8 p-6 bg-zinc-900 text-white rounded-2xl flex items-center justify-between">
+              <div>
+                <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-1">Weekly Partnership Plan</div>
+                <h3 className="text-xl font-semibold">{specialPlan.name} Plan — {specialPlan.volume}</h3>
+                <p className="text-zinc-300 text-sm mt-1">
+                  <span className="text-2xl font-bold text-white">${specialPlan.price}</span>
+                  <span className="ml-2">per listing · Save ${specialPlan.savings} per listing</span>
+                </p>
+              </div>
+              <Link to="/special" className="text-xs text-zinc-400 hover:text-white underline underline-offset-2">Change plan</Link>
+            </div>
+          )}
+
           {submitStatus === "success" && (<div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl"><div className="flex items-start gap-3"><div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"><Check className="w-5 h-5 text-green-600" /></div><div><h3 className="font-semibold text-green-900 mb-1">Thank You!</h3><p className="text-sm text-green-700">Your order has been received. We'll reach out to finalize your booking!</p></div></div></div>)}
           {submitStatus === "error" && (<div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-2xl"><div className="flex items-start gap-3"><div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center"><AlertCircle className="w-5 h-5 text-red-600" /></div><div><h3 className="font-semibold text-red-900 mb-1">Submission Error</h3><p className="text-sm text-red-700">Please try again or contact luxentra.media@gmail.com</p></div></div></div>)}
           <div className="grid lg:grid-cols-2 gap-12">
