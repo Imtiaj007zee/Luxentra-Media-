@@ -1,3 +1,4 @@
+import SpecialPage from './pages/Special';
 import AboutPage from './pages/About';
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import HomePage from "@/react-app/pages/Home";
@@ -10,6 +11,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/book" element={<BookPage />} />
+        <Route path="/special" element={<SpecialPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/order" element={<OrderPage />} />
       </Routes>

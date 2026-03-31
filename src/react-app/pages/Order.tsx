@@ -156,6 +156,23 @@ export default function OrderPage() {
                 </div>
               </div>
 
+              {/* Special Package Button */}
+              <Link
+                to="/special"
+                className="block w-full mt-6 p-5 rounded-2xl border-2 border-dashed border-zinc-300 hover:border-zinc-900 transition-all duration-300 group hover:bg-zinc-50"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-1">Limited Offer</div>
+                    <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700">✨ Special Package</h3>
+                    <p className="text-sm text-zinc-500 mt-1">Exclusive bundles tailored for your needs</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                    →
+                  </div>
+                </div>
+              </Link>
+
               <div className="mt-8 bg-gradient-to-br from-zinc-50 to-zinc-100 border border-zinc-200 rounded-2xl p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><ShoppingCart className="w-5 h-5" /> Order Summary</h3>
                 <div className="space-y-2 text-sm mb-4">
