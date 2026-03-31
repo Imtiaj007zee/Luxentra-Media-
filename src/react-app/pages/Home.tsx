@@ -65,6 +65,7 @@ export default function HomePage() {
 
   const heroOpacity = Math.max(0, 1 - scrollY / 600);
   const isScrolled = scrollY > 80;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const heroScale = Math.max(0.92, 1 - scrollY / 3000);
 
   return (
@@ -73,6 +74,7 @@ export default function HomePage() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/90 backdrop-blur-xl border-b border-zinc-200/50" : "bg-transparent"}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }} className={`text-xl font-semibold tracking-tight transition-colors duration-300 cursor-pointer ${isScrolled ? "text-zinc-900" : "text-white drop-shadow-lg"}`}>LuxEntra Media</a>
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-3">
             <Link to="/about" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>About Us</Link>
             <a href="#package" className={`text-sm px-4 py-2 rounded-full border transition-all duration-300 ${isScrolled ? "bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm" : "bg-white/15 backdrop-blur-sm border-white/30 text-white hover:bg-white/25"}`}>Package</a>
@@ -82,8 +84,32 @@ export default function HomePage() {
               Order Now
             </Link>
           </nav>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden flex flex-col gap-1.5 p-2"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <span className={`block w-6 h-0.5 transition-all duration-300 ${isScrolled ? "bg-zinc-900" : "bg-white"}`} style={{ transform: mobileMenuOpen ? "rotate(45deg) translateY(8px)" : "none" }} />
+            <span className={`block w-6 h-0.5 transition-all duration-300 ${isScrolled ? "bg-zinc-900" : "bg-white"} ${mobileMenuOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-6 h-0.5 transition-all duration-300 ${isScrolled ? "bg-zinc-900" : "bg-white"}`} style={{ transform: mobileMenuOpen ? "rotate(-45deg) translateY(-8px)" : "none" }} />
+          </button>
         </div>
       </header>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-zinc-900/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 md:hidden">
+          <button className="absolute top-5 right-6 text-white text-3xl" onClick={() => setMobileMenuOpen(false)}>✕</button>
+          <Link to="/about" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-semibold text-white hover:text-zinc-300">About Us</Link>
+          <a href="#package" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-semibold text-white hover:text-zinc-300">Package</a>
+          <a href="#addons" onClick={() => setMobileMenuOpen(false)} className="text-2xl font-semibold text-white hover:text-zinc-300">Add-ons</a>
+          <Link to="/order" onClick={() => setMobileMenuOpen(false)} className="mt-4 text-lg font-medium px-8 py-4 rounded-full bg-white text-zinc-900 hover:bg-zinc-100 flex items-center gap-2">
+            <ShoppingCart className="w-5 h-5" />
+            Order Now
+          </Link>
+        </div>
+      )}
 
       {/* Video Hero Section - sticky for 2 screens */}
       <div className="sticky top-0 h-screen overflow-hidden z-0">
