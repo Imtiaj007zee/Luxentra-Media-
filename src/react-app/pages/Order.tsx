@@ -42,7 +42,7 @@ export default function OrderPage() {
     ? VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price || 0
     : 0;
 
-  const standardPackagePrice = 175;
+  const standardPackagePrice = specialPlan ? specialPlan.price : 175;
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => sum + (ADD_ONS.find((a) => a.id === id)?.price || 0), 0);
   const totalPrice = standardPackagePrice + addOnsTotal + stagingPrice;
 
