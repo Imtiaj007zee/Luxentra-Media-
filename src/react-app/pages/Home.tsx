@@ -95,7 +95,7 @@ export default function HomePage() {
           poster="/og-image.png"
           preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: window.innerWidth > 768 ? `translateY(${videoParallax}px)` : "none" }}
+          style={{ willChange: "transform", transform: "translateZ(0)" }}
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>
