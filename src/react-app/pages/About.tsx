@@ -181,7 +181,7 @@ export default function AboutPage() {
               <p className="text-lg text-zinc-500 mb-8">Managing Director · Visual Storyteller</p>
 
               <p className="text-zinc-600 leading-relaxed mb-4 text-lg">
-                A creative professional with 3+ years of experience, Asgar specializes in managing productions and crafting visual stories through landscapes and portraits. With a strong background in event and shoot management, he has worked closely with production teams to ensure smooth execution from planning to final delivery.
+                A creative professional with 4+ years of experience, Asgar specializes in managing productions and crafting visual stories through landscapes and portraits. With a strong background in event and shoot management, he has worked closely with production teams to ensure smooth execution from planning to final delivery.
               </p>
               <p className="text-zinc-600 leading-relaxed mb-10 text-lg">
                 His work combines organizational precision with a natural eye for color, composition, and storytelling, bringing both structure and creativity to every project.
@@ -190,7 +190,7 @@ export default function AboutPage() {
               <div className="space-y-4 mb-10">
                 <h3 className="text-sm uppercase tracking-widest text-zinc-400 font-medium">Key Highlights</h3>
                 {[
-                  "3+ Years of Experience in Production & Event Management",
+                  "4+ Years of Experience in Production & Event Management",
                   "Founder & Managing Director Experience",
                   "Expertise in Shoot Coordination & On-Set Management",
                   "Strong Visual Storytelling in Landscape & Portrait Work",
