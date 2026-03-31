@@ -28,7 +28,9 @@ export default function OrderPage() {
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" });
   const location = useLocation();
-  const specialPlan = (location.state as any)?.specialPlan || null;
+  const locationSpecialPlan = (location.state as any)?.specialPlan || null;
+  const [overrideToStandard, setOverrideToStandard] = useState(false);
+  const specialPlan = overrideToStandard ? null : locationSpecialPlan;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -154,7 +156,7 @@ export default function OrderPage() {
                       )}
                     </ul>
                     {specialPlan && (
-                      <button type="button" onClick={() => window.history.replaceState({}, "", "/order")} className="mt-4 text-xs text-zinc-400 hover:text-zinc-700 underline underline-offset-2 transition-colors">
+                      <button type="button" onClick={() => setOverrideToStandard(true)} className="mt-4 text-xs text-zinc-400 hover:text-zinc-700 underline underline-offset-2 transition-colors">
                         ← Switch to Standard Package ($175)
                       </button>
                     )}
