@@ -57,7 +57,7 @@ export default function AboutPage() {
             <div>
               <div className="inline-block text-xs uppercase tracking-widest text-zinc-500 font-medium mb-3">Creative Director</div>
               <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-2">Shamrat Neero</h2>
-              <p className="text-lg text-zinc-500 mb-8">Cinematic Director · FPV Drone Specialist</p>
+              <p className="text-lg text-zinc-500 mb-8">Commercial Director · FPV Drone Pilot · DOP</p>
 
               <p className="text-zinc-600 leading-relaxed mb-10 text-lg">
                 A cinematic filmmaker with over 8 years of experience in visual storytelling and commercial production. Shamrat has collaborated with 30+ national and international brands, blending creativity, motion, and precision to craft immersive visual experiences.
@@ -67,7 +67,7 @@ export default function AboutPage() {
               <div className="space-y-4 mb-10">
                 <h3 className="text-sm uppercase tracking-widest text-zinc-400 font-medium">Key Highlights</h3>
                 {[
-                  "30+ Brand Collaborations (DJI, bKash, Grameenphone)",
+                  "30+ Brand Collaborations (Netflix, DJI, Sony, Tilta)",
                   "8+ Years in Cinematic & Commercial Production",
                   "Specialized in FPV Drone & Dynamic Camera Work",
                   "Expertise in Storytelling, Color, and Visual Direction",
