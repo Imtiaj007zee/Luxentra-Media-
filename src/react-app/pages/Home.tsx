@@ -66,7 +66,6 @@ export default function HomePage() {
   const heroOpacity = Math.max(0, 1 - scrollY / 600);
   const isScrolled = scrollY > 80;
   const heroScale = Math.max(0.92, 1 - scrollY / 3000);
-  const videoParallax = scrollY * 0.4;
 
   return (
     <div className="min-h-screen bg-white text-zinc-900">
