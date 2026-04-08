@@ -58,7 +58,7 @@ export default function OrderPage() {
     if (id === "reel") return sum + (addon.price * reelQty);
     return sum + addon.price;
   }, 0);
-  const totalPrice = standardPackagePrice + addOnsTotal + stagingPrice;
+  const totalPrice = (includeStandard ? standardPackagePrice : 0) + addOnsTotal + stagingPrice;
 
   const selectedAddOnNames = [
     ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
