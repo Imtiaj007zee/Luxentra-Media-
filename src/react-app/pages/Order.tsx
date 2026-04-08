@@ -89,8 +89,8 @@ export default function OrderPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="text-xl font-semibold tracking-tight">LuxEntra Media</Link>
           <div className="flex items-center gap-6">
-            <a href="mailto:luxentra.media@gmail.com" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"><Mail className="w-4 h-4" /> luxentra.media@gmail.com</a>
-            <a href="tel:+13478371257" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"><Phone className="w-4 h-4" /> +1 (347) 837-1257</a>
+            <a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"><Mail className="w-4 h-4" /> luxentra.media@gmail.com</a>
+            <a href="tel:+13478371257" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"><Phone className="w-4 h-4" /> +1 (347) 837-1257</a>
           </div>
         </div>
       </header>
