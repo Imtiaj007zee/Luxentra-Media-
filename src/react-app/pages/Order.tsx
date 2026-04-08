@@ -262,6 +262,18 @@ export default function OrderPage() {
                 <div className="space-y-2"><Label className="text-base font-medium">Listing Type *</Label>
                   <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger><SelectContent><SelectItem value="House/Single-Family">House/Single-Family</SelectItem><SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem><SelectItem value="Luxury Home">Luxury Home</SelectItem><SelectItem value="Commercial">Commercial</SelectItem><SelectItem value="Multi-Family">Multi-Family</SelectItem><SelectItem value="Rental Listing">Rental Listing</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select>
                 </div>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Preferred Shoot Date</Label>
+                  <Input type="date" value={formData.shoot_date} onChange={(e) => setFormData({ ...formData, shoot_date: e.target.value })} className="h-12 text-base" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Preferred Shoot Time</Label>
+                  <Input type="time" value={formData.shoot_time} onChange={(e) => setFormData({ ...formData, shoot_time: e.target.value })} className="h-12 text-base" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Property Address / Location</Label>
+                  <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={formData.shoot_location} onChange={(e) => setFormData({ ...formData, shoot_location: e.target.value })} className="h-12 text-base" />
+                </div>
                 <div className="space-y-2"><Label className="text-base font-medium">Additional Details <span className="text-zinc-500 font-normal">(optional)</span></Label><Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." /></div>
                 <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-lg bg-zinc-900 hover:bg-zinc-800 rounded-full">{isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}</Button>
               </form>
