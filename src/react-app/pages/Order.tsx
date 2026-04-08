@@ -174,15 +174,25 @@ export default function OrderPage() {
               <h2 className="text-2xl font-semibold mb-4">Optional Add-ons</h2>
               <div className="space-y-3">
                 {ADD_ONS.map((addOn) => { const Icon = addOn.icon; const isSelected = selectedAddOns.has(addOn.id); return (
-                  <div key={addOn.id} className={`border rounded-2xl p-4 cursor-pointer transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`} onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
-                    <div className="flex items-center gap-4">
+                  <div key={addOn.id} className={`border rounded-2xl p-4 transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
+                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? "bg-zinc-900" : "bg-zinc-100"}`}><Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-zinc-600"}`} /></div>
-                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.price}</span></div></div>
+                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? addOn.price * flyerQty : addOn.price}{addOn.id === "flyer" && isSelected && flyerQty > 1 ? ` (${flyerQty}x)` : ""}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 per flyer</p>}</div>
                       <button type="button" className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>{isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-zinc-400" />}</button>
                     </div>
+                    {addOn.id === "flyer" && isSelected && (
+                      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-zinc-100">
+                        <span className="text-sm text-zinc-600 font-medium">Quantity:</span>
+                        <div className="flex items-center gap-2">
+                          <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">−</button>
+                          <span className="w-8 text-center font-semibold">{flyerQty}</span>
+                          <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
+                        </div>
+                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${39 * flyerQty}</span></span>
+                      </div>
+                    )}
                   </div>
                 );})}
-
                 {/* Virtual Staging */}
                 <div className={`border rounded-2xl p-4 transition-all ${selectedStagingTier ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200"}`}>
                   <div className="flex items-center gap-4 mb-3">
