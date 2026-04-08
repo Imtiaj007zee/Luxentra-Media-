@@ -101,12 +101,25 @@ export default function OrderPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-200/50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="text-xl font-semibold tracking-tight">LuxEntra Media</Link>
-          <div className="flex items-center gap-6">
-            <a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"><Mail className="w-4 h-4" /> luxentra.media@gmail.com</a>
-            <a href="tel:+13478371257" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium"><Phone className="w-4 h-4" /> +1 (347) 837-1257</a>
+          <div className="flex items-center gap-3">
+            <a href="mailto:luxentra.media@gmail.com" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 hover:bg-white/90 transition-all text-sm font-medium"><Mail className="w-4 h-4" /> luxentra.media@gmail.com</a>
+            <a href="tel:+13478371257" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 hover:bg-white/90 transition-all text-sm font-medium"><Phone className="w-4 h-4" /> +1 (347) 837-1257</a>
+            <button className="md:hidden p-2 rounded-full hover:bg-zinc-100 transition-all" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              <MoreVertical className="w-5 h-5 text-zinc-700" />
+            </button>
           </div>
         </div>
       </header>
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-zinc-900/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 md:hidden">
+          <button className="absolute top-5 right-6 text-white text-3xl" onClick={() => setMobileMenuOpen(false)}>✕</button>
+          <a href="mailto:luxentra.media@gmail.com" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-xl text-white"><Mail className="w-6 h-6" /> luxentra.media@gmail.com</a>
+          <a href="tel:+13478371257" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-xl text-white"><Phone className="w-6 h-6" /> +1 (347) 837-1257</a>
+          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="mt-4 text-lg font-medium px-8 py-4 rounded-full bg-white text-zinc-900">Back to Home</Link>
+        </div>
+      )}
+
       <div className="pt-32 pb-24 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 mb-8"><ArrowLeft className="w-4 h-4" /> Back to Home</Link>
