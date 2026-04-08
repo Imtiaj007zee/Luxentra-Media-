@@ -26,7 +26,7 @@ const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 export default function OrderPage() {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
   const [overrideToStandard, setOverrideToStandard] = useState(false);
@@ -78,7 +78,7 @@ export default function OrderPage() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -253,6 +253,12 @@ export default function OrderPage() {
                 <div className="space-y-2"><Label className="text-base font-medium">Borough *</Label>
                   <Select value={formData.borough} onValueChange={(v) => setFormData({ ...formData, borough: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select borough" /></SelectTrigger><SelectContent><SelectItem value="Manhattan">Manhattan</SelectItem><SelectItem value="Brooklyn">Brooklyn</SelectItem><SelectItem value="Queens">Queens</SelectItem><SelectItem value="Bronx">Bronx</SelectItem><SelectItem value="Staten Island">Staten Island</SelectItem><SelectItem value="Long Island">Long Island</SelectItem></SelectContent></Select>
                 </div>
+                {formData.borough === "other" && (
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Specify Location *</Label>
+                    <Input type="text" placeholder="Enter your borough or area..." value={formData.borough_custom} onChange={(e) => setFormData({ ...formData, borough_custom: e.target.value })} className="h-12 text-base" />
+                  </div>
+                )}
                 <div className="space-y-2"><Label className="text-base font-medium">Listing Type *</Label>
                   <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger><SelectContent><SelectItem value="House/Single-Family">House/Single-Family</SelectItem><SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem><SelectItem value="Luxury Home">Luxury Home</SelectItem><SelectItem value="Commercial">Commercial</SelectItem><SelectItem value="Multi-Family">Multi-Family</SelectItem><SelectItem value="Rental Listing">Rental Listing</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select>
                 </div>
