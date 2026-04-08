@@ -27,6 +27,7 @@ const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 export default function OrderPage() {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
+  const [flyerQty, setFlyerQty] = useState<number>(1);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
@@ -46,7 +47,12 @@ export default function OrderPage() {
     : 0;
 
   const standardPackagePrice = specialPlan ? specialPlan.price : 175;
-  const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => sum + (ADD_ONS.find((a) => a.id === id)?.price || 0), 0);
+  const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
+    const addon = ADD_ONS.find((a) => a.id === id);
+    if (!addon) return sum;
+    if (id === "flyer") return sum + (addon.price * flyerQty);
+    return sum + addon.price;
+  }, 0);
   const totalPrice = standardPackagePrice + addOnsTotal + stagingPrice;
 
   const selectedAddOnNames = [
