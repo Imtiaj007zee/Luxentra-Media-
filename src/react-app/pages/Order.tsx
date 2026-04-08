@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText } from "lucide-react";
+import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, MoreVertical } from "lucide-react";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -33,6 +33,7 @@ export default function OrderPage() {
   const [includeStandard, setIncludeStandard] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
   const [overrideToStandard, setOverrideToStandard] = useState(false);
   const specialPlan = overrideToStandard ? null : locationSpecialPlan;
