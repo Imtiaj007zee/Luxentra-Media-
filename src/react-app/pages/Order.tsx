@@ -27,7 +27,7 @@ const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 export default function OrderPage() {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
-  const [flyerQty, setFlyerQty] = useState<number>(1);
+  const [flyerQty, setFlyerQty] = useState(1);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
