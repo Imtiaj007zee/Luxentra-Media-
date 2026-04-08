@@ -50,7 +50,7 @@ export default function OrderPage() {
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
     const addon = ADD_ONS.find((a) => a.id === id);
     if (!addon) return sum;
-    if (id === "flyer") return sum + (addon.price * flyerQty);
+    if (id === "flyer") return sum + (flyerQty === 1 ? 39 : 39 + (flyerQty - 1) * 35);
     return sum + addon.price;
   }, 0);
   const totalPrice = standardPackagePrice + addOnsTotal + stagingPrice;
@@ -177,7 +177,7 @@ export default function OrderPage() {
                   <div key={addOn.id} className={`border rounded-2xl p-4 transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
                     <div className="flex items-center gap-4 cursor-pointer" onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? "bg-zinc-900" : "bg-zinc-100"}`}><Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-zinc-600"}`} /></div>
-                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? addOn.price * flyerQty : addOn.price}{addOn.id === "flyer" && isSelected && flyerQty > 1 ? ` (${flyerQty}x)` : ""}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 per flyer</p>}</div>
+                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? (flyerQty === 1 ? 39 : 39 + (flyerQty - 1) * 35) : addOn.price}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 first · $35 each additional</p>}</div>
                       <button type="button" className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>{isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-zinc-400" />}</button>
                     </div>
                     {addOn.id === "flyer" && isSelected && (
@@ -188,7 +188,12 @@ export default function OrderPage() {
                           <span className="w-8 text-center font-semibold">{flyerQty}</span>
                           <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
                         </div>
-                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${39 * flyerQty}</span></span>
+                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${flyerQty === 1 ? 39 : 39 + (flyerQty - 1) * 35}</span></span>
+                        {flyerQty > 1 && (
+                          <span className="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
+                            Save ${(39 * flyerQty) - (39 + (flyerQty - 1) * 35)} vs full price
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
