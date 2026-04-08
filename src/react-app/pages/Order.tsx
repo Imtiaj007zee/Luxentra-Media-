@@ -30,6 +30,7 @@ export default function OrderPage() {
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [flyerQty, setFlyerQty] = useState(1);
   const [reelQty, setReelQty] = useState(1);
+  const [includeStandard, setIncludeStandard] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
@@ -49,6 +50,7 @@ export default function OrderPage() {
     : 0;
 
   const standardPackagePrice = specialPlan ? specialPlan.price : 175;
+  const basePrice = includeStandard ? standardPackagePrice : 0;
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
     const addon = ADD_ONS.find((a) => a.id === id);
     if (!addon) return sum;
@@ -88,7 +90,7 @@ export default function OrderPage() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -128,14 +130,20 @@ export default function OrderPage() {
             <div>
               <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">Build Your Package</h1>
               <p className="text-lg text-zinc-600 mb-8">Start with our standard package and customize with add-ons.</p>
-              <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-6 mb-8">
+              <div
+                className={`border rounded-2xl p-6 mb-8 cursor-pointer transition-all duration-300 ${includeStandard ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-400"}`}
+                onClick={() => setIncludeStandard(!includeStandard)}
+              >
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-zinc-900 rounded-xl flex items-center justify-center"><Camera className="w-6 h-6 text-white" /></div>
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-xl font-semibold">{specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}</h3>
-                      <div className="text-right">
-                        <span className="text-xl font-bold">${standardPackagePrice}</span>
+                      <h3 className={`text-xl font-semibold ${includeStandard ? "text-zinc-900" : "text-zinc-400"}`}>{specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}</h3>
+                      <div className="text-right flex items-center gap-2">
+                        <span className={`text-xl font-bold ${includeStandard ? "text-zinc-900" : "text-zinc-300"}`}>${standardPackagePrice}</span>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${includeStandard ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>
+                          {includeStandard ? <Check className="w-3 h-3 text-white" /> : <Plus className="w-3 h-3 text-zinc-400" />}
+                        </div>
                         {specialPlan && <span className="block text-sm text-zinc-400 line-through">$175</span>}
                       </div>
                     </div>
@@ -267,7 +275,7 @@ export default function OrderPage() {
               <div className="mt-8 bg-gradient-to-br from-zinc-50 to-zinc-100 border border-zinc-200 rounded-2xl p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><ShoppingCart className="w-5 h-5" /> Order Summary</h3>
                 <div className="space-y-2 text-sm mb-4">
-                  <div className="flex justify-between"><span className="text-zinc-600">Standard Package</span><span className="font-medium">${standardPackagePrice}</span></div>
+                  {includeStandard && <div className="flex justify-between"><span className="text-zinc-600">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span><span className="font-medium">${standardPackagePrice}</span></div>}
                   {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-zinc-600">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
                   {selectedStagingTier && (
                     <div className="flex justify-between">
