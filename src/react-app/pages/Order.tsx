@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers } from "lucide-react";
+import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText } from "lucide-react";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 type AddOn = { id: string; name: string; price: number; icon: typeof Box; description?: string; };
 
 const ADD_ONS: AddOn[] = [
+  { id: "flyer", name: "Custom Listing Flyer", price: 39, icon: FileText },
   { id: "video", name: "Walkthrough/Cinematic Video", price: 150, icon: Video },
   { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
   { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
