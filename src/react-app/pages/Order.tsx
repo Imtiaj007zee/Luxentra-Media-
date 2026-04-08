@@ -50,7 +50,7 @@ export default function OrderPage() {
     : 0;
 
   const standardPackagePrice = specialPlan ? specialPlan.price : 175;
-  const basePrice = includeStandard ? standardPackagePrice : 0;
+
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
     const addon = ADD_ONS.find((a) => a.id === id);
     if (!addon) return sum;
