@@ -14,6 +14,7 @@ const ADD_ONS: AddOn[] = [
   { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
   { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
   { id: "video", name: "Walkthrough/Cinematic Video", price: 150, icon: Video },
+  { id: "reel", name: "Creative Cinematic Reel", price: 150, icon: Video },
 ];
 
 const VIRTUAL_STAGING_TIERS = [
@@ -28,6 +29,7 @@ export default function OrderPage() {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [flyerQty, setFlyerQty] = useState(1);
+  const [reelQty, setReelQty] = useState(1);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
@@ -51,6 +53,7 @@ export default function OrderPage() {
     const addon = ADD_ONS.find((a) => a.id === id);
     if (!addon) return sum;
     if (id === "flyer") return sum + (flyerQty === 1 ? 39 : flyerQty * 35);
+    if (id === "reel") return sum + (addon.price * reelQty);
     return sum + addon.price;
   }, 0);
   const totalPrice = standardPackagePrice + addOnsTotal + stagingPrice;
@@ -85,7 +88,7 @@ export default function OrderPage() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -177,7 +180,7 @@ export default function OrderPage() {
                   <div key={addOn.id} className={`border rounded-2xl p-4 transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
                     <div className="flex items-center gap-4 cursor-pointer" onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? "bg-zinc-900" : "bg-zinc-100"}`}><Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-zinc-600"}`} /></div>
-                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? (flyerQty === 1 ? 39 : flyerQty * 35) : addOn.price}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 for 1 · $35 each for 2+</p>}</div>
+                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? (flyerQty === 1 ? 39 : flyerQty * 35) : addOn.id === "reel" && isSelected ? 150 * reelQty : addOn.price}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 for 1 · $35 each for 2+</p>}{addOn.id === "reel" && <p className="text-xs text-zinc-400 mt-0.5">Concept, scripting, filming & editing</p>}</div>
                       <button type="button" className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>{isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-zinc-400" />}</button>
                     </div>
                     {addOn.id === "flyer" && isSelected && (
@@ -194,6 +197,17 @@ export default function OrderPage() {
                             Save ${39 * flyerQty - flyerQty * 35} vs full price
                           </span>
                         )}
+                      </div>
+                    )}
+                    {addOn.id === "reel" && isSelected && (
+                      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-zinc-100">
+                        <span className="text-sm text-zinc-600 font-medium">Quantity:</span>
+                        <div className="flex items-center gap-2">
+                          <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">−</button>
+                          <span className="w-8 text-center font-semibold">{reelQty}</span>
+                          <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
+                        </div>
+                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${150 * reelQty}</span></span>
                       </div>
                     )}
                   </div>
