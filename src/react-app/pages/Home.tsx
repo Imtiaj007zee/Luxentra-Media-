@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { Camera, Video, Plane, Box, Clock, Shield, Mail, Phone, Sunset, ShoppingCart, Layers } from "lucide-react";
+import { Camera, Video, Plane, Box, Clock, Shield, Mail, Phone, Sunset, ShoppingCart, Layers, FileText } from "lucide-react";
 
 export default function HomePage() {
   const [scrollY, setScrollY] = useState(0);
@@ -236,6 +236,12 @@ export default function HomePage() {
               <p className="text-xl text-zinc-600 max-w-2xl mx-auto">Enhance your package with premium upgrades tailored to your listing's needs.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 mb-4"><FileText className="w-8 h-8 text-white" /></div>
+                <div className="text-4xl font-bold text-zinc-900 mb-2">$39</div>
+                <h3 className="text-2xl font-semibold mb-3">Custom Listing Flyer</h3>
+                <p className="text-zinc-600 leading-relaxed">Clean, professionally designed flyer to promote your property across social media and print.</p>
+              </div>
               <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 mb-4">
                   <Plane className="w-8 h-8 text-white" />
