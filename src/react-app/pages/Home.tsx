@@ -274,6 +274,14 @@ export default function HomePage() {
                 <h3 className="text-2xl font-semibold mb-3">Cinematic Video</h3>
                 <p className="text-zinc-600 leading-relaxed">Professional walkthrough video with cinematic editing to showcase the property's best features.</p>
               </div>
+              <div className="bg-white rounded-3xl p-8 border border-zinc-200 hover:border-zinc-400 transition-all duration-300 hover:shadow-xl hover:scale-110 cursor-pointer" onMouseEnter={playHover}>
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 mb-4">
+                  <Video className="w-8 h-8 text-white" />
+                </div>
+                <div className="text-4xl font-bold text-zinc-900 mb-2">$150</div>
+                <h3 className="text-2xl font-semibold mb-3">Creative Cinematic Reel</h3>
+                <p className="text-zinc-600 leading-relaxed">Concept, scripting, filming, and editing a cinematic short-form video to promote your content and stand out on social media.</p>
+              </div>
             </div>
             <div className="mt-12 text-center">
               <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-110">Customize Your Package</Link>
