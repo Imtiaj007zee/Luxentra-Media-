@@ -284,8 +284,8 @@ export default function HomePage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 mb-4">
                   <Video className="w-8 h-8 text-white" />
                 </div>
-                <div className="text-4xl font-bold text-zinc-900 mb-2">$299</div>
-                <h3 className="text-2xl font-semibold mb-3">Creative Cinematic Reel</h3>
+                <div className="text-4xl font-bold text-zinc-900 mb-2">$399</div>
+                <h3 className="text-2xl font-semibold mb-3">Creative Personal Branding Reel</h3>
                 <p className="text-zinc-600 leading-relaxed">Concept, scripting, filming, and editing a cinematic short-form video to promote your content and stand out on social media.</p>
               </div>
             </div>

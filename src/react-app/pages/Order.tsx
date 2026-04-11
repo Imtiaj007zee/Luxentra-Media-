@@ -14,7 +14,7 @@ const ADD_ONS: AddOn[] = [
   { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
   { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
   { id: "video", name: "Walkthrough/Cinematic Video", price: 179, icon: Video },
-  { id: "reel", name: "Creative Cinematic Reel", price: 299, icon: Video },
+  { id: "reel", name: "Creative Personal Branding Reel", price: 399, icon: Video },
 ];
 
 const VIRTUAL_STAGING_TIERS = [
