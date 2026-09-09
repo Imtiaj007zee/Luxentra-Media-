@@ -1,60 +1,14 @@
+import { SiteHeader, SiteFooter } from '@/react-app/components/SiteChrome';
 import { Link } from "react-router";
-import { ArrowLeft, ShoppingCart, Check } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 
-const plans = [
-  {
-    name: "Growth",
-    volume: "4 listings / week",
-    price: 400,
-    savings: 75,
-    standard: 475,
-    highlight: false,
-    description: "The entry point for agents ready to scale their listing game consistently.",
-  },
-  {
-    name: "Scale",
-    volume: "6 listings / week",
-    price: 380,
-    savings: 95,
-    standard: 475,
-    highlight: false,
-    description: "For agents and small teams building momentum in competitive markets.",
-  },
-  {
-    name: "Dominance",
-    volume: "8+ listings / week",
-    price: 350,
-    savings: 125,
-    standard: 475,
-    highlight: true,
-    description: "Maximum value for high-volume teams who demand premium at scale.",
-  },
-];
-
-const features = [
-  "Up to 1,999 sq ft properties",
-  "20–45 professionally edited images",
-  "Full interior + exterior coverage",
-  "Same-day or 24-hour delivery",
-  "Priority scheduling",
-  "Walkthrough / Cinematic Video",
-  "Private online gallery (one-click download)",
-  "Virtual Staging images or Drone coverage",
-];
+import { PLANS as plans, PARTNERSHIP_FEATURES as features } from '@/react-app/data/catalog';
 
 export default function SpecialPage() {
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
+    <div className="legacy-page min-h-screen bg-white text-zinc-900">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-200/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold tracking-tight">LuxEntra Media</Link>
-          <Link to="/order" className="text-sm px-4 py-2 rounded-full bg-zinc-900 text-white flex items-center gap-2 hover:bg-zinc-700 transition-all">
-            <ShoppingCart className="w-4 h-4" />
-            Order Now
-          </Link>
-        </div>
-      </header>
+      <SiteHeader /><main id="main">
 
       <div className="pt-32 pb-32 px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
@@ -144,8 +98,7 @@ export default function SpecialPage() {
 
                 {/* CTA */}
                 <Link
-                  to="/order"
-                  state={{ specialPlan: { name: plan.name, price: plan.price, volume: plan.volume, savings: plan.savings } }}
+                  to={`/order?plan=${plan.id}`}
                   className={`mt-10 block text-center py-3.5 rounded-full text-sm font-medium transition-all hover:scale-105 ${
                     plan.highlight
                       ? "bg-white text-zinc-900 hover:bg-zinc-100"
@@ -183,15 +136,7 @@ export default function SpecialPage() {
       </div>
 
       {/* Footer */}
-      <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">© 2025 LuxEntra Media. All rights reserved.</div>
-          <div className="flex items-center gap-6 text-sm text-zinc-600">
-            <a href="mailto:luxentra.media@gmail.com" className="hover:text-zinc-900 transition-colors">Contact</a>
-            <Link to="/order" className="hover:text-zinc-900 transition-colors">Order Now</Link>
-          </div>
-        </div>
-      </footer>
+      </main><SiteFooter />
     </div>
   );
 }
