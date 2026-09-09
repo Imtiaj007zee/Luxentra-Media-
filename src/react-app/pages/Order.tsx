@@ -1,351 +1,66 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router";
-import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, MoreVertical } from "lucide-react";
-import { Button } from "@/react-app/components/ui/button";
-import { Input } from "@/react-app/components/ui/input";
-import { Textarea } from "@/react-app/components/ui/textarea";
-import { Label } from "@/react-app/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/react-app/components/ui/select";
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router';
+import { ArrowLeft, Check, ArrowRight } from 'lucide-react';
+import { SiteHeader, SiteFooter } from '@/react-app/components/SiteChrome';
+import { Button } from '@/react-app/components/ui/button';
+import { Checkbox } from '@/react-app/components/ui/checkbox';
+import { Input } from '@/react-app/components/ui/input';
+import { Label } from '@/react-app/components/ui/label';
+import { Textarea } from '@/react-app/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/react-app/components/ui/select';
+import { ADD_ONS, STANDARD_FEATURES, STANDARD_PRICE, STAGING_TIERS, PLANS, PARTNERSHIP_FEATURES, buildOrder, bookingOrderFields, addOnPrice, addOnQuantity, type AddOnId, type Selection } from '@/react-app/data/catalog';
 
-type AddOn = { id: string; name: string; price: number; icon: typeof Box; description?: string; };
-
-const ADD_ONS: AddOn[] = [
-  { id: "flyer", name: "Custom Listing Flyer", price: 39, icon: FileText },
-  { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
-  { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
-  { id: "video", name: "Walkthrough/Cinematic Video", price: 179, icon: Video },
-  { id: "reel", name: "Creative Personal Branding Reel", price: 399, icon: Video },
-];
-
-const VIRTUAL_STAGING_TIERS = [
-  { id: "staging_1", label: "1 Room", price: 40 },
-  { id: "staging_3", label: "3 Rooms", price: 99 },
-  { id: "staging_5", label: "5 Rooms", price: 149 },
-];
-
-const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
+const FORMSPREE_URL = 'https://formspree.io/f/meelbrbz';
+const emptyDetails = { name: '', email: '', phone: '', borough: '', borough_custom: '', listing_type: '', shoot_date: '', shoot_time: '', shoot_location: '', request_details: '' };
+const areas = ['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island', 'Long Island'];
+const listingTypes = ['House/Single-Family', 'Apartment/Condo', 'Luxury Home', 'Commercial', 'Multi-Family', 'Rental Listing', 'Other'];
+const steps = ['Choose media', 'Property details', 'Review request'];
 
 export default function OrderPage() {
-  const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
-  const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
-  const [flyerQty, setFlyerQty] = useState(1);
-  const [reelQty, setReelQty] = useState(1);
-  const [includeStandard, setIncludeStandard] = useState(true);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
+  const [params] = useSearchParams();
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const locationSpecialPlan = (location.state as any)?.specialPlan || null;
-  const [overrideToStandard, setOverrideToStandard] = useState(false);
-  const specialPlan = overrideToStandard ? null : locationSpecialPlan;
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-
-  const toggleAddOn = (id: string) => {
-    const newSet = new Set(selectedAddOns);
-    if (newSet.has(id)) newSet.delete(id); else newSet.add(id);
-    setSelectedAddOns(newSet);
-  };
-
-  const stagingPrice = selectedStagingTier
-    ? VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price || 0
-    : 0;
-
-  const standardPackagePrice = specialPlan ? specialPlan.price : 175;
-
-  const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
-    const addon = ADD_ONS.find((a) => a.id === id);
-    if (!addon) return sum;
-    if (id === "flyer") return sum + (flyerQty === 1 ? 39 : flyerQty * 35);
-    if (id === "reel") return sum + (addon.price * reelQty);
-    return sum + addon.price;
-  }, 0);
-  const totalPrice = (includeStandard ? standardPackagePrice : 0) + addOnsTotal + stagingPrice;
-
-  const selectedAddOnNames = [
-    ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
-    selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
-  ].filter(Boolean).join(", ");
-
-  const playAddOn = () => {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    o.type = 'sine';
-    o.frequency.setValueAtTime(400, ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
-    g.gain.setValueAtTime(0.1, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    o.start(ctx.currentTime);
-    o.stop(ctx.currentTime + 0.1);
-  };
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const legacyName = (location.state as { specialPlan?: { name?: string } } | null)?.specialPlan?.name;
+  const requestedPlan = PLANS.find(plan => plan.id === params.get('plan') || plan.name === legacyName);
+  const requestedAddon = ADD_ONS.find(addon => addon.id === params.get('addon'));
+  const [selection, setSelection] = useState<Selection>(() => ({ includeStandard: true, planId: requestedPlan?.id, addOns: requestedAddon ? [requestedAddon.id] : [], flyerQty: 1, reelQty: 1, stagingId: params.get('addon') === 'staging' ? 'staging_1' : null }));
+  const [details, setDetails] = useState(emptyDetails);
+  const [step, setStep] = useState(0);
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [receipt, setReceipt] = useState<ReturnType<typeof buildOrder> | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const sending = useRef(false);
+  const plan = PLANS.find(item => item.id === selection.planId);
+  const order = buildOrder(selection);
+  const setField = (key: keyof typeof details, value: string) => setDetails(previous => ({ ...previous, [key]: value }));
+  const update = (patch: Partial<Selection>) => setSelection(previous => ({ ...previous, ...patch }));
+  const toggle = (id: AddOnId, checked: boolean) => update({ addOns: checked ? [...new Set([...selection.addOns, id])] : selection.addOns.filter(item => item !== id) });
+  useEffect(() => { heading.current?.focus({ preventScroll: true }); window.scrollTo({ top: 0 }); }, [step, status === 'success']);
+  const localToday = new Date();
+  localToday.setMinutes(localToday.getMinutes() - localToday.getTimezoneOffset());
+  const today = localToday.toISOString().slice(0, 10);
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (step === 1) { setStep(2); return; }
+    if (step !== 2 || sending.current || order.total <= 0) return;
+    if (!details.name.trim() || !details.email.trim() || !details.borough || !details.listing_type) { setStep(1); return; }
+    sending.current = true;
+    setStatus('submitting');
     try {
-      const res = await fetch(FORMSPREE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
-      });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); }
-      else setSubmitStatus("error");
-    } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
+      const response = await fetch(FORMSPREE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...details, name: details.name.trim(), email: details.email.trim(), ...bookingOrderFields(selection), _subject: `Booking Request: $${order.total} from ${details.name.trim()}` }) });
+      if (!response.ok) throw new Error('Request not accepted');
+      setReceipt(order); setStatus('success'); setDetails(emptyDetails);
+    } catch { setStatus('error'); } finally { sending.current = false; }
   };
-
-  return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-200/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold tracking-tight">LuxEntra Media</Link>
-          <div className="flex items-center gap-3">
-            <a href="mailto:luxentra.media@gmail.com" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 hover:bg-white/90 transition-all text-sm font-medium"><Mail className="w-4 h-4" /> luxentra.media@gmail.com</a>
-            <a href="tel:+13478371257" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 hover:bg-white/90 transition-all text-sm font-medium"><Phone className="w-4 h-4" /> +1 (347) 837-1257</a>
-            <button className="md:hidden p-2 rounded-full hover:bg-zinc-100 transition-all" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <MoreVertical className="w-5 h-5 text-zinc-700" />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-zinc-900/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 md:hidden">
-          <button className="absolute top-5 right-6 text-white text-3xl" onClick={() => setMobileMenuOpen(false)}>✕</button>
-          <a href="mailto:luxentra.media@gmail.com" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-xl text-white"><Mail className="w-6 h-6" /> luxentra.media@gmail.com</a>
-          <a href="tel:+13478371257" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-xl text-white"><Phone className="w-6 h-6" /> +1 (347) 837-1257</a>
-          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="mt-4 text-lg font-medium px-8 py-4 rounded-full bg-white text-zinc-900">Back to Home</Link>
-        </div>
-      )}
-
-      <div className="pt-32 pb-24 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 mb-8"><ArrowLeft className="w-4 h-4" /> Back to Home</Link>
-          {/* Special Plan Banner */}
-          {specialPlan && (
-            <div className="mb-8 p-6 bg-zinc-900 text-white rounded-2xl flex items-center justify-between">
-              <div>
-                <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-1">Weekly Partnership Plan</div>
-                <h3 className="text-xl font-semibold">{specialPlan.name} Plan — {specialPlan.volume}</h3>
-                <p className="text-zinc-300 text-sm mt-1">
-                  <span className="text-2xl font-bold text-white">${specialPlan.price}</span>
-                  <span className="ml-2">per listing · Save ${specialPlan.savings} per listing</span>
-                </p>
-              </div>
-              <Link to="/special" className="text-xs text-zinc-400 hover:text-white underline underline-offset-2">Change plan</Link>
-            </div>
-          )}
-
-          {submitStatus === "success" && (<div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl"><div className="flex items-start gap-3"><div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"><Check className="w-5 h-5 text-green-600" /></div><div><h3 className="font-semibold text-green-900 mb-1">Thank You!</h3><p className="text-sm text-green-700">Your order has been received. We'll reach out to finalize your booking!</p></div></div></div>)}
-          {submitStatus === "error" && (<div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-2xl"><div className="flex items-start gap-3"><div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center"><AlertCircle className="w-5 h-5 text-red-600" /></div><div><h3 className="font-semibold text-red-900 mb-1">Submission Error</h3><p className="text-sm text-red-700">Please try again or contact luxentra.media@gmail.com</p></div></div></div>)}
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">Build Your Package</h1>
-              <p className="text-lg text-zinc-600 mb-8">Start with our standard package and customize with add-ons.</p>
-              <div
-                className={`border rounded-2xl p-6 mb-8 cursor-pointer transition-all duration-300 ${includeStandard ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-400"}`}
-                onClick={() => setIncludeStandard(!includeStandard)}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-zinc-900 rounded-xl flex items-center justify-center"><Camera className="w-6 h-6 text-white" /></div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className={`text-xl font-semibold ${includeStandard ? "text-zinc-900" : "text-zinc-400"}`}>{specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}</h3>
-                      <div className="text-right flex items-center gap-2">
-                        <span className={`text-xl font-bold ${includeStandard ? "text-zinc-900" : "text-zinc-300"}`}>${standardPackagePrice}</span>
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${includeStandard ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>
-                          {includeStandard ? <Check className="w-3 h-3 text-white" /> : <Plus className="w-3 h-3 text-zinc-400" />}
-                        </div>
-                        {specialPlan && <span className="block text-sm text-zinc-400 line-through">$175</span>}
-                      </div>
-                    </div>
-                    {specialPlan && (
-                      <p className="text-sm text-emerald-600 font-medium mb-3">✓ Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
-                    )}
-                    <ul className="text-sm text-zinc-600 space-y-1">
-                      {specialPlan ? (
-                        <>
-                          <li>• Up to 1,999 sq ft properties</li>
-                          <li>• 20–45 professionally edited images</li>
-                          <li>• Full interior + exterior coverage</li>
-                          <li>• Same-day or 24-hour delivery</li>
-                          <li>• Priority scheduling</li>
-                          <li>• Walkthrough / Cinematic Video</li>
-                          <li>• Private online gallery (one-click download)</li>
-                          <li>• Virtual Staging images or Drone coverage</li>
-                        </>
-                      ) : (
-                        <>
-                          <li>• 25–45 MLS-ready photos</li>
-                          <li>• 1 twilight photo</li>
-                          <li>• 2D black & white floor plans</li>
-                          <li>• 12-hour delivery</li>
-                          <li>• Private branded gallery</li>
-                          <li>• Free revisions</li>
-                        </>
-                      )}
-                    </ul>
-                    {specialPlan && (
-                      <button type="button" onClick={() => setOverrideToStandard(true)} className="mt-4 inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-full border border-zinc-300 text-zinc-600 hover:bg-zinc-100 hover:border-zinc-400 hover:text-zinc-900 transition-all">
-                        ← Switch to Standard Package ($175)
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <h2 className="text-2xl font-semibold mb-4">Optional Add-ons</h2>
-              <div className="space-y-3">
-                {ADD_ONS.map((addOn) => { const Icon = addOn.icon; const isSelected = selectedAddOns.has(addOn.id); return (
-                  <div key={addOn.id} className={`border rounded-2xl p-4 transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
-                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? "bg-zinc-900" : "bg-zinc-100"}`}><Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-zinc-600"}`} /></div>
-                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? (flyerQty === 1 ? 39 : flyerQty * 35) : addOn.id === "reel" && isSelected ? 150 * reelQty : addOn.price}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 for 1 · $35 each for 2+</p>}{addOn.id === "reel" && <p className="text-xs text-zinc-400 mt-0.5">Concept, scripting, filming & editing</p>}</div>
-                      <button type="button" className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>{isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-zinc-400" />}</button>
-                    </div>
-                    {addOn.id === "flyer" && isSelected && (
-                      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-zinc-100">
-                        <span className="text-sm text-zinc-600 font-medium">Quantity:</span>
-                        <div className="flex items-center gap-2">
-                          <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">−</button>
-                          <span className="w-8 text-center font-semibold">{flyerQty}</span>
-                          <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
-                        </div>
-                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${flyerQty === 1 ? 39 : flyerQty * 35}</span></span>
-                        {flyerQty > 1 && (
-                          <span className="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
-                            Save ${39 * flyerQty - flyerQty * 35} vs full price
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {addOn.id === "reel" && isSelected && (
-                      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-zinc-100">
-                        <span className="text-sm text-zinc-600 font-medium">Quantity:</span>
-                        <div className="flex items-center gap-2">
-                          <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">−</button>
-                          <span className="w-8 text-center font-semibold">{reelQty}</span>
-                          <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
-                        </div>
-                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${150 * reelQty}</span></span>
-                      </div>
-                    )}
-                  </div>
-                );})}
-                {/* Virtual Staging */}
-                <div className={`border rounded-2xl p-4 transition-all ${selectedStagingTier ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200"}`}>
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedStagingTier ? "bg-zinc-900" : "bg-zinc-100"}`}>
-                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-white" : "text-zinc-600"}`} />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold">Virtual Staging</h3>
-                      <p className="text-sm text-zinc-500">Photorealistic digital staging, delivered in 24hrs</p>
-                    </div>
-                    {selectedStagingTier && (
-                      <span className="font-bold">${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price}</span>
-                    )}
-                  </div>
-                  <div className="flex gap-2 ml-14">
-                    {VIRTUAL_STAGING_TIERS.map((tier) => (
-                      <button
-                        key={tier.id}
-                        type="button"
-                        onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
-                        className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium border-2 transition-all ${
-                          selectedStagingTier === tier.id
-                            ? "bg-zinc-900 text-white border-zinc-900"
-                            : "bg-white text-zinc-700 border-zinc-200 hover:border-zinc-400"
-                        }`}
-                      >
-                        {tier.label}
-                        <br />
-                        <span className="font-bold">${tier.price}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Special Package Button */}
-              <Link
-                to="/special"
-                className="block w-full mt-6 p-5 rounded-2xl border-2 border-dashed border-zinc-300 hover:border-zinc-900 transition-all duration-300 group hover:bg-zinc-50"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-1">Limited Offer</div>
-                    <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700">✨ Special Package</h3>
-                    <p className="text-sm text-zinc-500 mt-1">Exclusive bundles tailored for your needs</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                    →
-                  </div>
-                </div>
-              </Link>
-
-              <div className="mt-8 bg-gradient-to-br from-zinc-50 to-zinc-100 border border-zinc-200 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><ShoppingCart className="w-5 h-5" /> Order Summary</h3>
-                <div className="space-y-2 text-sm mb-4">
-                  {includeStandard && <div className="flex justify-between"><span className="text-zinc-600">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span><span className="font-medium">${standardPackagePrice}</span></div>}
-                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-zinc-600">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
-                  {selectedStagingTier && (
-                    <div className="flex justify-between">
-                      <span className="text-zinc-600">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
-                      <span className="font-medium">${stagingPrice}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="pt-4 border-t border-zinc-300"><div className="flex justify-between text-xl font-bold"><span>Total</span><span>${totalPrice}</span></div></div>
-              </div>
-            </div>
-            <div>
-              <h2 className="text-3xl font-semibold mb-4">Your Details</h2>
-              <p className="text-zinc-600 mb-8">Fill out your information and we'll confirm within 24 hours.</p>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2"><Label className="text-base font-medium">Name *</Label><Input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" /></div>
-                <div className="space-y-2"><Label className="text-base font-medium">Email *</Label><Input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" /></div>
-                <div className="space-y-2"><Label className="text-base font-medium">Phone <span className="text-zinc-500 font-normal">(optional)</span></Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" /></div>
-                <div className="space-y-2"><Label className="text-base font-medium">Borough *</Label>
-                  <Select value={formData.borough} onValueChange={(v) => setFormData({ ...formData, borough: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select borough" /></SelectTrigger><SelectContent><SelectItem value="Manhattan">Manhattan</SelectItem><SelectItem value="Brooklyn">Brooklyn</SelectItem><SelectItem value="Queens">Queens</SelectItem><SelectItem value="Bronx">Bronx</SelectItem><SelectItem value="Staten Island">Staten Island</SelectItem><SelectItem value="Long Island">Long Island</SelectItem></SelectContent></Select>
-                </div>
-                {formData.borough === "other" && (
-                  <div className="space-y-2">
-                    <Label className="text-base font-medium">Specify Location *</Label>
-                    <Input type="text" placeholder="Enter your borough or area..." value={formData.borough_custom} onChange={(e) => setFormData({ ...formData, borough_custom: e.target.value })} className="h-12 text-base" />
-                  </div>
-                )}
-                <div className="space-y-2"><Label className="text-base font-medium">Listing Type *</Label>
-                  <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger><SelectContent><SelectItem value="House/Single-Family">House/Single-Family</SelectItem><SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem><SelectItem value="Luxury Home">Luxury Home</SelectItem><SelectItem value="Commercial">Commercial</SelectItem><SelectItem value="Multi-Family">Multi-Family</SelectItem><SelectItem value="Rental Listing">Rental Listing</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-base font-medium">Preferred Shoot Date</Label>
-                  <Input type="date" value={formData.shoot_date} onChange={(e) => setFormData({ ...formData, shoot_date: e.target.value })} className="h-12 text-base" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-base font-medium">Preferred Shoot Time</Label>
-                  <Input type="time" value={formData.shoot_time} onChange={(e) => setFormData({ ...formData, shoot_time: e.target.value })} className="h-12 text-base" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-base font-medium">Property Address / Location</Label>
-                  <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={formData.shoot_location} onChange={(e) => setFormData({ ...formData, shoot_location: e.target.value })} className="h-12 text-base" />
-                </div>
-                <div className="space-y-2"><Label className="text-base font-medium">Additional Details <span className="text-zinc-500 font-normal">(optional)</span></Label><Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." /></div>
-                <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-lg bg-zinc-900 hover:bg-zinc-800 rounded-full">{isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}</Button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">© 2025 LuxEntra Media. All rights reserved.</div>
-          <div className="flex items-center gap-6 text-sm text-zinc-600"><a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium">Contact</a><Link to="/" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium">Home</Link></div>
-        </div>
-      </footer>
-    </div>
-  );
+  if (status === 'success' && receipt) return <><SiteHeader /><main id="main" className="booking-page wrap"><section className="receipt"><span className="success-icon"><Check size={28} /></span><p className="eyebrow">REQUEST RECEIVED</p><h1 tabIndex={-1} ref={heading}>You’re on our list.</h1><p>We’ll reach out within 24 hours to confirm availability and finalize your booking. Your shoot is confirmed once you hear from our team.</p><div className="receipt-items">{receipt.items.map(item => <div key={item.id}><span>{item.name} × {item.quantity}</span><strong>${item.total}</strong></div>)}<div><strong>Requested total</strong><strong>${receipt.total}</strong></div></div><Link to="/" className="pill pill-dark">Back to home</Link></section></main><SiteFooter /></>;
+  return <><SiteHeader /><main id="main" className="booking-page wrap"><Link to="/" className="text-link back-link"><ArrowLeft size={17} /> Back to home</Link><p className="eyebrow">YOUR NEXT LISTING STARTS HERE</p><h1 tabIndex={-1} ref={heading}>{steps[step]}</h1><p className="booking-intro">Build your package. We’ll confirm the shoot details with you.</p><ol className="booking-steps" aria-label="Booking progress">{steps.map((label, index) => <li key={label} aria-current={step === index ? 'step' : undefined}><span>{index < step ? <Check size={16} /> : index + 1}</span>{label}</li>)}</ol>
+  <div className="booking-layout"><div className="booking-main">
+  {step === 0 && <><div className="choice-card base-choice" data-selected={selection.includeStandard}><div className="choice-heading"><Checkbox id="base-package" checked={selection.includeStandard} onCheckedChange={checked => update({ includeStandard: checked === true })} className="media-checkbox" /><Label htmlFor="base-package" className="choice-label">{plan ? `${plan.name} Partnership Plan` : 'Standard Listing Media Package'}</Label><strong>${plan?.price ?? STANDARD_PRICE}</strong></div>{plan && <p className="plan-note">{plan.volume} · Save ${plan.savings} per listing against the ${plan.standard} bundle.</p>}<ul className="base-features">{(plan ? PARTNERSHIP_FEATURES : STANDARD_FEATURES).map(feature => <li key={feature}><Check size={16} />{feature}</li>)}</ul>{plan && <button type="button" className="text-link" onClick={() => update({ planId: null, includeStandard: true })}>Switch to the $175 standard package</button>}</div><h2 className="booking-subhead">Make it yours.</h2><p className="muted">Select optional extras. All prices are shown in USD.</p><div className="choice-list">{ADD_ONS.map(addon => {
+    const selected = selection.addOns.includes(addon.id);
+    const quantity = addOnQuantity(addon.id, selection);
+    return <div className="choice-card" data-selected={selected} key={addon.id}><div className="choice-heading"><Checkbox className="media-checkbox" id={addon.id} checked={selected} onCheckedChange={checked => toggle(addon.id, checked === true)} /><Label htmlFor={addon.id} className="choice-label">{addon.name}</Label><strong>${selected ? addOnPrice(addon.id, quantity) : addon.price}</strong></div><p>{addon.description}</p>{addon.id === 'flyer' && <p className="small-note">$39 for one · $35 each for two or more.</p>}{selected && (addon.id === 'flyer' || addon.id === 'reel') && <div className="quantity-row"><Label htmlFor={`${addon.id}-quantity`}>Quantity</Label><div className="quantity-controls"><button type="button" aria-label={`Remove one ${addon.id}`} disabled={quantity <= 1} onClick={() => update(addon.id === 'flyer' ? { flyerQty: quantity - 1 } : { reelQty: quantity - 1 })}>−</button><output id={`${addon.id}-quantity`} aria-live="polite">{quantity}</output><button type="button" aria-label={`Add one ${addon.id}`} onClick={() => update(addon.id === 'flyer' ? { flyerQty: quantity + 1 } : { reelQty: quantity + 1 })}>+</button></div><span>${addOnPrice(addon.id, quantity) / quantity} each</span></div>}</div>;
+  })}<div className="choice-card" data-selected={!!selection.stagingId}><h3>Virtual Staging</h3><p>Digitally furnished rooms, delivered within 24 hours.</p><div className="staging-options" role="group" aria-label="Virtual staging rooms">{STAGING_TIERS.map(tier => <button type="button" aria-pressed={selection.stagingId === tier.id} key={tier.id} onClick={() => update({ stagingId: selection.stagingId === tier.id ? null : tier.id })}><span>{tier.label}</span><strong>${tier.price}</strong></button>)}</div><p className="small-note">Select again to remove.</p></div></div><Link to="/special" className="partnership-link"><span>Listing every week? Explore partnership plans.</span><ArrowRight size={18} /></Link>{!order.total && <p role="status" className="error-message">Choose at least one service to continue.</p>}<Button className="pill pill-dark step-next" type="button" disabled={!order.total} onClick={() => setStep(1)}>Continue to property details <ArrowRight size={18} /></Button></>}
+  <form onSubmit={submit}>
+  {step === 1 && <fieldset className="details-fields"><legend className="sr-only">Your contact and property details</legend><div className="field"><Label htmlFor="name">Name *</Label><Input id="name" name="name" autoComplete="name" required value={details.name} onChange={e => setField('name', e.target.value)} /></div><div className="field"><Label htmlFor="email">Email *</Label><Input id="email" name="email" type="email" autoComplete="email" required value={details.email} onChange={e => setField('email', e.target.value)} /></div><div className="field"><Label htmlFor="phone">Phone (optional)</Label><Input id="phone" name="phone" type="tel" autoComplete="tel" value={details.phone} onChange={e => setField('phone', e.target.value)} /></div><div className="field"><Label htmlFor="service-area">Service area *</Label><Select required value={details.borough} onValueChange={value => setField('borough', value)}><SelectTrigger id="service-area"><SelectValue placeholder="Select service area" /></SelectTrigger><SelectContent>{areas.map(area => <SelectItem key={area} value={area}>{area}</SelectItem>)}<SelectItem value="other">Other area (confirm availability)</SelectItem></SelectContent></Select></div>{details.borough === 'other' && <div className="field"><Label htmlFor="custom-area">Your area *</Label><Input id="custom-area" required value={details.borough_custom} onChange={e => setField('borough_custom', e.target.value)} /></div>}<div className="field"><Label htmlFor="listing-type">Listing type *</Label><Select required value={details.listing_type} onValueChange={value => setField('listing_type', value)}><SelectTrigger id="listing-type"><SelectValue placeholder="Select listing type" /></SelectTrigger><SelectContent>{listingTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}</SelectContent></Select></div><div className="field"><Label htmlFor="address">Property address / location</Label><Input id="address" autoComplete="street-address" value={details.shoot_location} onChange={e => setField('shoot_location', e.target.value)} /></div><div className="field-pair"><div className="field"><Label htmlFor="shoot-date">Preferred shoot date</Label><Input id="shoot-date" type="date" min={today} value={details.shoot_date} onChange={e => setField('shoot_date', e.target.value)} /></div><div className="field"><Label htmlFor="shoot-time">Preferred time (New York)</Label><Input id="shoot-time" type="time" value={details.shoot_time} onChange={e => setField('shoot_time', e.target.value)} /></div></div><p className="small-note">Your preferred time is a request, subject to availability.</p><div className="field"><Label htmlFor="notes">Additional details (optional)</Label><Textarea id="notes" value={details.request_details} onChange={e => setField('request_details', e.target.value)} placeholder="Access instructions, property size or special requirements…" /></div><div className="step-actions"><button type="button" className="text-link" onClick={() => setStep(0)}><ArrowLeft size={17} /> Back</button><Button type="submit" className="pill pill-dark">Review request <ArrowRight size={18} /></Button></div></fieldset>}
+  {step === 2 && <><section className="review-details"><div className="review-heading"><h2>Your details</h2><button className="text-link" type="button" onClick={() => setStep(1)} disabled={status === 'submitting'}>Edit</button></div><dl>{[['Name',details.name], ['Email', details.email], ['Phone', details.phone], ['Service area',details.borough === 'other' ? details.borough_custom : details.borough], ['Listing type',details.listing_type], ['Property',details.shoot_location], ['Preferred date',details.shoot_date], ['Preferred time (New York)',details.shoot_time], ['Additional details',details.request_details]].filter(([,value]) => value).map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></section><div className="booking-disclosure"><h3>What happens next?</h3><p>We’ll contact you within 24 hours to confirm availability and finalize your booking. Sending this request does not take a payment or reserve a shoot time.</p></div>{status === 'error' && <p className="error-message" role="alert">Your request couldn’t be sent. Your details are still here—please try again, or <a href="mailto:luxentra.media@gmail.com">email us</a>.</p>}<div className="step-actions"><button className="text-link" type="button" disabled={status === 'submitting'} onClick={() => {setStep(0); setStatus('idle');}}>Edit package</button><Button type="submit" className="pill pill-dark" disabled={status === 'submitting'}>{status === 'submitting' ? 'Sending request…' : `Request Booking — $${order.total}`}</Button></div></>}
+  </form></div><aside className="order-summary" aria-label="Package summary"><p className="eyebrow">YOUR PACKAGE</p><h2>A clear picture.</h2><div className="summary-lines">{order.items.length ? order.items.map(item => <div key={item.id}><span>{item.name}<small>{item.quantity} × ${item.unitPrice}</small></span><strong>${item.total}</strong></div>) : <p className="muted">Choose your media to get started.</p>}</div><div className="summary-total" aria-live="polite"><span>Total</span><strong>${order.total}</strong></div><p className="small-note">USD · Booking subject to confirmation.</p>{plan && selection.includeStandard && <p className="small-note">{plan.volume}. Partnership eligibility will be confirmed with our team.</p>}<a className="summary-help" href="tel:+13478371257">Questions? +1 (347) 837-1257</a></aside></div></main><SiteFooter /></>;
 }
-

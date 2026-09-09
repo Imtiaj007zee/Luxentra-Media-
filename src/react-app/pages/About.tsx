@@ -1,23 +1,11 @@
+import { SiteHeader, SiteFooter } from '@/react-app/components/SiteChrome';
 import { Link } from "react-router";
-import { Mail, Phone, ShoppingCart } from "lucide-react";
+
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-200/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold tracking-tight text-zinc-900">LuxEntra Media</Link>
-          <nav className="hidden md:flex items-center gap-3">
-            <Link to="/about" className="text-sm px-4 py-2 rounded-full border bg-zinc-900 border-zinc-900 text-white">About Us</Link>
-            <a href="/#package" className="text-sm px-4 py-2 rounded-full border bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm">Package</a>
-            <a href="/#addons" className="text-sm px-4 py-2 rounded-full border bg-white border-zinc-200 text-zinc-900 hover:bg-zinc-50 shadow-sm">Add-ons</a>
-            <Link to="/order" className="text-sm px-4 py-2 rounded-full border bg-zinc-900 border-zinc-900 text-white hover:bg-zinc-700 flex items-center gap-2 font-medium">
-              <ShoppingCart className="w-4 h-4" />
-              Order Now
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <div className="legacy-page min-h-screen bg-white text-zinc-900">
+      <SiteHeader /><main id="main">
 
       {/* Hero */}
       <div className="pt-32 pb-20 px-6 lg:px-8 bg-gradient-to-b from-zinc-50 to-white">
@@ -41,7 +29,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100">
                 <img
-                  src="/Neero.JPG"
+                  loading="lazy" src="/Neero.JPG"
                   alt="Shamrat Neero"
                   className="w-full h-full object-cover"
                 />
@@ -138,7 +126,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100">
                 <img
-                  src="/Zee2.JPG"
+                  loading="lazy" src="/Zee2.JPG"
                   alt="Imtiaj Sharker Zishan"
                   className="w-full h-full object-cover"
                 />
@@ -163,7 +151,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-[3/4] rounded-3xl overflow-hidden bg-zinc-100">
                 <img
-                  src="/Asgar.JPG"
+                  loading="lazy" src="/Asgar.JPG"
                   alt="Asgar Hossain Mahmud"
                   className="w-full h-full object-cover"
                 />
@@ -219,20 +207,12 @@ export default function AboutPage() {
           <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">Ready to Work With Us?</h2>
           <p className="text-xl text-zinc-600 mb-10">Let's create stunning media that makes your properties impossible to ignore.</p>
           <Link to="/order" className="inline-block bg-zinc-900 text-white text-lg px-10 py-4 rounded-full hover:bg-zinc-800 transition-all hover:scale-105">
-            Start Your Order
+            Book a Shoot
           </Link>
         </div>
       </section>
 
-      <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">© 2025 LuxEntra Media. All rights reserved.</div>
-          <div className="flex items-center gap-6 text-sm text-zinc-600">
-            <a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 hover:text-zinc-900"><Mail className="w-4 h-4" />luxentra.media@gmail.com</a>
-            <a href="tel:+13478371257" className="flex items-center gap-2 hover:text-zinc-900"><Phone className="w-4 h-4" />+1 (347) 837-1257</a>
-          </div>
-        </div>
-      </footer>
+      </main><SiteFooter />
     </div>
   );
 }
