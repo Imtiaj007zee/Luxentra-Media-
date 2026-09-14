@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router";
 import AboutPage from "./pages/About";
 import HomePage from "@/react-app/pages/Home";
 import BookPage from "@/react-app/pages/Book";
@@ -35,6 +35,7 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/order" element={<OrderPage />} />
         <Route path="/work" element={<WorkPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
