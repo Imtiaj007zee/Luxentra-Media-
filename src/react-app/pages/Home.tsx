@@ -220,6 +220,9 @@ export default function HomePage() {
             </div>
           </div>
           <p className="text-[13px] text-black/40 mt-5">Stills from the featured film.</p>
+          <Link to="/work" className="link-dark text-[16px] mt-6 inline-flex">
+            View all work <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 

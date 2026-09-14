@@ -5,6 +5,7 @@ import AboutPage from "./pages/About";
 import HomePage from "@/react-app/pages/Home";
 import BookPage from "@/react-app/pages/Book";
 import OrderPage from "@/react-app/pages/Order";
+import WorkPage from "@/react-app/pages/Work";
 
 /** Scrolls to an in-page anchor (e.g. /#package) after navigation. */
 function ScrollToHash() {
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/special" element={<SpecialPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/order" element={<OrderPage />} />
+        <Route path="/work" element={<WorkPage />} />
       </Routes>
     </Router>
   );

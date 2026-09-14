@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router";
 
 const LINKS = [
-  { label: "Work", to: "/#work" },
+  { label: "Work", to: "/work" },
   { label: "Services", to: "/#services" },
   { label: "Pricing", to: "/#pricing" },
   { label: "About", to: "/#about" },
