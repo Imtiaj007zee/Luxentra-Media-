@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { Mail, Phone, ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, MoreVertical } from "lucide-react";
+import { ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, ChevronRight } from "lucide-react";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
 import { Label } from "@/react-app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/react-app/components/ui/select";
+import SiteNav from "@/react-app/components/SiteNav";
+import SiteFooter from "@/react-app/components/SiteFooter";
 
 type AddOn = { id: string; name: string; price: number; icon: typeof Box; description?: string; };
 
@@ -33,7 +35,6 @@ export default function OrderPage() {
   const [includeStandard, setIncludeStandard] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const locationSpecialPlan = (location.state as any)?.specialPlan || null;
   const [overrideToStandard, setOverrideToStandard] = useState(false);
   const specialPlan = overrideToStandard ? null : locationSpecialPlan;
@@ -66,22 +67,6 @@ export default function OrderPage() {
     selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
   ].filter(Boolean).join(", ");
 
-  const playAddOn = () => {
-    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g);
-    g.connect(ctx.destination);
-    o.type = 'sine';
-    o.frequency.setValueAtTime(400, ctx.currentTime);
-    o.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.08);
-    g.gain.setValueAtTime(0.1, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    o.start(ctx.currentTime);
-    o.stop(ctx.currentTime + 0.1);
-  };
-
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -97,74 +82,98 @@ export default function OrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-200/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold tracking-tight">LuxEntra Media</Link>
-          <div className="flex items-center gap-3">
-            <a href="mailto:luxentra.media@gmail.com" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 hover:bg-white/90 transition-all text-sm font-medium"><Mail className="w-4 h-4" /> luxentra.media@gmail.com</a>
-            <a href="tel:+13478371257" className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 hover:bg-white/90 transition-all text-sm font-medium"><Phone className="w-4 h-4" /> +1 (347) 837-1257</a>
-            <button className="md:hidden p-2 rounded-full hover:bg-zinc-100 transition-all" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <MoreVertical className="w-5 h-5 text-zinc-700" />
-            </button>
+    <div className="min-h-screen bg-white text-[#1d1d1f] pt-12">
+      <SiteNav />
+
+      <section className="py-24 md:py-32">
+        <div className="max-w-6xl mx-auto px-6">
+          <Link to="/" className="apple-link !text-[15px] mb-10">
+            <ArrowLeft className="w-4 h-4" /> Back to home
+          </Link>
+
+          <div className="text-center mb-14">
+            <p className="apple-eyebrow mb-4">Order</p>
+            <h1 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
+              Build your package.
+            </h1>
+            <p className="text-[19px] text-[#6e6e73]">
+              Start with our standard package and customize with add-ons.
+            </p>
           </div>
-        </div>
-      </header>
 
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-zinc-900/95 backdrop-blur-xl flex flex-col items-center justify-center gap-6 md:hidden">
-          <button className="absolute top-5 right-6 text-white text-3xl" onClick={() => setMobileMenuOpen(false)}>✕</button>
-          <a href="mailto:luxentra.media@gmail.com" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-xl text-white"><Mail className="w-6 h-6" /> luxentra.media@gmail.com</a>
-          <a href="tel:+13478371257" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 text-xl text-white"><Phone className="w-6 h-6" /> +1 (347) 837-1257</a>
-          <Link to="/" onClick={() => setMobileMenuOpen(false)} className="mt-4 text-lg font-medium px-8 py-4 rounded-full bg-white text-zinc-900">Back to Home</Link>
-        </div>
-      )}
-
-      <div className="pt-32 pb-24 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 mb-8"><ArrowLeft className="w-4 h-4" /> Back to Home</Link>
           {/* Special Plan Banner */}
           {specialPlan && (
-            <div className="mb-8 p-6 bg-zinc-900 text-white rounded-2xl flex items-center justify-between">
+            <div className="mb-10 p-8 bg-black text-white rounded-[18px] flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-1">Weekly Partnership Plan</div>
-                <h3 className="text-xl font-semibold">{specialPlan.name} Plan — {specialPlan.volume}</h3>
-                <p className="text-zinc-300 text-sm mt-1">
-                  <span className="text-2xl font-bold text-white">${specialPlan.price}</span>
+                <p className="apple-eyebrow !text-white/50 mb-2">Weekly partnership plan</p>
+                <h3 className="text-[24px] font-semibold tracking-tight">{specialPlan.name} Plan — {specialPlan.volume}</h3>
+                <p className="text-white/60 text-[15px] mt-2">
+                  <span className="text-[28px] font-semibold text-white">${specialPlan.price}</span>
                   <span className="ml-2">per listing · Save ${specialPlan.savings} per listing</span>
                 </p>
               </div>
-              <Link to="/special" className="text-xs text-zinc-400 hover:text-white underline underline-offset-2">Change plan</Link>
+              <Link to="/special" className="apple-link-dark !text-[15px] shrink-0">
+                Change plan <ChevronRight className="w-4 h-4" />
+              </Link>
             </div>
           )}
 
-          {submitStatus === "success" && (<div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl"><div className="flex items-start gap-3"><div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"><Check className="w-5 h-5 text-green-600" /></div><div><h3 className="font-semibold text-green-900 mb-1">Thank You!</h3><p className="text-sm text-green-700">Your order has been received. We'll reach out to finalize your booking!</p></div></div></div>)}
-          {submitStatus === "error" && (<div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-2xl"><div className="flex items-start gap-3"><div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center"><AlertCircle className="w-5 h-5 text-red-600" /></div><div><h3 className="font-semibold text-red-900 mb-1">Submission Error</h3><p className="text-sm text-red-700">Please try again or contact luxentra.media@gmail.com</p></div></div></div>)}
+          {submitStatus === "success" && (
+            <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-[18px]">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                  <Check className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-green-900 mb-1">Thank you!</h3>
+                  <p className="text-[15px] text-green-700">Your order has been received. We&apos;ll reach out to finalize your booking!</p>
+                </div>
+              </div>
+            </div>
+          )}
+          {submitStatus === "error" && (
+            <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-[18px]">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center shrink-0">
+                  <AlertCircle className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-red-900 mb-1">Submission error</h3>
+                  <p className="text-[15px] text-red-700">Please try again or contact luxentra.media@gmail.com</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="grid lg:grid-cols-2 gap-12">
+            {/* Left: package builder */}
             <div>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">Build Your Package</h1>
-              <p className="text-lg text-zinc-600 mb-8">Start with our standard package and customize with add-ons.</p>
+              {/* Standard package card */}
               <div
-                className={`border rounded-2xl p-6 mb-8 cursor-pointer transition-all duration-300 ${includeStandard ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-400"}`}
+                className={`rounded-[18px] p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#0071e3] bg-[#0071e3]/[0.04]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
                 onClick={() => setIncludeStandard(!includeStandard)}
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-zinc-900 rounded-xl flex items-center justify-center"><Camera className="w-6 h-6 text-white" /></div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className={`text-xl font-semibold ${includeStandard ? "text-zinc-900" : "text-zinc-400"}`}>{specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}</h3>
-                      <div className="text-right flex items-center gap-2">
-                        <span className={`text-xl font-bold ${includeStandard ? "text-zinc-900" : "text-zinc-300"}`}>${standardPackagePrice}</span>
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${includeStandard ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>
-                          {includeStandard ? <Check className="w-3 h-3 text-white" /> : <Plus className="w-3 h-3 text-zinc-400" />}
+                  <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#0071e3]" : "bg-[#f5f5f7]"}`}>
+                    <Camera className={`w-6 h-6 ${includeStandard ? "text-white" : "text-[#6e6e73]"}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <h3 className="text-[19px] font-semibold tracking-tight">
+                        {specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}
+                      </h3>
+                      <div className="text-right flex items-center gap-2 shrink-0">
+                        <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#0071e3]" : "border-2 border-[#d2d2d7]"}`}>
+                          {includeStandard ? <Check className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#86868b]" />}
                         </div>
-                        {specialPlan && <span className="block text-sm text-zinc-400 line-through">$175</span>}
                       </div>
                     </div>
+                    {specialPlan && <span className="block text-[15px] text-[#86868b] line-through mb-3">$175</span>}
                     {specialPlan && (
-                      <p className="text-sm text-emerald-600 font-medium mb-3">✓ Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
+                      <p className="text-[15px] text-[#0071e3] font-medium mb-3">Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
                     )}
-                    <ul className="text-sm text-zinc-600 space-y-1">
+                    <ul className="text-[15px] text-[#6e6e73] space-y-1.5">
                       {specialPlan ? (
                         <>
                           <li>• Up to 1,999 sq ft properties</li>
@@ -188,7 +197,11 @@ export default function OrderPage() {
                       )}
                     </ul>
                     {specialPlan && (
-                      <button type="button" onClick={() => setOverrideToStandard(true)} className="mt-4 inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-full border border-zinc-300 text-zinc-600 hover:bg-zinc-100 hover:border-zinc-400 hover:text-zinc-900 transition-all">
+                      <button
+                        type="button"
+                        onClick={() => setOverrideToStandard(true)}
+                        className="mt-4 text-[13px] font-medium px-4 py-2 rounded-full border border-[#d2d2d7] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                      >
                         ← Switch to Standard Package ($175)
                       </button>
                     )}
@@ -196,56 +209,86 @@ export default function OrderPage() {
                 </div>
               </div>
 
-              <h2 className="text-2xl font-semibold mb-4">Optional Add-ons</h2>
+              {/* Add-ons */}
+              <h2 className="text-[24px] font-semibold tracking-tight mb-5">Optional add-ons</h2>
               <div className="space-y-3">
-                {ADD_ONS.map((addOn) => { const Icon = addOn.icon; const isSelected = selectedAddOns.has(addOn.id); return (
-                  <div key={addOn.id} className={`border rounded-2xl p-4 transition-all ${isSelected ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200 hover:border-zinc-300"}`}>
-                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => { toggleAddOn(addOn.id); playAddOn(); }}>
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isSelected ? "bg-zinc-900" : "bg-zinc-100"}`}><Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-zinc-600"}`} /></div>
-                      <div className="flex-1"><div className="flex items-center justify-between"><h3 className="font-semibold">{addOn.name}</h3><span className="font-bold">${addOn.id === "flyer" && isSelected ? (flyerQty === 1 ? 39 : flyerQty * 35) : addOn.id === "reel" && isSelected ? 150 * reelQty : addOn.price}</span></div>{addOn.id === "flyer" && <p className="text-xs text-zinc-400 mt-0.5">$39 for 1 · $35 each for 2+</p>}{addOn.id === "reel" && <p className="text-xs text-zinc-400 mt-0.5">Concept, scripting, filming & editing</p>}</div>
-                      <button type="button" className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-zinc-900 border-zinc-900" : "bg-white border-zinc-300"}`}>{isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-zinc-400" />}</button>
+                {ADD_ONS.map((addOn) => {
+                  const Icon = addOn.icon;
+                  const isSelected = selectedAddOns.has(addOn.id);
+                  const displayPrice =
+                    addOn.id === "flyer"
+                      ? flyerQty === 1 ? 39 : flyerQty * 35
+                      : addOn.id === "reel"
+                        ? addOn.price * reelQty
+                        : addOn.price;
+                  return (
+                    <div
+                      key={addOn.id}
+                      className={`rounded-[18px] p-4 border transition-colors ${isSelected ? "border-[#0071e3] bg-[#0071e3]/[0.04]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
+                    >
+                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => toggleAddOn(addOn.id)}>
+                        <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${isSelected ? "bg-[#0071e3]" : "bg-[#f5f5f7]"}`}>
+                          <Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-[#6e6e73]"}`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="font-semibold text-[17px]">{addOn.name}</h3>
+                            <span className="font-semibold shrink-0">${displayPrice}</span>
+                          </div>
+                          {addOn.id === "flyer" && <p className="text-[13px] text-[#86868b] mt-0.5">$39 for 1 · $35 each for 2+</p>}
+                          {addOn.id === "reel" && <p className="text-[13px] text-[#86868b] mt-0.5">Concept, scripting, filming & editing</p>}
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#0071e3]" : "border-2 border-[#d2d2d7]"}`}
+                        >
+                          {isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-[#86868b]" />}
+                        </button>
+                      </div>
+                      {addOn.id === "flyer" && isSelected && (
+                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-[#e8e8ed]">
+                          <span className="text-[15px] text-[#6e6e73] font-medium">Quantity:</span>
+                          <div className="flex items-center gap-2">
+                            <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">−</button>
+                            <span className="w-8 text-center font-semibold">{flyerQty}</span>
+                            <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">+</button>
+                          </div>
+                          <span className="text-[15px] text-[#6e6e73]">= <span className="font-semibold text-[#1d1d1f]">${flyerQty === 1 ? 39 : flyerQty * 35}</span></span>
+                          {flyerQty > 1 && (
+                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
+                              Save ${39 * flyerQty - flyerQty * 35} vs full price
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      {addOn.id === "reel" && isSelected && (
+                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-[#e8e8ed]">
+                          <span className="text-[15px] text-[#6e6e73] font-medium">Quantity:</span>
+                          <div className="flex items-center gap-2">
+                            <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">−</button>
+                            <span className="w-8 text-center font-semibold">{reelQty}</span>
+                            <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">+</button>
+                          </div>
+                          <span className="text-[15px] text-[#6e6e73]">= <span className="font-semibold text-[#1d1d1f]">${addOn.price * reelQty}</span></span>
+                        </div>
+                      )}
                     </div>
-                    {addOn.id === "flyer" && isSelected && (
-                      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-zinc-100">
-                        <span className="text-sm text-zinc-600 font-medium">Quantity:</span>
-                        <div className="flex items-center gap-2">
-                          <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">−</button>
-                          <span className="w-8 text-center font-semibold">{flyerQty}</span>
-                          <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
-                        </div>
-                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${flyerQty === 1 ? 39 : flyerQty * 35}</span></span>
-                        {flyerQty > 1 && (
-                          <span className="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
-                            Save ${39 * flyerQty - flyerQty * 35} vs full price
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {addOn.id === "reel" && isSelected && (
-                      <div className="mt-4 flex items-center gap-3 pt-3 border-t border-zinc-100">
-                        <span className="text-sm text-zinc-600 font-medium">Quantity:</span>
-                        <div className="flex items-center gap-2">
-                          <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">−</button>
-                          <span className="w-8 text-center font-semibold">{reelQty}</span>
-                          <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-zinc-300 flex items-center justify-center text-zinc-700 hover:bg-zinc-100 font-bold">+</button>
-                        </div>
-                        <span className="text-sm text-zinc-500">= <span className="font-semibold text-zinc-900">${150 * reelQty}</span></span>
-                      </div>
-                    )}
-                  </div>
-                );})}
+                  );
+                })}
+
                 {/* Virtual Staging */}
-                <div className={`border rounded-2xl p-4 transition-all ${selectedStagingTier ? "bg-zinc-50 border-zinc-900" : "bg-white border-zinc-200"}`}>
+                <div className={`rounded-[18px] p-4 border transition-colors ${selectedStagingTier ? "border-[#0071e3] bg-[#0071e3]/[0.04]" : "border-[#d2d2d7]"}`}>
                   <div className="flex items-center gap-4 mb-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${selectedStagingTier ? "bg-zinc-900" : "bg-zinc-100"}`}>
-                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-white" : "text-zinc-600"}`} />
+                    <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${selectedStagingTier ? "bg-[#0071e3]" : "bg-[#f5f5f7]"}`}>
+                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-white" : "text-[#6e6e73]"}`} />
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold">Virtual Staging</h3>
-                      <p className="text-sm text-zinc-500">Photorealistic digital staging, delivered in 24hrs</p>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-[17px]">Virtual Staging</h3>
+                      <p className="text-[15px] text-[#6e6e73]">Photorealistic digital staging, delivered in 24hrs</p>
                     </div>
                     {selectedStagingTier && (
-                      <span className="font-bold">${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price}</span>
+                      <span className="font-semibold shrink-0">${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price}</span>
                     )}
                   </div>
                   <div className="flex gap-2 ml-14">
@@ -254,62 +297,94 @@ export default function OrderPage() {
                         key={tier.id}
                         type="button"
                         onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
-                        className={`flex-1 py-2 px-3 rounded-xl text-sm font-medium border-2 transition-all ${
+                        className={`flex-1 py-2 px-3 rounded-[14px] text-[15px] font-medium border-2 transition-colors ${
                           selectedStagingTier === tier.id
-                            ? "bg-zinc-900 text-white border-zinc-900"
-                            : "bg-white text-zinc-700 border-zinc-200 hover:border-zinc-400"
+                            ? "bg-[#0071e3] text-white border-[#0071e3]"
+                            : "bg-white text-[#1d1d1f] border-[#d2d2d7] hover:border-[#86868b]"
                         }`}
                       >
                         {tier.label}
                         <br />
-                        <span className="font-bold">${tier.price}</span>
+                        <span className="font-semibold">${tier.price}</span>
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Special Package Button */}
+              {/* Special Package link */}
               <Link
                 to="/special"
-                className="block w-full mt-6 p-5 rounded-2xl border-2 border-dashed border-zinc-300 hover:border-zinc-900 transition-all duration-300 group hover:bg-zinc-50"
+                className="block w-full mt-6 p-6 rounded-[18px] border-2 border-dashed border-[#d2d2d7] hover:border-[#0071e3] transition-colors group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-1">Limited Offer</div>
-                    <h3 className="text-lg font-semibold text-zinc-900 group-hover:text-zinc-700">✨ Special Package</h3>
-                    <p className="text-sm text-zinc-500 mt-1">Exclusive bundles tailored for your needs</p>
+                    <p className="apple-eyebrow mb-1">Limited offer</p>
+                    <h3 className="text-[19px] font-semibold tracking-tight">Special Package</h3>
+                    <p className="text-[15px] text-[#6e6e73] mt-1">Exclusive bundles tailored for your needs</p>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center group-hover:scale-110 transition-transform">
-                    →
+                  <div className="w-10 h-10 rounded-full bg-[#0071e3] text-white flex items-center justify-center shrink-0 group-hover:bg-[#0077ed] transition-colors">
+                    <ChevronRight className="w-5 h-5" />
                   </div>
                 </div>
               </Link>
 
-              <div className="mt-8 bg-gradient-to-br from-zinc-50 to-zinc-100 border border-zinc-200 rounded-2xl p-6">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2"><ShoppingCart className="w-5 h-5" /> Order Summary</h3>
-                <div className="space-y-2 text-sm mb-4">
-                  {includeStandard && <div className="flex justify-between"><span className="text-zinc-600">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span><span className="font-medium">${standardPackagePrice}</span></div>}
-                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-zinc-600">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
+              {/* Order summary */}
+              <div className="mt-8 bg-[#f5f5f7] rounded-[18px] p-6">
+                <h3 className="text-[19px] font-semibold tracking-tight mb-4 flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5" /> Order summary
+                </h3>
+                <div className="space-y-2 text-[15px] mb-4">
+                  {includeStandard && (
+                    <div className="flex justify-between">
+                      <span className="text-[#6e6e73]">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span>
+                      <span className="font-medium">${standardPackagePrice}</span>
+                    </div>
+                  )}
+                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-[#6e6e73]">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
                   {selectedStagingTier && (
                     <div className="flex justify-between">
-                      <span className="text-zinc-600">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
+                      <span className="text-[#6e6e73]">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
                       <span className="font-medium">${stagingPrice}</span>
                     </div>
                   )}
                 </div>
-                <div className="pt-4 border-t border-zinc-300"><div className="flex justify-between text-xl font-bold"><span>Total</span><span>${totalPrice}</span></div></div>
+                <div className="pt-4 border-t border-[#d2d2d7]">
+                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>${totalPrice}</span></div>
+                </div>
               </div>
             </div>
+
+            {/* Right: details form */}
             <div>
-              <h2 className="text-3xl font-semibold mb-4">Your Details</h2>
-              <p className="text-zinc-600 mb-8">Fill out your information and we'll confirm within 24 hours.</p>
+              <h2 className="text-[32px] font-semibold tracking-tight mb-4">Your details</h2>
+              <p className="text-[17px] text-[#6e6e73] mb-8">Fill out your information and we&apos;ll confirm within 24 hours.</p>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2"><Label className="text-base font-medium">Name *</Label><Input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" /></div>
-                <div className="space-y-2"><Label className="text-base font-medium">Email *</Label><Input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" /></div>
-                <div className="space-y-2"><Label className="text-base font-medium">Phone <span className="text-zinc-500 font-normal">(optional)</span></Label><Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" /></div>
-                <div className="space-y-2"><Label className="text-base font-medium">Borough *</Label>
-                  <Select value={formData.borough} onValueChange={(v) => setFormData({ ...formData, borough: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select borough" /></SelectTrigger><SelectContent><SelectItem value="Manhattan">Manhattan</SelectItem><SelectItem value="Brooklyn">Brooklyn</SelectItem><SelectItem value="Queens">Queens</SelectItem><SelectItem value="Bronx">Bronx</SelectItem><SelectItem value="Staten Island">Staten Island</SelectItem><SelectItem value="Long Island">Long Island</SelectItem></SelectContent></Select>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Name *</Label>
+                  <Input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Email *</Label>
+                  <Input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Phone <span className="text-[#86868b] font-normal">(optional)</span></Label>
+                  <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Borough *</Label>
+                  <Select value={formData.borough} onValueChange={(v) => setFormData({ ...formData, borough: v })} required>
+                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select borough" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Manhattan">Manhattan</SelectItem>
+                      <SelectItem value="Brooklyn">Brooklyn</SelectItem>
+                      <SelectItem value="Queens">Queens</SelectItem>
+                      <SelectItem value="Bronx">Bronx</SelectItem>
+                      <SelectItem value="Staten Island">Staten Island</SelectItem>
+                      <SelectItem value="Long Island">Long Island</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 {formData.borough === "other" && (
                   <div className="space-y-2">
@@ -317,8 +392,20 @@ export default function OrderPage() {
                     <Input type="text" placeholder="Enter your borough or area..." value={formData.borough_custom} onChange={(e) => setFormData({ ...formData, borough_custom: e.target.value })} className="h-12 text-base" />
                   </div>
                 )}
-                <div className="space-y-2"><Label className="text-base font-medium">Listing Type *</Label>
-                  <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required><SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger><SelectContent><SelectItem value="House/Single-Family">House/Single-Family</SelectItem><SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem><SelectItem value="Luxury Home">Luxury Home</SelectItem><SelectItem value="Commercial">Commercial</SelectItem><SelectItem value="Multi-Family">Multi-Family</SelectItem><SelectItem value="Rental Listing">Rental Listing</SelectItem><SelectItem value="Other">Other</SelectItem></SelectContent></Select>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Listing Type *</Label>
+                  <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required>
+                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="House/Single-Family">House/Single-Family</SelectItem>
+                      <SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem>
+                      <SelectItem value="Luxury Home">Luxury Home</SelectItem>
+                      <SelectItem value="Commercial">Commercial</SelectItem>
+                      <SelectItem value="Multi-Family">Multi-Family</SelectItem>
+                      <SelectItem value="Rental Listing">Rental Listing</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Preferred Shoot Date</Label>
@@ -332,20 +419,20 @@ export default function OrderPage() {
                   <Label className="text-base font-medium">Property Address / Location</Label>
                   <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={formData.shoot_location} onChange={(e) => setFormData({ ...formData, shoot_location: e.target.value })} className="h-12 text-base" />
                 </div>
-                <div className="space-y-2"><Label className="text-base font-medium">Additional Details <span className="text-zinc-500 font-normal">(optional)</span></Label><Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." /></div>
-                <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-lg bg-zinc-900 hover:bg-zinc-800 rounded-full">{isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}</Button>
+                <div className="space-y-2">
+                  <Label className="text-base font-medium">Additional Details <span className="text-[#86868b] font-normal">(optional)</span></Label>
+                  <Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." />
+                </div>
+                <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-[17px] rounded-full">
+                  {isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}
+                </Button>
               </form>
             </div>
           </div>
         </div>
-      </div>
-      <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">© 2025 LuxEntra Media. All rights reserved.</div>
-          <div className="flex items-center gap-6 text-sm text-zinc-600"><a href="mailto:luxentra.media@gmail.com" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium">Contact</a><Link to="/" className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/60 backdrop-blur-xl border border-zinc-200 shadow-[0_2px_12px_rgba(0,0,0,0.06)] hover:bg-white/90 transition-all active:scale-95 hover:scale-105 text-sm font-medium">Home</Link></div>
-        </div>
-      </footer>
+      </section>
+
+      <SiteFooter />
     </div>
   );
 }
-

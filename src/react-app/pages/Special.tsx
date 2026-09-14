@@ -1,5 +1,7 @@
 import { Link } from "react-router";
-import { ArrowLeft, ShoppingCart, Check } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
+import SiteNav from "@/react-app/components/SiteNav";
+import SiteFooter from "@/react-app/components/SiteFooter";
 
 const plans = [
   {
@@ -44,128 +46,114 @@ const features = [
 
 export default function SpecialPage() {
   return (
-    <div className="min-h-screen bg-white text-zinc-900">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-zinc-200/50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold tracking-tight">LuxEntra Media</Link>
-          <Link to="/order" className="text-sm px-4 py-2 rounded-full bg-zinc-900 text-white flex items-center gap-2 hover:bg-zinc-700 transition-all">
-            <ShoppingCart className="w-4 h-4" />
-            Order Now
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white text-[#1d1d1f] pt-12">
+      <SiteNav />
 
-      <div className="pt-32 pb-32 px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-
-          {/* Back link */}
-          <Link to="/order" className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 transition-colors mb-16">
-            <ArrowLeft className="w-4 h-4" /> Back to Order
+      <section className="py-24 md:py-32">
+        <div className="max-w-6xl mx-auto px-6">
+          <Link to="/order" className="apple-link !text-[15px] mb-10">
+            <ArrowLeft className="w-4 h-4" /> Back to order
           </Link>
 
           {/* Intro */}
-          <div className="mb-20 max-w-3xl">
-            <div className="inline-block text-xs uppercase tracking-widest text-zinc-400 font-medium mb-6 border border-zinc-200 px-4 py-1.5 rounded-full">
-              Exclusive Partnership
-            </div>
-            <h1 className="text-5xl md:text-6xl font-semibold tracking-tight leading-tight mb-6">
-              Weekly<br />Partnership Plans
+          <div className="mb-16 max-w-3xl">
+            <p className="apple-eyebrow mb-4">Exclusive partnership</p>
+            <h1 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-6">
+              Weekly Partnership Plans
             </h1>
-            <p className="text-xl text-zinc-500 leading-relaxed max-w-2xl">
+            <p className="text-[19px] md:text-[21px] text-[#6e6e73] leading-relaxed">
               Built for agents and teams who list consistently.<br />
               The more listings you bring in, the more optimized your pricing becomes.
             </p>
           </div>
 
-          {/* Pricing Cards */}
-          <div className="grid md:grid-cols-3 gap-6 mb-20">
+          {/* Pricing cards */}
+          <div className="grid md:grid-cols-3 gap-4 mb-16">
             {plans.map((plan) => (
               <div
                 key={plan.name}
-                className={`relative rounded-3xl p-8 border transition-all duration-300 ${
+                className={`relative rounded-[18px] p-8 border ${
                   plan.highlight
-                    ? "bg-zinc-900 border-zinc-900 text-white"
-                    : "bg-white border-zinc-200 hover:border-zinc-400 hover:shadow-xl"
+                    ? "bg-black border-black text-white"
+                    : "bg-white border-[#d2d2d7]"
                 }`}
               >
                 {plan.highlight && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-zinc-900 text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full border border-zinc-200 shadow-sm whitespace-nowrap">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-white text-[#1d1d1f] text-[11px] font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full border border-[#d2d2d7] whitespace-nowrap">
                     Best Value
                   </div>
                 )}
 
-                {/* Plan name */}
-                <div className={`text-xs uppercase tracking-widest font-medium mb-4 ${plan.highlight ? "text-zinc-400" : "text-zinc-400"}`}>
+                <p className={`apple-eyebrow mb-4 ${plan.highlight ? "!text-white/50" : ""}`}>
                   {plan.name} Plan
-                </div>
+                </p>
 
-                {/* Volume */}
-                <div className={`text-sm font-medium mb-6 px-3 py-1.5 rounded-full inline-block ${plan.highlight ? "bg-white/10 text-white" : "bg-zinc-100 text-zinc-700"}`}>
+                <div
+                  className={`text-[13px] font-medium mb-6 px-3 py-1.5 rounded-full inline-block ${
+                    plan.highlight ? "bg-white/10 text-white" : "bg-[#f5f5f7] text-[#1d1d1f]"
+                  }`}
+                >
                   {plan.volume}
                 </div>
 
-                {/* Price */}
                 <div className="mb-2">
-                  <span className={`text-6xl font-bold tracking-tight ${plan.highlight ? "text-white" : "text-zinc-900"}`}>
+                  <span className="text-[56px] font-semibold tracking-tight leading-none">
                     ${plan.price}
                   </span>
-                  <span className={`text-sm ml-2 ${plan.highlight ? "text-zinc-400" : "text-zinc-500"}`}>/ listing</span>
-                </div>
-
-                {/* Savings */}
-                <div className={`text-sm font-medium mb-6 ${plan.highlight ? "text-emerald-400" : "text-emerald-600"}`}>
-                  Save ${plan.savings} per listing
-                  <span className={`ml-2 line-through font-normal ${plan.highlight ? "text-zinc-500" : "text-zinc-400"}`}>
-                    ${plan.standard}
+                  <span className={`text-[15px] ml-2 ${plan.highlight ? "text-white/60" : "text-[#6e6e73]"}`}>
+                    / listing
                   </span>
                 </div>
 
-                <p className={`text-sm leading-relaxed mb-8 ${plan.highlight ? "text-zinc-400" : "text-zinc-500"}`}>
+                <p className={`text-[15px] font-medium mb-6 ${plan.highlight ? "text-emerald-400" : "text-emerald-600"}`}>
+                  Save ${plan.savings} per listing
+                  <span className={`ml-2 line-through font-normal ${plan.highlight ? "text-white/40" : "text-[#86868b]"}`}>
+                    ${plan.standard}
+                  </span>
+                </p>
+
+                <p className={`text-[15px] leading-relaxed mb-8 ${plan.highlight ? "text-white/60" : "text-[#6e6e73]"}`}>
                   {plan.description}
                 </p>
 
-                {/* Divider */}
-                <div className={`w-full h-px mb-8 ${plan.highlight ? "bg-white/10" : "bg-zinc-100"}`} />
+                <div className={`w-full h-px mb-8 ${plan.highlight ? "bg-white/10" : "bg-[#e8e8ed]"}`} />
 
-                {/* Features */}
-                <ul className="space-y-3">
-                  {features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 ${plan.highlight ? "bg-white/15" : "bg-zinc-100"}`}>
-                        <Check className={`w-3 h-3 ${plan.highlight ? "text-white" : "text-zinc-700"}`} />
-                      </div>
-                      <span className={`text-sm leading-relaxed ${plan.highlight ? "text-zinc-300" : "text-zinc-600"}`}>
+                <ul className="space-y-3 mb-10">
+                  {features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3">
+                      <span
+                        className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                          plan.highlight ? "bg-white/15" : "bg-[#0071e3]/10"
+                        }`}
+                      >
+                        <Check className={`w-3 h-3 ${plan.highlight ? "text-white" : "text-[#0071e3]"}`} />
+                      </span>
+                      <span className={`text-[15px] leading-relaxed ${plan.highlight ? "text-white/80" : "text-[#1d1d1f]/80"}`}>
                         {feature}
                       </span>
                     </li>
                   ))}
                 </ul>
 
-                {/* CTA */}
                 <Link
                   to="/order"
                   state={{ specialPlan: { name: plan.name, price: plan.price, volume: plan.volume, savings: plan.savings } }}
-                  className={`mt-10 block text-center py-3.5 rounded-full text-sm font-medium transition-all hover:scale-105 ${
-                    plan.highlight
-                      ? "bg-white text-zinc-900 hover:bg-zinc-100"
-                      : "bg-zinc-900 text-white hover:bg-zinc-700"
-                  }`}
+                  className="btn-apple w-full"
                 >
-                  Get Started
+                  Get started
                 </Link>
               </div>
             ))}
           </div>
 
-          {/* Collaboration note */}
-          <div className="bg-zinc-50 rounded-3xl p-10 mb-16 border border-zinc-100">
+          {/* How it works */}
+          <div className="bg-[#f5f5f7] rounded-[18px] p-10 mb-16">
             <div className="max-w-3xl">
-              <div className="text-xs uppercase tracking-widest text-zinc-400 font-medium mb-4">How It Works</div>
-              <p className="text-xl text-zinc-700 leading-relaxed mb-4">
+              <p className="apple-eyebrow mb-4">How it works</p>
+              <p className="text-[21px] font-medium text-[#1d1d1f] leading-relaxed mb-4">
                 You can reach these volumes individually or by collaborating with other agents.
               </p>
-              <p className="text-zinc-500 leading-relaxed">
+              <p className="text-[17px] text-[#6e6e73] leading-relaxed">
                 The total number of listings per week determines your pricing tier — not just one agent. Partner with your team and unlock better rates together.
               </p>
             </div>
@@ -173,25 +161,15 @@ export default function SpecialPage() {
 
           {/* Closing line */}
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-semibold tracking-tight text-zinc-900">
+            <p className="text-[32px] md:text-[40px] font-semibold tracking-tight text-[#1d1d1f] leading-tight">
               More volume. Better pricing.<br />
-              <span className="text-zinc-400">Same premium standard.</span>
+              <span className="text-[#86868b]">Same premium standard.</span>
             </p>
           </div>
-
         </div>
-      </div>
+      </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 lg:px-8 bg-white border-t border-zinc-200">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-zinc-600">© 2025 LuxEntra Media. All rights reserved.</div>
-          <div className="flex items-center gap-6 text-sm text-zinc-600">
-            <a href="mailto:luxentra.media@gmail.com" className="hover:text-zinc-900 transition-colors">Contact</a>
-            <Link to="/order" className="hover:text-zinc-900 transition-colors">Order Now</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
