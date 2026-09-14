@@ -49,7 +49,7 @@ export default function SiteFooter() {
                     </li>
                   ) : l.anchor ? (
                     <li key={l.label}>
-                      <a href={l.to.slice(1)} className="text-xs hover:underline underline-offset-2">
+                      <a href={l.to} className="text-xs hover:underline underline-offset-2">
                         {l.label}
                       </a>
                     </li>
