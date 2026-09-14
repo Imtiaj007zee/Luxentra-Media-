@@ -24,10 +24,18 @@ export default function SiteNav() {
         <nav className="max-w-[1024px] mx-auto px-6 h-12 flex items-center justify-between">
           <Link
             to="/"
-            className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]"
+            className="flex items-center gap-2.5"
             onClick={() => setOpen(false)}
+            aria-label="LuxEntra Media home"
           >
-            LuxEntra
+            <img
+              src="/logo-mark.jpg"
+              alt="LuxEntra Media logo"
+              className="w-7 h-7 rounded-[8px] object-cover"
+            />
+            <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
+              LuxEntra Media
+            </span>
           </Link>
 
           {/* Desktop links */}
@@ -54,7 +62,7 @@ export default function SiteNav() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link to="/order" className="hidden md:inline-flex rounded-full bg-[#0071e3] px-4 py-1.5 text-xs font-medium text-white hover:bg-[#0077ed] transition-colors">
+            <Link to="/order" className="hidden md:inline-flex rounded-full bg-[#c7ff00] px-4 py-1.5 text-xs font-semibold text-black hover:bg-[#d9ff4d] transition-colors">
               Book a Shoot
             </Link>
             {/* Mobile hamburger — Apple style two lines */}
@@ -82,7 +90,17 @@ export default function SiteNav() {
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
-        <div className="pt-24 px-10 flex flex-col gap-2">
+        <div className="pt-20 px-10 flex flex-col gap-2">
+          <div className="flex items-center gap-2.5 pb-6">
+            <img
+              src="/logo-mark.jpg"
+              alt="LuxEntra Media logo"
+              className="w-8 h-8 rounded-[9px] object-cover"
+            />
+            <span className="text-[17px] font-semibold tracking-tight text-[#1d1d1f]">
+              LuxEntra Media
+            </span>
+          </div>
           {LINKS.map((l, i) =>
             l.to.startsWith("/#") && isHome ? (
               <a

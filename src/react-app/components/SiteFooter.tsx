@@ -35,6 +35,16 @@ export default function SiteFooter() {
   return (
     <footer className="bg-[#f5f5f7] text-[#6e6e73]">
       <div className="max-w-[1024px] mx-auto px-6 py-10">
+        <div className="flex items-center gap-2.5 mb-8">
+          <img
+            src="/logo-mark.jpg"
+            alt="LuxEntra Media logo"
+            className="w-8 h-8 rounded-[9px] object-cover"
+          />
+          <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
+            LuxEntra Media
+          </span>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pb-8">
           {columns.map((col) => (
             <div key={col.title}>

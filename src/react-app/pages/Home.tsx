@@ -91,7 +91,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/55" />
 
         <div className="relative z-10 max-w-[1024px] mx-auto px-6 pt-40 pb-32 md:pt-52 md:pb-44 text-center">
-          <p className="apple-eyebrow !text-white/60 mb-5">LuxEntra Media · New York</p>
+          <p className="apple-eyebrow !text-[#c7ff00]/90 mb-5">LuxEntra Media · New York</p>
           <h1 className="text-[48px] md:text-[80px] font-semibold tracking-[-0.02em] leading-[1.05] mb-6">
             Every listing.
             <br />
@@ -190,8 +190,8 @@ export default function HomePage() {
           <ul className="text-left grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-2xl mx-auto mb-12">
             {PACKAGE_FEATURES.map((f) => (
               <li key={f} className="flex items-start gap-3 text-[17px]">
-                <span className="mt-1 w-5 h-5 rounded-full bg-[#0071e3]/10 flex items-center justify-center shrink-0">
-                  <Check className="w-3 h-3 text-[#0071e3]" />
+                <span className="mt-1 w-5 h-5 rounded-full bg-[#65a30d]/10 flex items-center justify-center shrink-0">
+                  <Check className="w-3 h-3 text-[#65a30d]" />
                 </span>
                 <span>{f}</span>
               </li>
@@ -247,7 +247,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-10">
             {STEPS.map((s) => (
               <div key={s.n} className="text-center md:text-left">
-                <p className="text-[15px] font-semibold text-[#0071e3] mb-3">{s.n}</p>
+                <p className="text-[15px] font-semibold text-[#65a30d] mb-3">{s.n}</p>
                 <h3 className="text-[21px] font-semibold tracking-tight mb-2">{s.title}</h3>
                 <p className="text-[15px] text-[#6e6e73] leading-relaxed">{s.copy}</p>
               </div>

@@ -137,15 +137,15 @@ export default function AboutPage() {
               <ul className="space-y-3.5 mb-10">
                 {m.highlights.map((h) => (
                   <li key={h} className="flex items-start gap-3 text-[15px]">
-                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#0071e3]/10 flex items-center justify-center shrink-0">
-                      <Check className="w-3 h-3 text-[#0071e3]" />
+                    <span className="mt-0.5 w-5 h-5 rounded-full bg-[#65a30d]/10 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-[#65a30d]" />
                     </span>
                     <span>{h}</span>
                   </li>
                 ))}
               </ul>
 
-              <blockquote className="border-l-2 border-[#0071e3] pl-6 py-1">
+              <blockquote className="border-l-2 border-[#65a30d] pl-6 py-1">
                 <p className="text-[19px] italic text-[#1d1d1f]/80 leading-relaxed">
                   &ldquo;{m.quote}&rdquo;
                 </p>

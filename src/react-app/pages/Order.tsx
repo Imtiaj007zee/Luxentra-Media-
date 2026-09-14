@@ -150,12 +150,12 @@ export default function OrderPage() {
             <div>
               {/* Standard package card */}
               <div
-                className={`rounded-[18px] p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#0071e3] bg-[#0071e3]/[0.04]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
+                className={`rounded-[18px] p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
                 onClick={() => setIncludeStandard(!includeStandard)}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#0071e3]" : "bg-[#f5f5f7]"}`}>
-                    <Camera className={`w-6 h-6 ${includeStandard ? "text-white" : "text-[#6e6e73]"}`} />
+                  <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#c7ff00]" : "bg-[#f5f5f7]"}`}>
+                    <Camera className={`w-6 h-6 ${includeStandard ? "text-black" : "text-[#6e6e73]"}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-2">
@@ -164,14 +164,14 @@ export default function OrderPage() {
                       </h3>
                       <div className="text-right flex items-center gap-2 shrink-0">
                         <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#0071e3]" : "border-2 border-[#d2d2d7]"}`}>
-                          {includeStandard ? <Check className="w-3.5 h-3.5 text-white" /> : <Plus className="w-3.5 h-3.5 text-[#86868b]" />}
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#c7ff00]" : "border-2 border-[#d2d2d7]"}`}>
+                          {includeStandard ? <Check className="w-3.5 h-3.5 text-black" /> : <Plus className="w-3.5 h-3.5 text-[#86868b]" />}
                         </div>
                       </div>
                     </div>
                     {specialPlan && <span className="block text-[15px] text-[#86868b] line-through mb-3">$175</span>}
                     {specialPlan && (
-                      <p className="text-[15px] text-[#0071e3] font-medium mb-3">Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
+                      <p className="text-[15px] text-[#65a30d] font-medium mb-3">Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
                     )}
                     <ul className="text-[15px] text-[#6e6e73] space-y-1.5">
                       {specialPlan ? (
@@ -224,11 +224,11 @@ export default function OrderPage() {
                   return (
                     <div
                       key={addOn.id}
-                      className={`rounded-[18px] p-4 border transition-colors ${isSelected ? "border-[#0071e3] bg-[#0071e3]/[0.04]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
+                      className={`rounded-[18px] p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
                     >
                       <div className="flex items-center gap-4 cursor-pointer" onClick={() => toggleAddOn(addOn.id)}>
-                        <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${isSelected ? "bg-[#0071e3]" : "bg-[#f5f5f7]"}`}>
-                          <Icon className={`w-5 h-5 ${isSelected ? "text-white" : "text-[#6e6e73]"}`} />
+                        <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-[#f5f5f7]"}`}>
+                          <Icon className={`w-5 h-5 ${isSelected ? "text-black" : "text-[#6e6e73]"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
@@ -241,9 +241,9 @@ export default function OrderPage() {
                         <button
                           type="button"
                           aria-label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#0071e3]" : "border-2 border-[#d2d2d7]"}`}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-[#d2d2d7]"}`}
                         >
-                          {isSelected ? <Check className="w-4 h-4 text-white" /> : <Plus className="w-4 h-4 text-[#86868b]" />}
+                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-[#86868b]" />}
                         </button>
                       </div>
                       {addOn.id === "flyer" && isSelected && (
@@ -278,10 +278,10 @@ export default function OrderPage() {
                 })}
 
                 {/* Virtual Staging */}
-                <div className={`rounded-[18px] p-4 border transition-colors ${selectedStagingTier ? "border-[#0071e3] bg-[#0071e3]/[0.04]" : "border-[#d2d2d7]"}`}>
+                <div className={`rounded-[18px] p-4 border transition-colors ${selectedStagingTier ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#d2d2d7]"}`}>
                   <div className="flex items-center gap-4 mb-3">
-                    <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${selectedStagingTier ? "bg-[#0071e3]" : "bg-[#f5f5f7]"}`}>
-                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-white" : "text-[#6e6e73]"}`} />
+                    <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${selectedStagingTier ? "bg-[#c7ff00]" : "bg-[#f5f5f7]"}`}>
+                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-black" : "text-[#6e6e73]"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-[17px]">Virtual Staging</h3>
@@ -299,7 +299,7 @@ export default function OrderPage() {
                         onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
                         className={`flex-1 py-2 px-3 rounded-[14px] text-[15px] font-medium border-2 transition-colors ${
                           selectedStagingTier === tier.id
-                            ? "bg-[#0071e3] text-white border-[#0071e3]"
+                            ? "bg-[#c7ff00] text-black border-[#c7ff00]"
                             : "bg-white text-[#1d1d1f] border-[#d2d2d7] hover:border-[#86868b]"
                         }`}
                       >
@@ -315,7 +315,7 @@ export default function OrderPage() {
               {/* Special Package link */}
               <Link
                 to="/special"
-                className="block w-full mt-6 p-6 rounded-[18px] border-2 border-dashed border-[#d2d2d7] hover:border-[#0071e3] transition-colors group"
+                className="block w-full mt-6 p-6 rounded-[18px] border-2 border-dashed border-[#d2d2d7] hover:border-[#c7ff00] transition-colors group"
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -323,7 +323,7 @@ export default function OrderPage() {
                     <h3 className="text-[19px] font-semibold tracking-tight">Special Package</h3>
                     <p className="text-[15px] text-[#6e6e73] mt-1">Exclusive bundles tailored for your needs</p>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-[#0071e3] text-white flex items-center justify-center shrink-0 group-hover:bg-[#0077ed] transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-[#c7ff00] text-black flex items-center justify-center shrink-0 group-hover:bg-[#d9ff4d] transition-colors">
                     <ChevronRight className="w-5 h-5" />
                   </div>
                 </div>

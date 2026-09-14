@@ -123,10 +123,10 @@ export default function SpecialPage() {
                     <li key={feature} className="flex items-start gap-3">
                       <span
                         className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                          plan.highlight ? "bg-white/15" : "bg-[#0071e3]/10"
+                          plan.highlight ? "bg-white/15" : "bg-[#65a30d]/10"
                         }`}
                       >
-                        <Check className={`w-3 h-3 ${plan.highlight ? "text-white" : "text-[#0071e3]"}`} />
+                        <Check className={`w-3 h-3 ${plan.highlight ? "text-white" : "text-[#65a30d]"}`} />
                       </span>
                       <span className={`text-[15px] leading-relaxed ${plan.highlight ? "text-white/80" : "text-[#1d1d1f]/80"}`}>
                         {feature}
