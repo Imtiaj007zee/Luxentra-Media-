@@ -15,7 +15,7 @@ const ADD_ONS: AddOn[] = [
   { id: "flyer", name: "Custom Listing Flyer", price: 39, icon: FileText },
   { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
   { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
-  { id: "video", name: "Walkthrough/Cinematic Video", price: 179, icon: Video },
+  { id: "video", name: "Walkthrough/Cinematic Video", price: 299, icon: Video },
   { id: "reel", name: "Creative Personal Branding Reel", price: 499, icon: Video },
 ];
 
@@ -151,8 +151,7 @@ export default function OrderPage() {
                     <ul className="text-[15px] text-white/60 space-y-1.5">
                       <li>• 25–45 MLS-ready photos</li>
                       <li>• 1 twilight photo</li>
-                      <li>• 2D black & white floor plans</li>
-                      <li>• 12-hour delivery</li>
+                      <li>• 24-hour delivery</li>
                       <li>• Private branded gallery</li>
                       <li>• Free revisions</li>
                     </ul>

@@ -34,8 +34,7 @@ const SERVICES = [
 const PACKAGE_FEATURES = [
   "25–45 MLS-ready photos",
   "1 twilight photo",
-  "2D black & white floor plans",
-  "12-hour delivery",
+  "24-hour delivery",
   "Private branded gallery",
   "Light, color & exposure revisions",
 ];
@@ -44,7 +43,7 @@ const ADD_ONS = [
   { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
   { name: "Drone Photos & Video", price: "$99", note: "$99" },
   { name: "3D Virtual Tour", price: "$99", note: "$99" },
-  { name: "Walkthrough/Cinematic Video", price: "$179", note: "$179" },
+  { name: "Walkthrough/Cinematic Video", price: "$299", note: "$299" },
   { name: "Creative Personal Branding Reel", price: "$499", note: "$499" },
   { name: "Virtual Staging", price: "From $40", note: "From $40" },
 ];
@@ -282,7 +281,7 @@ export default function HomePage() {
               Ready to launch.
             </h2>
             <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
-              The Standard Listing Media Package brings your photography and floor plans together
+              The Standard Listing Media Package brings your listing media together
               in one straightforward booking.
             </p>
             <p className="text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
