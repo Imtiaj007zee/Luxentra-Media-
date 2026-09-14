@@ -1,84 +1,52 @@
 import { Link } from "react-router";
 
 /**
- * Apple-style footer: light gray, small type, link columns, fine print.
+ * LuxEntra footer: black, brand lockup left, tagline center,
+ * contact right, fine-print bottom bar.
  */
 export default function SiteFooter() {
-  const year = new Date().getFullYear();
-
-  const columns: { title: string; links: { label: string; to: string; anchor?: boolean }[] }[] = [
-    {
-      title: "Services",
-      links: [
-        { label: "Listing Package", to: "/#package", anchor: true },
-        { label: "Add-ons", to: "/#addons", anchor: true },
-        { label: "Our Work", to: "/#work", anchor: true },
-      ],
-    },
-    {
-      title: "Company",
-      links: [
-        { label: "About Us", to: "/about" },
-        { label: "Partnerships", to: "/special" },
-        { label: "Book a Shoot", to: "/book" },
-      ],
-    },
-    {
-      title: "Contact",
-      links: [
-        { label: "luxentra.media@gmail.com", to: "mailto:luxentra.media@gmail.com" },
-        { label: "+1 (347) 837-1257", to: "tel:+13478371257" },
-      ],
-    },
-  ];
-
   return (
-    <footer className="bg-[#f5f5f7] text-[#6e6e73]">
-      <div className="max-w-[1024px] mx-auto px-6 py-10">
-        <div className="flex items-center gap-2.5 mb-8">
-          <img
-            src="/logo-mark.jpg"
-            alt="LuxEntra Media logo"
-            className="w-8 h-8 rounded-[9px] object-cover"
-          />
-          <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
-            LuxEntra Media
-          </span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pb-8">
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h3 className="text-xs font-semibold text-[#1d1d1f] mb-3">{col.title}</h3>
-              <ul className="space-y-2.5">
-                {col.links.map((l) =>
-                  l.to.startsWith("mailto:") || l.to.startsWith("tel:") ? (
-                    <li key={l.label}>
-                      <a href={l.to} className="text-xs hover:underline underline-offset-2">
-                        {l.label}
-                      </a>
-                    </li>
-                  ) : l.anchor ? (
-                    <li key={l.label}>
-                      <a href={l.to} className="text-xs hover:underline underline-offset-2">
-                        {l.label}
-                      </a>
-                    </li>
-                  ) : (
-                    <li key={l.label}>
-                      <Link to={l.to} className="text-xs hover:underline underline-offset-2">
-                        {l.label}
-                      </Link>
-                    </li>
-                  )
-                )}
-              </ul>
-            </div>
-          ))}
+    <footer className="bg-[#0b0b0b] text-white">
+      <div className="max-w-[1280px] mx-auto px-6 py-14">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-10 border-b border-white/10">
+          <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="LuxEntra Media home">
+            <img src="/brand/symbol-lime.png" alt="LuxEntra Media" className="h-9 w-9 object-contain" />
+            <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
+          </Link>
+
+          <p className="text-[15px] text-white/70">
+            Real estate photography &amp; film. New York City &amp; Long Island.
+          </p>
+
+          <div className="flex flex-col gap-2 md:text-right">
+            <a
+              href="mailto:luxentra.media@gmail.com"
+              className="text-[15px] font-medium text-white hover:text-[#c7ff00] transition-colors"
+            >
+              luxentra.media@gmail.com
+            </a>
+            <a
+              href="tel:+13478371257"
+              className="text-[15px] font-medium text-white hover:text-[#c7ff00] transition-colors"
+            >
+              +1 (347) 837-1257
+            </a>
+          </div>
         </div>
 
-        <div className="border-t border-[#d2d2d7] pt-5 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <p className="text-xs">© {year} LuxEntra Media. All rights reserved.</p>
-          <p className="text-xs">Real estate photography &amp; film — New York City &amp; Long Island.</p>
+        <div className="pt-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <p className="text-[13px] text-white/50">© 2026 LuxEntra Media.</p>
+          <div className="flex items-center gap-8">
+            <Link to="/special" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
+              Partnerships
+            </Link>
+            <Link to="/about" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
+              Our team
+            </Link>
+            <Link to="/book" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
+              Contact
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

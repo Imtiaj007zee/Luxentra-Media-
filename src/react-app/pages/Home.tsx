@@ -1,255 +1,365 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { Check, ChevronRight, Play } from "lucide-react";
+import { ArrowUpRight, Check, Pause, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
-const PACKAGE_FEATURES = [
-  "25–45 MLS-ready photos",
-  "1 twilight photo included",
-  "2D black & white floor plans",
-  "12-hour delivery",
-  "Private branded gallery",
-  "High-res + MLS-optimized files",
-  "Full listing usage rights",
-  "Free light, color & exposure revisions",
-];
-
 const SERVICES = [
   {
-    title: "Photography",
-    copy: "Make the first look count.",
-    detail: "Crisp interiors and exteriors, edited to perfection.",
+    n: "01",
+    label: "PHOTOGRAPHY",
+    title: "Make the first look count.",
+    copy: "Interior and exterior photography, twilight imagery and floor plans. Ready for your listing.",
+    cta: "Explore photography",
     dark: false,
   },
   {
-    title: "Film",
-    copy: "Give the space a story.",
-    detail: "Cinematic walkthroughs that move buyers.",
+    n: "02",
+    label: "FILM",
+    title: "Give the space a story.",
+    copy: "Walkthrough films and aerial perspectives that show how a property feels and connects.",
+    cta: "Watch the film",
     dark: true,
   },
   {
-    title: "Personal Branding",
-    copy: "Be the agent they remember.",
-    detail: "Reels and portraits with a creative edge.",
+    n: "03",
+    label: "PERSONAL BRANDING",
+    title: "Be the agent they remember.",
+    copy: "Short-form content shaped around you, from the first idea and script to filming and editing.",
+    cta: "Explore branding",
     dark: false,
   },
 ];
 
+const PACKAGE_FEATURES = [
+  "25–45 MLS-ready photos",
+  "1 twilight photo",
+  "2D black & white floor plans",
+  "12-hour delivery",
+  "Private branded gallery",
+  "Light, color & exposure revisions",
+];
+
 const ADD_ONS = [
-  { price: "$39", name: "Custom Listing Flyer", copy: "A clean, professional flyer for social and print." },
-  { price: "$99", name: "Drone Photos & Video", copy: "Aerial perspectives of the property and the block." },
-  { price: "$99", name: "3D Virtual Tour", copy: "An interactive walkthrough buyers can explore anywhere." },
-  { price: "$179", name: "Walkthrough / Cinematic Video", copy: "A professionally edited film of the property's best features." },
-  { price: "$499", name: "Creative Personal Branding Reel", copy: "Concept, scripting, filming and editing for social." },
-  { price: "from $40", name: "Virtual Staging", copy: "Photorealistic digital staging, delivered in 24 hours." },
+  { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
+  { name: "Drone Photos & Video", price: "$99", note: "$99" },
+  { name: "3D Virtual Tour", price: "$99", note: "$99" },
+  { name: "Walkthrough/Cinematic Video", price: "$179", note: "$179" },
+  { name: "Creative Personal Branding Reel", price: "$499", note: "$499" },
+  { name: "Virtual Staging", price: "From $40", note: "From $40" },
 ];
 
 const STEPS = [
-  { n: "01", title: "Tell us about the property", copy: "Share the listing details and pick a time that works." },
-  { n: "02", title: "We take care of the shoot", copy: "Our crew handles everything on site, start to finish." },
-  { n: "03", title: "Your media. Ready to share.", copy: "Delivered in 12 hours to your private branded gallery." },
+  {
+    n: "01",
+    title: "Tell us about the property.",
+    copy: "Choose your media and preferred shoot date. We'll get back to you within 24 hours to confirm the details.",
+  },
+  {
+    n: "02",
+    title: "We take care of the shoot.",
+    copy: "Our team captures the space and prepares the photography, films and extras you selected.",
+  },
+  {
+    n: "03",
+    title: "Your media. Ready to share.",
+    copy: "Download your files through a private branded gallery, with formats ready for your listing.",
+  },
 ];
 
-export default function HomePage() {
+function HeroFilm() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     video.muted = true;
-    const tryPlay = () => {
-      video.muted = true;
-      video.play().catch(() => {});
-    };
-    tryPlay();
-    const interval = setInterval(() => {
-      if (video.paused) tryPlay();
-      else clearInterval(interval);
-    }, 800);
-    return () => clearInterval(interval);
+    video.play().catch(() => {});
   }, []);
 
+  const toggle = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().catch(() => {});
+      setPaused(false);
+    } else {
+      video.pause();
+      setPaused(true);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white text-[#1d1d1f]">
+    <div className="relative rounded-md overflow-hidden bg-[#1a1a1a]">
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="w-full aspect-[16/8] object-cover"
+      >
+        <source src="/hero-video.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
+        <p className="text-white text-[15px] font-medium">Spaces. Seen differently.</p>
+        <button
+          onClick={toggle}
+          aria-label={paused ? "Play film" : "Pause film"}
+          className="w-11 h-11 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+        >
+          {paused ? <Play className="w-5 h-5 fill-white" /> : <Pause className="w-5 h-5 fill-white" />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function FeaturedFilm() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  const play = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.play().catch(() => {});
+    setPlaying(true);
+  };
+
+  return (
+    <button
+      onClick={play}
+      className="relative block w-full rounded-md overflow-hidden bg-[#1a1a1a] text-left group"
+      aria-label="Play featured property film"
+    >
+      <video
+        ref={videoRef}
+        playsInline
+        controls={playing}
+        preload="metadata"
+        poster="/stills/still-1.jpg"
+        className="w-full aspect-video object-cover"
+        onPause={() => setPlaying(false)}
+      >
+        <source src="/hero-video.mp4" type="video/mp4" />
+      </video>
+      {!playing && (
+        <span className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/30 group-hover:bg-black/40 transition-colors">
+          <span className="w-16 h-16 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white group-hover:bg-[#c7ff00] group-hover:text-black transition-colors">
+            <Play className="w-7 h-7 fill-current ml-1" />
+          </span>
+          <span className="text-white text-[15px] font-medium">Featured property film</span>
+        </span>
+      )}
+    </button>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-white text-black pt-16">
       <SiteNav />
 
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="relative bg-black text-white overflow-hidden">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/og-image.jpg"
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-black/55" />
-
-        <div className="relative z-10 max-w-[1024px] mx-auto px-6 pt-40 pb-32 md:pt-52 md:pb-44 text-center">
-          <p className="apple-eyebrow !text-[#c7ff00]/90 mb-5">LuxEntra Media · New York</p>
-          <h1 className="text-[48px] md:text-[80px] font-semibold tracking-[-0.02em] leading-[1.05] mb-6">
+      <section className="bg-[#0b0b0b] text-white">
+        <div className="max-w-[1200px] mx-auto px-6 pt-20 md:pt-28 pb-10 text-center">
+          <p className="eyebrow text-white/50 mb-6">LuxEntra Media · New York</p>
+          <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6">
             Every listing.
             <br />
             A lasting impression.
           </h1>
-          <p className="text-[21px] md:text-[24px] leading-snug text-white/80 max-w-2xl mx-auto mb-10">
-            Photography, film, and personal branding — thoughtfully made for real estate.
+          <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10">
+            Photography, films and personal branding.
+            <br className="hidden md:block" /> Thoughtfully made for real estate.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-            <Link to="/order" className="btn-apple-lg">
-              Book a shoot
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-14">
+            <Link to="/order" className="btn-lime">
+              Book a Shoot
             </Link>
-            <a href="#work" className="apple-link-dark !text-[19px]">
-              See the work <ChevronRight className="w-4 h-4" />
+            <a href="#work" className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors">
+              Explore the work <ArrowUpRight className="w-4 h-4" />
             </a>
           </div>
+          <HeroFilm />
+        </div>
+        <div className="h-16 md:h-24" />
+      </section>
+
+      {/* ── The Work ─────────────────────────────────────── */}
+      <section id="work" className="bg-white py-20 md:py-28 scroll-mt-16">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
+            Step inside.
+          </h2>
+          <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12 max-w-2xl">
+            A closer look at our featured property film.
+            <br />
+            From the first approach to the smallest detail.
+          </p>
+
+          <div className="grid lg:grid-cols-3 gap-5">
+            <div className="lg:col-span-2">
+              <FeaturedFilm />
+            </div>
+            <div className="grid grid-rows-2 gap-5">
+              <figure className="relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px]">
+                <img src="/stills/still-1.jpg" alt="Room to explore" className="absolute inset-0 w-full h-full object-cover" />
+                <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
+                  Room to explore.
+                </figcaption>
+              </figure>
+              <figure className="relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px]">
+                <img src="/stills/still-2.jpg" alt="Details worth seeing" className="absolute inset-0 w-full h-full object-cover" />
+                <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
+                  Details worth seeing.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+          <p className="text-[13px] text-black/40 mt-5">Stills from the featured film.</p>
         </div>
       </section>
 
-      {/* ── Services tiles (apple.com promo grid) ────────── */}
-      <section className="bg-white py-16 md:py-24">
-        <div className="max-w-[1200px] mx-auto px-4">
-          <div className="text-center mb-12 px-6">
-            <p className="apple-eyebrow mb-4">What we create</p>
-            <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight">
-              One creative team.
-              <br />
-              Every angle covered.
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
+      {/* ── What we create ───────────────────────────────── */}
+      <section id="services" className="bg-[#f4f4f4] py-20 md:py-28 scroll-mt-16">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
+            One creative team.
+            <br />
+            Every angle covered.
+          </h2>
+          <div className="grid md:grid-cols-3 gap-5">
             {SERVICES.map((s) => (
               <div
-                key={s.title}
-                className={`rounded-[18px] px-8 pt-14 pb-12 text-center ${
-                  s.dark ? "bg-black text-white" : "bg-[#f5f5f7] text-[#1d1d1f]"
+                key={s.n}
+                className={`rounded-md p-8 flex flex-col ${
+                  s.dark ? "bg-[#0b0b0b] text-white" : "bg-white text-black"
                 }`}
               >
-                <h3 className="text-[32px] font-semibold tracking-tight mb-2">{s.title}</h3>
-                <p className={`text-[19px] mb-2 ${s.dark ? "text-white/85" : "text-[#1d1d1f]/85"}`}>
+                <p className={`eyebrow mb-8 ${s.dark ? "text-[#c7ff00]" : "text-black/40"}`}>
+                  {s.n} / {s.label}
+                </p>
+                <h3 className="text-[28px] font-bold tracking-tight leading-tight mb-3">{s.title}</h3>
+                <p className={`text-[15px] leading-relaxed mb-8 ${s.dark ? "text-white/60" : "text-black/60"}`}>
                   {s.copy}
                 </p>
-                <p className={`text-[15px] mb-6 ${s.dark ? "text-white/60" : "text-[#6e6e73]"}`}>
-                  {s.detail}
-                </p>
-                <Link to="/order" className={s.dark ? "apple-link-dark !text-[15px]" : "apple-link !text-[15px]"}>
-                  Get started <ChevronRight className="w-4 h-4" />
-                </Link>
+                <div className="mt-auto">
+                  {s.dark ? (
+                    <Link
+                      to="/#work"
+                      className="inline-flex items-center gap-2 rounded-full bg-[#c7ff00] text-black text-[14px] font-bold px-5 py-2.5 hover:bg-[#d9ff4d] transition-colors"
+                    >
+                      {s.cta} <Play className="w-3.5 h-3.5 fill-black" />
+                    </Link>
+                  ) : (
+                    <Link
+                      to={s.n === "03" ? "/order" : "/#work"}
+                      className="link-dark text-[15px]"
+                    >
+                      {s.cta} <ArrowUpRight className="w-4 h-4" />
+                    </Link>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Work showcase ────────────────────────────────── */}
-      <section id="work" className="bg-black text-white py-24 md:py-32 scroll-mt-12">
-        <div className="max-w-[1024px] mx-auto px-6 text-center">
-          <p className="apple-eyebrow !text-white/50 mb-4">The work</p>
-          <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
-            Step inside.
-          </h2>
-          <p className="text-[19px] md:text-[21px] text-white/70 max-w-2xl mx-auto mb-12">
-            A closer look at our featured property film — from the first approach to the smallest detail.
-          </p>
-          <div className="rounded-[18px] overflow-hidden bg-[#1d1d1f] max-w-4xl mx-auto">
-            <video
-              controls
-              playsInline
-              preload="metadata"
-              poster="/og-image.jpg"
-              className="w-full aspect-video"
-            >
-              <source src="/hero-video.mp4" type="video/mp4" />
-            </video>
+      {/* ── The Listing Essentials ───────────────────────── */}
+      <section id="pricing" className="bg-white py-20 md:py-28 scroll-mt-16">
+        <div className="max-w-[1200px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          <div>
+            <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-6">
+              Your next listing.
+              <br />
+              Ready to launch.
+            </h2>
+            <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
+              The Standard Listing Media Package brings your photography and floor plans together
+              in one straightforward booking.
+            </p>
+            <p className="text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
+              $175
+            </p>
+            <p className="text-[15px] text-black/50 mb-10">per package</p>
+            <Link to="/order" className="btn-dark">
+              Build your package
+            </Link>
           </div>
-          <p className="text-[14px] text-white/40 mt-6 flex items-center justify-center gap-2">
-            <Play className="w-4 h-4" /> Featured property film
-          </p>
+
+          <div className="bg-[#f4f4f4] rounded-md p-8 md:p-10">
+            <h3 className="text-[24px] font-bold tracking-tight mb-8">All the essentials. Included.</h3>
+            <ul className="space-y-4 mb-8">
+              {PACKAGE_FEATURES.map((f) => (
+                <li key={f} className="flex items-start gap-3 text-[16px]">
+                  <span className="mt-0.5 w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
+                    <Check className="w-3 h-3 text-[#c7ff00]" strokeWidth={3} />
+                  </span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-[13px] text-black/50 leading-relaxed">
+              High-resolution and MLS-optimized files. Full usage rights for listing purposes.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ── Package ──────────────────────────────────────── */}
-      <section id="package" className="bg-white py-24 md:py-32 scroll-mt-12">
-        <div className="max-w-[820px] mx-auto px-6 text-center">
-          <p className="apple-eyebrow mb-4">Our core offering</p>
-          <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-6">
-            Standard Listing
+      {/* ── Make it yours ────────────────────────────────── */}
+      <section className="bg-[#f4f4f4] py-20 md:py-28">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
+            A little more.
             <br />
-            Media Package
+            A different perspective.
           </h2>
-          <p className="text-[64px] md:text-[80px] font-semibold tracking-tight mb-4">$175</p>
-          <p className="text-[19px] text-[#6e6e73] mb-12">
-            Everything you need to make your listing stand out.
+          <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12">
+            Choose the extras your listing needs.
+            <br />
+            See your total before sending a request.
           </p>
 
-          <ul className="text-left grid sm:grid-cols-2 gap-x-10 gap-y-4 max-w-2xl mx-auto mb-12">
-            {PACKAGE_FEATURES.map((f) => (
-              <li key={f} className="flex items-start gap-3 text-[17px]">
-                <span className="mt-1 w-5 h-5 rounded-full bg-[#65a30d]/10 flex items-center justify-center shrink-0">
-                  <Check className="w-3 h-3 text-[#65a30d]" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+            {ADD_ONS.map((a) => (
+              <Link
+                key={a.name}
+                to="/order"
+                className="group bg-white rounded-md p-7 flex flex-col hover:shadow-lg transition-shadow"
+              >
+                <span className="flex items-start justify-between mb-6">
+                  <span className="text-[26px] font-bold tracking-tight">{a.price}</span>
+                  <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-[#a8cc00] transition-colors" />
                 </span>
-                <span>{f}</span>
-              </li>
+                <span className="text-[17px] font-bold tracking-tight">{a.name}</span>
+                <span className="text-[14px] text-black/50 mt-1">{a.note}</span>
+              </Link>
             ))}
-          </ul>
+          </div>
 
-          <Link to="/order" className="btn-apple-lg">
-            Select package
+          <Link to="/special" className="link-dark text-[16px]">
+            Listing every week? Explore partnership pricing for agents and teams.
+            <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
 
-      {/* ── Add-ons ──────────────────────────────────────── */}
-      <section id="addons" className="bg-[#f5f5f7] py-24 md:py-32 scroll-mt-12">
-        <div className="max-w-[1024px] mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="apple-eyebrow mb-4">Modular upgrades</p>
-            <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-4">
-              Optional add-ons.
-            </h2>
-            <p className="text-[19px] text-[#6e6e73] max-w-xl mx-auto">
-              Enhance your package with premium upgrades tailored to your listing.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-            {ADD_ONS.map((a) => (
-              <div key={a.name} className="bg-white rounded-[18px] p-8">
-                <p className="text-[28px] font-semibold tracking-tight mb-1">{a.price}</p>
-                <h3 className="text-[19px] font-semibold mb-2">{a.name}</h3>
-                <p className="text-[15px] text-[#6e6e73] leading-relaxed">{a.copy}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center">
-            <Link to="/order" className="apple-link">
-              Customize your package <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Process ──────────────────────────────────────── */}
-      <section className="bg-white py-24 md:py-32">
-        <div className="max-w-[1024px] mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="apple-eyebrow mb-4">From shoot to listing</p>
-            <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight">
-              Easy from the start.
-            </h2>
-          </div>
+      {/* ── From shoot to listing ────────────────────────── */}
+      <section className="bg-white py-20 md:py-28">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
+            Easy from the start.
+          </h2>
           <div className="grid md:grid-cols-3 gap-10">
             {STEPS.map((s) => (
-              <div key={s.n} className="text-center md:text-left">
-                <p className="text-[15px] font-semibold text-[#65a30d] mb-3">{s.n}</p>
-                <h3 className="text-[21px] font-semibold tracking-tight mb-2">{s.title}</h3>
-                <p className="text-[15px] text-[#6e6e73] leading-relaxed">{s.copy}</p>
+              <div key={s.n}>
+                <p className="eyebrow text-black/40 mb-4">{s.n}</p>
+                <h3 className="text-[22px] font-bold tracking-tight mb-3">{s.title}</h3>
+                <p className="text-[15px] text-black/60 leading-relaxed">{s.copy}</p>
               </div>
             ))}
           </div>
@@ -257,24 +367,19 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────── */}
-      <section className="bg-black text-white py-24 md:py-32">
-        <div className="max-w-[820px] mx-auto px-6 text-center">
-          <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
+      <section id="about" className="bg-[#0b0b0b] text-white py-24 md:py-32 scroll-mt-16">
+        <div className="max-w-[1200px] mx-auto px-6 text-center">
+          <img src="/brand/symbol-lime.png" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">
             Let&apos;s make your next listing stand out.
           </h2>
-          <p className="text-[19px] text-white/70 mb-10">
-            Stunning media that makes your properties impossible to ignore.
-          </p>
-          <Link to="/order" className="btn-apple-lg mb-10">
-            Start your order
-          </Link>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-[15px] text-white/60">
-            <a href="mailto:luxentra.media@gmail.com" className="hover:text-white transition-colors">
-              luxentra.media@gmail.com
-            </a>
-            <a href="tel:+13478371257" className="hover:text-white transition-colors">
-              +1 (347) 837-1257
-            </a>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link to="/order" className="btn-lime">
+              Book a Shoot
+            </Link>
+            <Link to="/about" className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors">
+              Meet the team <ArrowUpRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>

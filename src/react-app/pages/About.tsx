@@ -76,7 +76,7 @@ const TEAM: Member[] = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-white text-[#1d1d1f] pt-12">
+    <div className="min-h-screen bg-white text-[#1d1d1f] pt-16">
       <SiteNav />
 
       {/* Hero */}

@@ -46,7 +46,7 @@ const features = [
 
 export default function SpecialPage() {
   return (
-    <div className="min-h-screen bg-white text-[#1d1d1f] pt-12">
+    <div className="min-h-screen bg-white text-[#1d1d1f] pt-16">
       <SiteNav />
 
       <section className="py-24 md:py-32">

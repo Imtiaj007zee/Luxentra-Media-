@@ -82,44 +82,44 @@ export default function OrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#1d1d1f] pt-12">
+    <div className="min-h-screen bg-[#0b0b0b] text-white pt-16">
       <SiteNav />
 
       <section className="py-24 md:py-32">
         <div className="max-w-6xl mx-auto px-6">
-          <Link to="/" className="apple-link !text-[15px] mb-10">
+          <Link to="/" className="link-lime !text-[15px] mb-10">
             <ArrowLeft className="w-4 h-4" /> Back to home
           </Link>
 
           <div className="text-center mb-14">
-            <p className="apple-eyebrow mb-4">Order</p>
+            <p className="eyebrow text-white/40 mb-4">Order</p>
             <h1 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
               Build your package.
             </h1>
-            <p className="text-[19px] text-[#6e6e73]">
+            <p className="text-[19px] text-white/60">
               Start with our standard package and customize with add-ons.
             </p>
           </div>
 
           {/* Special Plan Banner */}
           {specialPlan && (
-            <div className="mb-10 p-8 bg-black text-white rounded-[18px] flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="mb-10 p-8 bg-[#c7ff00] text-black rounded-md flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
-                <p className="apple-eyebrow !text-white/50 mb-2">Weekly partnership plan</p>
+                <p className="eyebrow !text-black/60 mb-2">Weekly partnership plan</p>
                 <h3 className="text-[24px] font-semibold tracking-tight">{specialPlan.name} Plan — {specialPlan.volume}</h3>
-                <p className="text-white/60 text-[15px] mt-2">
-                  <span className="text-[28px] font-semibold text-white">${specialPlan.price}</span>
+                <p className="text-black/60 text-[15px] mt-2">
+                  <span className="text-[28px] font-semibold text-black">${specialPlan.price}</span>
                   <span className="ml-2">per listing · Save ${specialPlan.savings} per listing</span>
                 </p>
               </div>
-              <Link to="/special" className="apple-link-dark !text-[15px] shrink-0">
+              <Link to="/special" className="inline-flex items-center gap-1 text-black font-semibold underline underline-offset-4 !text-[15px] shrink-0">
                 Change plan <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
           )}
 
           {submitStatus === "success" && (
-            <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-[18px]">
+            <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-md">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
                   <Check className="w-5 h-5 text-green-600" />
@@ -132,7 +132,7 @@ export default function OrderPage() {
             </div>
           )}
           {submitStatus === "error" && (
-            <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-[18px]">
+            <div className="mb-8 p-6 bg-red-50 border border-red-200 rounded-md">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center shrink-0">
                   <AlertCircle className="w-5 h-5 text-red-600" />
@@ -150,12 +150,12 @@ export default function OrderPage() {
             <div>
               {/* Standard package card */}
               <div
-                className={`rounded-[18px] p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
+                className={`rounded-md p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
                 onClick={() => setIncludeStandard(!includeStandard)}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#c7ff00]" : "bg-[#f5f5f7]"}`}>
-                    <Camera className={`w-6 h-6 ${includeStandard ? "text-black" : "text-[#6e6e73]"}`} />
+                  <div className={`w-12 h-12 rounded-md flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#c7ff00]" : "bg-white/10"}`}>
+                    <Camera className={`w-6 h-6 ${includeStandard ? "text-black" : "text-white/60"}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-2">
@@ -164,16 +164,16 @@ export default function OrderPage() {
                       </h3>
                       <div className="text-right flex items-center gap-2 shrink-0">
                         <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#c7ff00]" : "border-2 border-[#d2d2d7]"}`}>
-                          {includeStandard ? <Check className="w-3.5 h-3.5 text-black" /> : <Plus className="w-3.5 h-3.5 text-[#86868b]" />}
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}>
+                          {includeStandard ? <Check className="w-3.5 h-3.5 text-black" /> : <Plus className="w-3.5 h-3.5 text-white/40" />}
                         </div>
                       </div>
                     </div>
-                    {specialPlan && <span className="block text-[15px] text-[#86868b] line-through mb-3">$175</span>}
+                    {specialPlan && <span className="block text-[15px] text-white/40 line-through mb-3">$175</span>}
                     {specialPlan && (
-                      <p className="text-[15px] text-[#65a30d] font-medium mb-3">Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
+                      <p className="text-[15px] text-[#c7ff00] font-medium mb-3">Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
                     )}
-                    <ul className="text-[15px] text-[#6e6e73] space-y-1.5">
+                    <ul className="text-[15px] text-white/60 space-y-1.5">
                       {specialPlan ? (
                         <>
                           <li>• Up to 1,999 sq ft properties</li>
@@ -200,7 +200,7 @@ export default function OrderPage() {
                       <button
                         type="button"
                         onClick={() => setOverrideToStandard(true)}
-                        className="mt-4 text-[13px] font-medium px-4 py-2 rounded-full border border-[#d2d2d7] text-[#1d1d1f] hover:bg-[#f5f5f7] transition-colors"
+                        className="mt-4 text-[13px] font-medium px-4 py-2 rounded-full border border-white/15 text-white hover:bg-white/10 transition-colors"
                       >
                         ← Switch to Standard Package ($175)
                       </button>
@@ -224,37 +224,37 @@ export default function OrderPage() {
                   return (
                     <div
                       key={addOn.id}
-                      className={`rounded-[18px] p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#d2d2d7] hover:border-[#86868b]"}`}
+                      className={`rounded-md p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
                     >
                       <div className="flex items-center gap-4 cursor-pointer" onClick={() => toggleAddOn(addOn.id)}>
-                        <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-[#f5f5f7]"}`}>
-                          <Icon className={`w-5 h-5 ${isSelected ? "text-black" : "text-[#6e6e73]"}`} />
+                        <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-white/10"}`}>
+                          <Icon className={`w-5 h-5 ${isSelected ? "text-black" : "text-white/60"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
                             <h3 className="font-semibold text-[17px]">{addOn.name}</h3>
                             <span className="font-semibold shrink-0">${displayPrice}</span>
                           </div>
-                          {addOn.id === "flyer" && <p className="text-[13px] text-[#86868b] mt-0.5">$39 for 1 · $35 each for 2+</p>}
-                          {addOn.id === "reel" && <p className="text-[13px] text-[#86868b] mt-0.5">Concept, scripting, filming & editing</p>}
+                          {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">$39 for 1 · $35 each for 2+</p>}
+                          {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">Concept, scripting, filming & editing</p>}
                         </div>
                         <button
                           type="button"
                           aria-label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-[#d2d2d7]"}`}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
                         >
-                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-[#86868b]" />}
+                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
                         </button>
                       </div>
                       {addOn.id === "flyer" && isSelected && (
-                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-[#e8e8ed]">
-                          <span className="text-[15px] text-[#6e6e73] font-medium">Quantity:</span>
+                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10">
+                          <span className="text-[15px] text-white/60 font-medium">Quantity:</span>
                           <div className="flex items-center gap-2">
-                            <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">−</button>
+                            <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
                             <span className="w-8 text-center font-semibold">{flyerQty}</span>
-                            <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">+</button>
+                            <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-[#6e6e73]">= <span className="font-semibold text-[#1d1d1f]">${flyerQty === 1 ? 39 : flyerQty * 35}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">${flyerQty === 1 ? 39 : flyerQty * 35}</span></span>
                           {flyerQty > 1 && (
                             <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
                               Save ${39 * flyerQty - flyerQty * 35} vs full price
@@ -263,14 +263,14 @@ export default function OrderPage() {
                         </div>
                       )}
                       {addOn.id === "reel" && isSelected && (
-                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-[#e8e8ed]">
-                          <span className="text-[15px] text-[#6e6e73] font-medium">Quantity:</span>
+                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10">
+                          <span className="text-[15px] text-white/60 font-medium">Quantity:</span>
                           <div className="flex items-center gap-2">
-                            <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">−</button>
+                            <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
                             <span className="w-8 text-center font-semibold">{reelQty}</span>
-                            <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-[#d2d2d7] flex items-center justify-center text-[#1d1d1f] hover:bg-[#f5f5f7] font-bold">+</button>
+                            <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-[#6e6e73]">= <span className="font-semibold text-[#1d1d1f]">${addOn.price * reelQty}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">${addOn.price * reelQty}</span></span>
                         </div>
                       )}
                     </div>
@@ -278,14 +278,14 @@ export default function OrderPage() {
                 })}
 
                 {/* Virtual Staging */}
-                <div className={`rounded-[18px] p-4 border transition-colors ${selectedStagingTier ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#d2d2d7]"}`}>
+                <div className={`rounded-md p-4 border transition-colors ${selectedStagingTier ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15"}`}>
                   <div className="flex items-center gap-4 mb-3">
-                    <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${selectedStagingTier ? "bg-[#c7ff00]" : "bg-[#f5f5f7]"}`}>
-                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-black" : "text-[#6e6e73]"}`} />
+                    <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${selectedStagingTier ? "bg-[#c7ff00]" : "bg-white/10"}`}>
+                      <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-black" : "text-white/60"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-[17px]">Virtual Staging</h3>
-                      <p className="text-[15px] text-[#6e6e73]">Photorealistic digital staging, delivered in 24hrs</p>
+                      <p className="text-[15px] text-white/60">Photorealistic digital staging, delivered in 24hrs</p>
                     </div>
                     {selectedStagingTier && (
                       <span className="font-semibold shrink-0">${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price}</span>
@@ -297,10 +297,10 @@ export default function OrderPage() {
                         key={tier.id}
                         type="button"
                         onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
-                        className={`flex-1 py-2 px-3 rounded-[14px] text-[15px] font-medium border-2 transition-colors ${
+                        className={`flex-1 py-2 px-3 rounded-md text-[15px] font-medium border-2 transition-colors ${
                           selectedStagingTier === tier.id
                             ? "bg-[#c7ff00] text-black border-[#c7ff00]"
-                            : "bg-white text-[#1d1d1f] border-[#d2d2d7] hover:border-[#86868b]"
+                            : "bg-transparent text-white border-white/25 hover:border-white/50"
                         }`}
                       >
                         {tier.label}
@@ -315,13 +315,13 @@ export default function OrderPage() {
               {/* Special Package link */}
               <Link
                 to="/special"
-                className="block w-full mt-6 p-6 rounded-[18px] border-2 border-dashed border-[#d2d2d7] hover:border-[#c7ff00] transition-colors group"
+                className="block w-full mt-6 p-6 rounded-md border-2 border-dashed border-white/15 hover:border-[#c7ff00] transition-colors group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="apple-eyebrow mb-1">Limited offer</p>
+                    <p className="eyebrow text-white/40 mb-1">Limited offer</p>
                     <h3 className="text-[19px] font-semibold tracking-tight">Special Package</h3>
-                    <p className="text-[15px] text-[#6e6e73] mt-1">Exclusive bundles tailored for your needs</p>
+                    <p className="text-[15px] text-white/60 mt-1">Exclusive bundles tailored for your needs</p>
                   </div>
                   <div className="w-10 h-10 rounded-full bg-[#c7ff00] text-black flex items-center justify-center shrink-0 group-hover:bg-[#d9ff4d] transition-colors">
                     <ChevronRight className="w-5 h-5" />
@@ -330,26 +330,26 @@ export default function OrderPage() {
               </Link>
 
               {/* Order summary */}
-              <div className="mt-8 bg-[#f5f5f7] rounded-[18px] p-6">
+              <div className="mt-8 bg-white/10 rounded-md p-6">
                 <h3 className="text-[19px] font-semibold tracking-tight mb-4 flex items-center gap-2">
                   <ShoppingCart className="w-5 h-5" /> Order summary
                 </h3>
                 <div className="space-y-2 text-[15px] mb-4">
                   {includeStandard && (
                     <div className="flex justify-between">
-                      <span className="text-[#6e6e73]">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span>
+                      <span className="text-white/60">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span>
                       <span className="font-medium">${standardPackagePrice}</span>
                     </div>
                   )}
-                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-[#6e6e73]">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
+                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
                   {selectedStagingTier && (
                     <div className="flex justify-between">
-                      <span className="text-[#6e6e73]">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
+                      <span className="text-white/60">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
                       <span className="font-medium">${stagingPrice}</span>
                     </div>
                   )}
                 </div>
-                <div className="pt-4 border-t border-[#d2d2d7]">
+                <div className="pt-4 border-t border-white/15">
                   <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>${totalPrice}</span></div>
                 </div>
               </div>
@@ -358,7 +358,7 @@ export default function OrderPage() {
             {/* Right: details form */}
             <div>
               <h2 className="text-[32px] font-semibold tracking-tight mb-4">Your details</h2>
-              <p className="text-[17px] text-[#6e6e73] mb-8">Fill out your information and we&apos;ll confirm within 24 hours.</p>
+              <p className="text-[17px] text-white/60 mb-8">Fill out your information and we&apos;ll confirm within 24 hours.</p>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Name *</Label>
@@ -369,7 +369,7 @@ export default function OrderPage() {
                   <Input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Phone <span className="text-[#86868b] font-normal">(optional)</span></Label>
+                  <Label className="text-base font-medium">Phone <span className="text-white/40 font-normal">(optional)</span></Label>
                   <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
                 </div>
                 <div className="space-y-2">
@@ -420,7 +420,7 @@ export default function OrderPage() {
                   <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={formData.shoot_location} onChange={(e) => setFormData({ ...formData, shoot_location: e.target.value })} className="h-12 text-base" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Additional Details <span className="text-[#86868b] font-normal">(optional)</span></Label>
+                  <Label className="text-base font-medium">Additional Details <span className="text-white/40 font-normal">(optional)</span></Label>
                   <Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." />
                 </div>
                 <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-[17px] rounded-full">
