@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router";
-import { ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, ChevronRight } from "lucide-react";
+import { Link } from "react-router";
+import { ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText } from "lucide-react";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -34,10 +34,6 @@ export default function OrderPage() {
   const [reelQty, setReelQty] = useState(1);
   const [includeStandard, setIncludeStandard] = useState(true);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
-  const location = useLocation();
-  const locationSpecialPlan = (location.state as any)?.specialPlan || null;
-  const [overrideToStandard, setOverrideToStandard] = useState(false);
-  const specialPlan = overrideToStandard ? null : locationSpecialPlan;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -51,7 +47,7 @@ export default function OrderPage() {
     ? VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price || 0
     : 0;
 
-  const standardPackagePrice = specialPlan ? specialPlan.price : 175;
+  const standardPackagePrice = 175;
 
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
     const addon = ADD_ONS.find((a) => a.id === id);
@@ -101,23 +97,6 @@ export default function OrderPage() {
             </p>
           </div>
 
-          {/* Special Plan Banner */}
-          {specialPlan && (
-            <div className="mb-10 p-8 bg-[#c7ff00] text-black rounded-md flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div>
-                <p className="eyebrow !text-black/60 mb-2">Weekly partnership plan</p>
-                <h3 className="text-[24px] font-semibold tracking-tight">{specialPlan.name} Plan — {specialPlan.volume}</h3>
-                <p className="text-black/60 text-[15px] mt-2">
-                  <span className="text-[28px] font-semibold text-black">${specialPlan.price}</span>
-                  <span className="ml-2">per listing · Save ${specialPlan.savings} per listing</span>
-                </p>
-              </div>
-              <Link to="/special" className="inline-flex items-center gap-1 text-black font-semibold underline underline-offset-4 !text-[15px] shrink-0">
-                Change plan <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
-
           {submitStatus === "success" && (
             <div className="mb-8 p-6 bg-green-50 border border-green-200 rounded-md">
               <div className="flex items-start gap-3">
@@ -160,7 +139,7 @@ export default function OrderPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3 className="text-[19px] font-semibold tracking-tight">
-                        {specialPlan ? `${specialPlan.name} Plan` : "Standard Listing Media Package"}
+                        Standard Listing Media Package
                       </h3>
                       <div className="text-right flex items-center gap-2 shrink-0">
                         <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
@@ -169,42 +148,14 @@ export default function OrderPage() {
                         </div>
                       </div>
                     </div>
-                    {specialPlan && <span className="block text-[15px] text-white/40 line-through mb-3">$175</span>}
-                    {specialPlan && (
-                      <p className="text-[15px] text-[#c7ff00] font-medium mb-3">Weekly Partnership · {specialPlan.volume} · Save ${specialPlan.savings}/listing</p>
-                    )}
                     <ul className="text-[15px] text-white/60 space-y-1.5">
-                      {specialPlan ? (
-                        <>
-                          <li>• Up to 1,999 sq ft properties</li>
-                          <li>• 20–45 professionally edited images</li>
-                          <li>• Full interior + exterior coverage</li>
-                          <li>• Same-day or 24-hour delivery</li>
-                          <li>• Priority scheduling</li>
-                          <li>• Walkthrough / Cinematic Video</li>
-                          <li>• Private online gallery (one-click download)</li>
-                          <li>• Virtual Staging images or Drone coverage</li>
-                        </>
-                      ) : (
-                        <>
-                          <li>• 25–45 MLS-ready photos</li>
-                          <li>• 1 twilight photo</li>
-                          <li>• 2D black & white floor plans</li>
-                          <li>• 12-hour delivery</li>
-                          <li>• Private branded gallery</li>
-                          <li>• Free revisions</li>
-                        </>
-                      )}
+                      <li>• 25–45 MLS-ready photos</li>
+                      <li>• 1 twilight photo</li>
+                      <li>• 2D black & white floor plans</li>
+                      <li>• 12-hour delivery</li>
+                      <li>• Private branded gallery</li>
+                      <li>• Free revisions</li>
                     </ul>
-                    {specialPlan && (
-                      <button
-                        type="button"
-                        onClick={() => setOverrideToStandard(true)}
-                        className="mt-4 text-[13px] font-medium px-4 py-2 rounded-full border border-white/15 text-white hover:bg-white/10 transition-colors"
-                      >
-                        ← Switch to Standard Package ($175)
-                      </button>
-                    )}
                   </div>
                 </div>
               </div>
@@ -312,23 +263,6 @@ export default function OrderPage() {
                 </div>
               </div>
 
-              {/* Special Package link */}
-              <Link
-                to="/special"
-                className="block w-full mt-6 p-6 rounded-md border-2 border-dashed border-white/15 hover:border-[#c7ff00] transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="eyebrow text-white/40 mb-1">Limited offer</p>
-                    <h3 className="text-[19px] font-semibold tracking-tight">Special Package</h3>
-                    <p className="text-[15px] text-white/60 mt-1">Exclusive bundles tailored for your needs</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-[#c7ff00] text-black flex items-center justify-center shrink-0 group-hover:bg-[#d9ff4d] transition-colors">
-                    <ChevronRight className="w-5 h-5" />
-                  </div>
-                </div>
-              </Link>
-
               {/* Order summary */}
               <div className="mt-8 bg-white/10 rounded-md p-6">
                 <h3 className="text-[19px] font-semibold tracking-tight mb-4 flex items-center gap-2">
@@ -337,7 +271,7 @@ export default function OrderPage() {
                 <div className="space-y-2 text-[15px] mb-4">
                   {includeStandard && (
                     <div className="flex justify-between">
-                      <span className="text-white/60">{specialPlan ? `${specialPlan.name} Plan` : "Standard Package"}</span>
+                      <span className="text-white/60">Standard Package</span>
                       <span className="font-medium">${standardPackagePrice}</span>
                     </div>
                   )}

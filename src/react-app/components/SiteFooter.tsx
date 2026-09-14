@@ -37,9 +37,6 @@ export default function SiteFooter() {
         <div className="pt-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <p className="text-[13px] text-white/50">© 2026 LuxEntra Media.</p>
           <div className="flex items-center gap-8">
-            <Link to="/special" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
-              Partnerships
-            </Link>
             <Link to="/about" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
               Our team
             </Link>

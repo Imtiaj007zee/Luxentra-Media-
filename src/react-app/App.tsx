@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router";
-import SpecialPage from "./pages/Special";
 import AboutPage from "./pages/About";
 import HomePage from "@/react-app/pages/Home";
 import BookPage from "@/react-app/pages/Book";
@@ -33,7 +32,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/book" element={<BookPage />} />
-        <Route path="/special" element={<SpecialPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/order" element={<OrderPage />} />
         <Route path="/work" element={<WorkPage />} />

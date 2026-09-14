@@ -344,10 +344,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          <Link to="/special" className="link-dark text-[16px]">
-            Listing every week? Explore partnership pricing for agents and teams.
-            <ArrowUpRight className="w-4 h-4" />
-          </Link>
         </div>
       </section>
 
