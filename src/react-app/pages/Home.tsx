@@ -41,7 +41,7 @@ const ADD_ONS = [
   { price: "$99", name: "Drone Photos & Video", copy: "Aerial perspectives of the property and the block." },
   { price: "$99", name: "3D Virtual Tour", copy: "An interactive walkthrough buyers can explore anywhere." },
   { price: "$179", name: "Walkthrough / Cinematic Video", copy: "A professionally edited film of the property's best features." },
-  { price: "$399", name: "Creative Personal Branding Reel", copy: "Concept, scripting, filming and editing for social." },
+  { price: "$499", name: "Creative Personal Branding Reel", copy: "Concept, scripting, filming and editing for social." },
   { price: "from $40", name: "Virtual Staging", copy: "Photorealistic digital staging, delivered in 24 hours." },
 ];
 
