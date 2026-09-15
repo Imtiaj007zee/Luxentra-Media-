@@ -39,8 +39,49 @@ const PACKAGE_FEATURES = [
   "Light, color & exposure revisions",
 ];
 
-const ADD_ONS = [
-  { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
+const LAUNCH_PACKAGES = [
+  {
+    name: "Market Launch",
+    price: 399,
+    blurb: "Enter the market looking polished, professional, and ready to compete.",
+    features: [
+      "Premium interior and exterior photography",
+      "Aerial drone photography",
+      "Whole-property virtual staging",
+      "Professionally edited, listing-ready visuals",
+      "MLS-, web-, and social-ready delivery",
+    ],
+  },
+  {
+    name: "Listing Premiere",
+    price: 699,
+    badge: "Most chosen",
+    featured: true,
+    blurb: "Create the kind of listing buyers stop scrolling to experience.",
+    features: [
+      "Everything included in Market Launch",
+      "Cinematic property film",
+      "Interior, exterior, and aerial storytelling",
+      "Professional editing, color, and music",
+      "Optimized delivery for websites and social media",
+    ],
+  },
+  {
+    name: "Agent Authority",
+    price: 899,
+    blurb: "Showcase the property while building the trusted name behind it.",
+    features: [
+      "Everything included in Listing Premiere",
+      "Complete A-to-Z creative production",
+      "Personalized concept development",
+      "Custom-crafted agent script",
+      "Guided on-camera direction",
+      "Premium agent branding incorporated naturally throughout the film",
+    ],
+  },
+];
+
+const ADD_ONS = [  { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
   { name: "Virtual Staging", price: "From $40", note: "From $40" },
   { name: "Drone Photos & Video", price: "$99", note: "$99" },
   { name: "3D Virtual Tour", price: "$99", note: "$99" },
@@ -309,6 +350,96 @@ export default function HomePage() {
               High-resolution and MLS-optimized files. Full usage rights for listing purposes.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ── Don't just list it. Launch it. ─────────────────── */}
+      <section className="bg-black text-white py-20 md:py-28">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <p className="apple-eyebrow !text-[#c7ff00] mb-4">Launch packages</p>
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
+            Don&apos;t just list it.
+            <br />
+            Launch it.
+          </h2>
+          <p className="text-[17px] md:text-[19px] text-white/60 leading-relaxed mb-14 max-w-2xl">
+            Three levels of visual marketing designed to capture buyers&apos;
+            attention, impress sellers, and make your name more memorable.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {LAUNCH_PACKAGES.map((p) => (
+              <div
+                key={p.name}
+                className={`relative rounded-md p-8 md:p-10 flex flex-col ${
+                  p.featured
+                    ? "bg-[#c7ff00] text-black"
+                    : "bg-white/5 border border-white/10"
+                }`}
+              >
+                {p.badge && (
+                  <span
+                    className={`absolute -top-3.5 left-8 text-[11px] font-bold uppercase tracking-[0.14em] px-3.5 py-1.5 rounded-full ${
+                      p.featured ? "bg-black text-[#c7ff00]" : "bg-[#c7ff00] text-black"
+                    }`}
+                  >
+                    {p.badge}
+                  </span>
+                )}
+                <h3 className="text-[24px] font-bold tracking-tight mb-3">
+                  {p.name}
+                </h3>
+                <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${p.featured ? "text-black/60" : "text-white/50"}`}>
+                  Starting at
+                </p>
+                <p className="text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
+                  ${p.price}
+                </p>
+                <p className={`text-[15px] leading-relaxed mb-8 ${p.featured ? "text-black/70" : "text-white/60"}`}>
+                  {p.blurb}
+                </p>
+                <ul className="space-y-3.5 mb-10 flex-1">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-[15px]">
+                      <span
+                        className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                          p.featured ? "bg-black" : "bg-[#c7ff00]"
+                        }`}
+                      >
+                        <Check
+                          className={`w-3 h-3 ${p.featured ? "text-[#c7ff00]" : "text-black"}`}
+                          strokeWidth={3}
+                        />
+                      </span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/order" className={p.featured ? "btn-dark" : "btn-lime"}>
+                  Choose This Package
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Need something more custom? ─────────────────────── */}
+      <section className="bg-white py-20 md:py-28">
+        <div className="max-w-[1200px] mx-auto px-6 text-center">
+          <h2 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] leading-tight mb-5">
+            Need something more custom?
+          </h2>
+          <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-2xl mx-auto">
+            Enhance any package with a 3D tour, floor plan, twilight imagery,
+            additional social edits, or expedited delivery.
+            <br />
+            Tell us about your property, and we&apos;ll create the right level of
+            coverage for your listing.
+          </p>
+          <Link to="/order" className="btn-dark">
+            Request a Custom Quote
+          </Link>
         </div>
       </section>
 
