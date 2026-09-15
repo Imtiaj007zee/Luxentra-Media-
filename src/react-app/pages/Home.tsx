@@ -138,11 +138,11 @@ function FeaturedFilm() {
         playsInline
         controls={playing}
         preload="metadata"
-        poster="/stills/poster.jpg"
-        className="w-full aspect-video object-cover"
+        poster="/work/posters/sold-it-fin.jpg"
+        className="w-full aspect-[3/4] object-cover"
         onPause={() => setPlaying(false)}
       >
-        <source src="/hero-video.mp4" type="video/mp4" />
+        <source src="/work/sold-it-fin.mp4" type="video/mp4" />
       </video>
       {!playing && (
         <span className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/30 group-hover:bg-black/40 transition-colors">
@@ -205,15 +205,15 @@ export default function HomePage() {
             </div>
             <div className="grid grid-rows-2 gap-5">
               <figure className="relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px]">
-                <img src="/stills/still-1.jpg" alt="Room to explore" className="absolute inset-0 w-full h-full object-cover" />
+                <img src="/stills/still-1.jpg" alt="Just sold in Morris Park" className="absolute inset-0 w-full h-full object-cover" />
                 <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
-                  Room to explore.
+                  Just sold — $1,275,000.
                 </figcaption>
               </figure>
               <figure className="relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px]">
-                <img src="/stills/still-2.jpg" alt="Details worth seeing" className="absolute inset-0 w-full h-full object-cover" />
+                <img src="/stills/still-2.jpg" alt="Sold over asking" className="absolute inset-0 w-full h-full object-cover" />
                 <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
-                  Details worth seeing.
+                  Sold $60K over asking.
                 </figcaption>
               </figure>
             </div>
