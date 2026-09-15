@@ -47,7 +47,10 @@ export default function OrderPage() {
   const packageParam = searchParams.get("package");
   useEffect(() => {
     const bundle = getBundleById(packageParam);
-    if (bundle) setSelectedBundle(bundle.id);
+    if (bundle) {
+      setSelectedBundle(bundle.id);
+      setIncludeStandard(false);
+    }
   }, [packageParam]);
 
   const selectedBundleData = getBundleById(selectedBundle);
@@ -144,6 +147,42 @@ export default function OrderPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Left: package builder */}
             <div>
+              {/* Standard package card */}
+              <div
+                className={`rounded-md p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
+                onClick={() => {
+                  const next = !includeStandard;
+                  setIncludeStandard(next);
+                  if (next) setSelectedBundle(null);
+                }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`w-12 h-12 rounded-md flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#c7ff00]" : "bg-white/10"}`}>
+                    <Camera className={`w-6 h-6 ${includeStandard ? "text-black" : "text-white/60"}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <h3 className="text-[19px] font-semibold tracking-tight">
+                        Standard Listing Media Package
+                      </h3>
+                      <div className="text-right flex items-center gap-2 shrink-0">
+                        <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}>
+                          {includeStandard ? <Check className="w-3.5 h-3.5 text-black" /> : <Plus className="w-3.5 h-3.5 text-white/40" />}
+                        </div>
+                      </div>
+                    </div>
+                    <ul className="text-[15px] text-white/60 space-y-1.5">
+                      <li>• 25–45 MLS-ready photos</li>
+                      <li>• 1 twilight photo</li>
+                      <li>• 24-hour delivery</li>
+                      <li>• Private branded gallery</li>
+                      <li>• Free revisions</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               {/* Launch bundles */}
               <h2 className="text-[24px] font-semibold tracking-tight mb-5">Launch bundles</h2>
               <div className="space-y-3 mb-8">
@@ -154,7 +193,14 @@ export default function OrderPage() {
                       key={bundle.id}
                       className={`rounded-md p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
                     >
-                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => setSelectedBundle(isSelected ? null : bundle.id)}>
+                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => {
+                        if (isSelected) {
+                          setSelectedBundle(null);
+                        } else {
+                          setSelectedBundle(bundle.id);
+                          setIncludeStandard(false);
+                        }
+                      }}>
                         <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-white/10"}`}>
                           <Rocket className={`w-5 h-5 ${isSelected ? "text-black" : "text-white/60"}`} />
                         </div>
@@ -190,38 +236,6 @@ export default function OrderPage() {
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Standard package card */}
-              <div
-                className={`rounded-md p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
-                onClick={() => setIncludeStandard(!includeStandard)}
-              >
-                <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-md flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#c7ff00]" : "bg-white/10"}`}>
-                    <Camera className={`w-6 h-6 ${includeStandard ? "text-black" : "text-white/60"}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="text-[19px] font-semibold tracking-tight">
-                        Standard Listing Media Package
-                      </h3>
-                      <div className="text-right flex items-center gap-2 shrink-0">
-                        <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}>
-                          {includeStandard ? <Check className="w-3.5 h-3.5 text-black" /> : <Plus className="w-3.5 h-3.5 text-white/40" />}
-                        </div>
-                      </div>
-                    </div>
-                    <ul className="text-[15px] text-white/60 space-y-1.5">
-                      <li>• 25–45 MLS-ready photos</li>
-                      <li>• 1 twilight photo</li>
-                      <li>• 24-hour delivery</li>
-                      <li>• Private branded gallery</li>
-                      <li>• Free revisions</li>
-                    </ul>
-                  </div>
-                </div>
               </div>
 
               {/* Add-ons */}
