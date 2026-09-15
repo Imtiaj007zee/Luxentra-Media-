@@ -17,23 +17,6 @@ type Member = {
 
 const TEAM: Member[] = [
   {
-    role: "Creative Director",
-    name: "Shamrat Neero",
-    title: "Commercial Director · FPV Drone Pilot · DOP",
-    bio: [
-      "A cinematic filmmaker with over 8 years of experience in visual storytelling and commercial production. Shamrat has collaborated with 30+ national and international brands, blending creativity, motion, and precision to craft immersive visual experiences.",
-    ],
-    highlights: [
-      "30+ Brand Collaborations (Netflix, DJI, Sony, Tilta)",
-      "8+ Years in Cinematic & Commercial Production",
-      "Specialized in FPV Drone & Dynamic Camera Work",
-      "Expertise in Storytelling, Color, and Visual Direction",
-    ],
-    quote: "We don't just capture visuals, we create cinematic experiences.",
-    badge: "8+",
-    photo: "/Neero.JPG",
-  },
-  {
     role: "Founder",
     name: "Imtiaj Sharker Zishan",
     knownAs: "Zee",
@@ -71,6 +54,42 @@ const TEAM: Member[] = [
     quote: "Where vision meets execution.",
     badge: "4+",
     photo: "/Asgar.JPG",
+  },
+  {
+    role: "Creative Head",
+    name: "Shamim Mridha",
+    title: "Creative Head · Motion Designer · Video Editor · VFX Artist",
+    bio: [
+      "A creative visual specialist with 6+ years of industry experience, Shamim transforms ideas into bold, audience-focused content designed to capture attention and drive action. His expertise spans motion design, video editing, visual effects, graphic design, and brand-focused storytelling.",
+      "As Creative Head at LuxEntra Media, Shamim leads the visual direction behind each project, combining creativity with commercial strategy. His approach ensures that every visual not only looks polished but also communicates clearly, strengthens the brand, and supports meaningful business growth.",
+    ],
+    highlights: [
+      "6+ Years of Creative Industry Experience",
+      "Motion Design, Video Editing & Visual Effects",
+      "Graphic Design for Social Media and Digital Campaigns",
+      "Branding, Logos, Covers & Promotional Visuals",
+      "Conversion-Focused Visual Storytelling",
+    ],
+    quote: "Turning bold ideas into visuals that capture attention, inspire action, and convert.",
+    badge: "6+",
+    photo: "/Shamim.JPG",
+  },
+  {
+    role: "Creative Director",
+    name: "Shamrat Neero",
+    title: "Commercial Director · FPV Drone Pilot · DOP",
+    bio: [
+      "A cinematic filmmaker with over 8 years of experience in visual storytelling and commercial production. Shamrat has collaborated with 30+ national and international brands, blending creativity, motion, and precision to craft immersive visual experiences.",
+    ],
+    highlights: [
+      "30+ Brand Collaborations (Netflix, DJI, Sony, Tilta)",
+      "8+ Years in Cinematic & Commercial Production",
+      "Specialized in FPV Drone & Dynamic Camera Work",
+      "Expertise in Storytelling, Color, and Visual Direction",
+    ],
+    quote: "We don't just capture visuals, we create cinematic experiences.",
+    badge: "8+",
+    photo: "/Neero.JPG",
   },
 ];
 
