@@ -100,7 +100,7 @@ export default function AboutPage() {
       <SiteNav />
 
       {/* Hero */}
-      <section className="bg-white py-24 md:py-32">
+      <section className="bg-white pt-20 md:pt-28 pb-8 md:pb-10">
         <div className="max-w-[1024px] mx-auto px-6 text-center">
           <p className="apple-eyebrow mb-4">Our story</p>
           <h1 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-6">
@@ -116,7 +116,7 @@ export default function AboutPage() {
       {TEAM.map((m, i) => (
         <section
           key={m.name}
-          className={`${i % 2 === 1 ? "bg-[#f5f5f7]" : "bg-white"} py-24 md:py-32`}
+          className={`${i % 2 === 1 ? "bg-[#f5f5f7]" : "bg-white"} py-14 md:py-20`}
         >
           <div className="max-w-[1024px] mx-auto px-6 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
             {/* Photo */}
