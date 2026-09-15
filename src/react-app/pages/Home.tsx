@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check, Pause, Play } from "lucide-react";
+import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
@@ -68,7 +68,6 @@ const STEPS = [
 
 function HeroFilm() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -77,20 +76,12 @@ function HeroFilm() {
     video.play().catch(() => {});
   }, []);
 
-  const toggle = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      video.play().catch(() => {});
-      setPaused(false);
-    } else {
-      video.pause();
-      setPaused(true);
-    }
-  };
-
   return (
-    <div className="relative rounded-md overflow-hidden bg-[#1a1a1a]">
+    <Link
+      to="/work"
+      className="relative block rounded-md overflow-hidden bg-[#1a1a1a] group"
+      aria-label="View our work"
+    >
       <video
         ref={videoRef}
         autoPlay
@@ -104,15 +95,11 @@ function HeroFilm() {
       </video>
       <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
         <p className="text-white text-[15px] font-medium">Spaces. Seen differently.</p>
-        <button
-          onClick={toggle}
-          aria-label={paused ? "Play film" : "Pause film"}
-          className="w-11 h-11 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-        >
-          {paused ? <Play className="w-5 h-5 fill-white" /> : <Pause className="w-5 h-5 fill-white" />}
-        </button>
+        <span className="inline-flex items-center gap-1 text-white text-[14px] font-medium group-hover:text-[#c7ff00] transition-colors">
+          View work <ArrowUpRight className="w-4 h-4" />
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }
 
