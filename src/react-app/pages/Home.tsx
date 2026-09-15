@@ -39,47 +39,7 @@ const PACKAGE_FEATURES = [
   "Light, color & exposure revisions",
 ];
 
-const LAUNCH_PACKAGES = [
-  {
-    name: "Market Launch",
-    price: 399,
-    blurb: "Enter the market looking polished, professional, and ready to compete.",
-    features: [
-      "Premium interior and exterior photography",
-      "Aerial drone photography",
-      "Whole-property virtual staging",
-      "Professionally edited, listing-ready visuals",
-      "MLS-, web-, and social-ready delivery",
-    ],
-  },
-  {
-    name: "Listing Premiere",
-    price: 699,
-    blurb: "Create the kind of listing buyers stop scrolling to experience.",
-    features: [
-      "Everything included in Market Launch",
-      "Cinematic property film",
-      "Interior, exterior, and aerial storytelling",
-      "Professional editing, color, and music",
-      "Optimized delivery for websites and social media",
-    ],
-  },
-  {
-    name: "Agent Authority",
-    price: 899,
-    badge: "Most chosen",
-    featured: true,
-    blurb: "Showcase the property while building the trusted name behind it.",
-    features: [
-      "Everything included in Listing Premiere",
-      "Complete A-to-Z creative production",
-      "Personalized concept development",
-      "Custom-crafted agent script",
-      "Guided on-camera direction",
-      "Premium agent branding incorporated naturally throughout the film",
-    ],
-  },
-];
+import { LAUNCH_BUNDLES } from "@/react-app/data/packages";
 
 const ADD_ONS = [  { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
   { name: "Virtual Staging", price: "From $40", note: "From $40" },
@@ -368,7 +328,7 @@ export default function HomePage() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {LAUNCH_PACKAGES.map((p) => (
+            {LAUNCH_BUNDLES.map((p) => (
               <div
                 key={p.name}
                 className={`relative rounded-md p-8 md:p-10 flex flex-col ${
@@ -415,7 +375,7 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/order" className={p.featured ? "btn-dark" : "btn-lime"}>
+                <Link to={`/order?package=${p.id}`} className={p.featured ? "btn-dark" : "btn-lime"}>
                   Choose This Package
                 </Link>
               </div>
