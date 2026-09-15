@@ -41,11 +41,11 @@ const PACKAGE_FEATURES = [
 
 const ADD_ONS = [
   { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
+  { name: "Virtual Staging", price: "From $40", note: "From $40" },
   { name: "Drone Photos & Video", price: "$99", note: "$99" },
   { name: "3D Virtual Tour", price: "$99", note: "$99" },
   { name: "Walkthrough/Cinematic Video", price: "$299", note: "$299" },
   { name: "Creative Personal Branding Reel", price: "$499", note: "$499" },
-  { name: "Virtual Staging", price: "From $40", note: "From $40" },
 ];
 
 const STEPS = [
