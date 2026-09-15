@@ -9,7 +9,7 @@ const SERVICES = [
     n: "01",
     label: "PHOTOGRAPHY",
     title: "Make the first look count.",
-    copy: "Interior and exterior photography, twilight imagery and floor plans. Ready for your listing.",
+    copy: "Interior and exterior photography and twilight imagery. Ready for your listing.",
     cta: "Explore photography",
     dark: false,
   },
