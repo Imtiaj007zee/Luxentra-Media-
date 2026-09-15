@@ -1,0 +1,69 @@
+export type PhotoFilter = "all" | "twilight" | "aerial" | "exterior" | "interior";
+
+export interface PhotoItem {
+  slug: string;
+  src: string;
+  filter: Exclude<PhotoFilter, "all">;
+  label: string;
+  title: string;
+}
+
+export const PHOTO_FILTERS: { id: PhotoFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "twilight", label: "Twilight" },
+  { id: "aerial", label: "Aerial" },
+  { id: "exterior", label: "Exterior" },
+  { id: "interior", label: "Interior" },
+];
+
+export const PHOTOS: PhotoItem[] = [
+  { slug: "twilight-1", src: "/work/photos/twilight-1.jpg", filter: "twilight", label: "Twilight", title: "Twilight 1" },
+  { slug: "twilight-2", src: "/work/photos/twilight-2.jpg", filter: "twilight", label: "Twilight", title: "Twilight 2" },
+  { slug: "twilight-3", src: "/work/photos/twilight-3.jpg", filter: "twilight", label: "Twilight", title: "Twilight 3" },
+  { slug: "aerial-1", src: "/work/photos/aerial-1.jpg", filter: "aerial", label: "Aerial", title: "Aerial 1" },
+  { slug: "aerial-2", src: "/work/photos/aerial-2.jpg", filter: "aerial", label: "Aerial", title: "Aerial 2" },
+  { slug: "aerial-3", src: "/work/photos/aerial-3.jpg", filter: "aerial", label: "Aerial", title: "Aerial 3" },
+  { slug: "aerial-4", src: "/work/photos/aerial-4.jpg", filter: "aerial", label: "Aerial", title: "Aerial 4" },
+  { slug: "aerial-5", src: "/work/photos/aerial-5.jpg", filter: "aerial", label: "Aerial", title: "Aerial 5" },
+  { slug: "aerial-6", src: "/work/photos/aerial-6.jpg", filter: "aerial", label: "Aerial", title: "Aerial 6" },
+  { slug: "aerial-7", src: "/work/photos/aerial-7.jpg", filter: "aerial", label: "Aerial", title: "Aerial 7" },
+  { slug: "aerial-8", src: "/work/photos/aerial-8.jpg", filter: "aerial", label: "Aerial", title: "Aerial 8" },
+  { slug: "exterior-1", src: "/work/photos/exterior-1.jpg", filter: "exterior", label: "Exterior", title: "Exterior 1" },
+  { slug: "exterior-2", src: "/work/photos/exterior-2.jpg", filter: "exterior", label: "Exterior", title: "Exterior 2" },
+  { slug: "exterior-3", src: "/work/photos/exterior-3.jpg", filter: "exterior", label: "Exterior", title: "Exterior 3" },
+  { slug: "exterior-4", src: "/work/photos/exterior-4.jpg", filter: "exterior", label: "Exterior", title: "Exterior 4" },
+  { slug: "exterior-5", src: "/work/photos/exterior-5.jpg", filter: "exterior", label: "Exterior", title: "Exterior 5" },
+  { slug: "exterior-6", src: "/work/photos/exterior-6.jpg", filter: "exterior", label: "Exterior", title: "Exterior 6" },
+  { slug: "exterior-7", src: "/work/photos/exterior-7.jpg", filter: "exterior", label: "Exterior", title: "Exterior 7" },
+  { slug: "exterior-8", src: "/work/photos/exterior-8.jpg", filter: "exterior", label: "Exterior", title: "Exterior 8" },
+  { slug: "outdoor-1", src: "/work/photos/outdoor-1.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 1" },
+  { slug: "outdoor-2", src: "/work/photos/outdoor-2.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 2" },
+  { slug: "outdoor-3", src: "/work/photos/outdoor-3.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 3" },
+  { slug: "outdoor-4", src: "/work/photos/outdoor-4.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 4" },
+  { slug: "outdoor-5", src: "/work/photos/outdoor-5.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 5" },
+  { slug: "outdoor-6", src: "/work/photos/outdoor-6.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 6" },
+  { slug: "outdoor-7", src: "/work/photos/outdoor-7.jpg", filter: "exterior", label: "Backyard & Outdoor", title: "Backyard & Outdoor 7" },
+  { slug: "commercial-1", src: "/work/photos/commercial-1.jpg", filter: "exterior", label: "Commercial", title: "Commercial 1" },
+  { slug: "commercial-2", src: "/work/photos/commercial-2.jpg", filter: "exterior", label: "Commercial", title: "Commercial 2" },
+  { slug: "living-1", src: "/work/photos/living-1.jpg", filter: "interior", label: "Living Room", title: "Living Room 1" },
+  { slug: "living-2", src: "/work/photos/living-2.jpg", filter: "interior", label: "Living Room", title: "Living Room 2" },
+  { slug: "living-3", src: "/work/photos/living-3.jpg", filter: "interior", label: "Living Room", title: "Living Room 3" },
+  { slug: "living-4", src: "/work/photos/living-4.jpg", filter: "interior", label: "Living Room", title: "Living Room 4" },
+  { slug: "living-5", src: "/work/photos/living-5.jpg", filter: "interior", label: "Living Room", title: "Living Room 5" },
+  { slug: "living-6", src: "/work/photos/living-6.jpg", filter: "interior", label: "Living Room", title: "Living Room 6" },
+  { slug: "living-7", src: "/work/photos/living-7.jpg", filter: "interior", label: "Living Room", title: "Living Room 7" },
+  { slug: "living-8", src: "/work/photos/living-8.jpg", filter: "interior", label: "Living Room", title: "Living Room 8" },
+  { slug: "kitchen-1", src: "/work/photos/kitchen-1.jpg", filter: "interior", label: "Kitchen", title: "Kitchen 1" },
+  { slug: "kitchen-2", src: "/work/photos/kitchen-2.jpg", filter: "interior", label: "Kitchen", title: "Kitchen 2" },
+  { slug: "kitchen-3", src: "/work/photos/kitchen-3.jpg", filter: "interior", label: "Kitchen", title: "Kitchen 3" },
+  { slug: "bedroom-1", src: "/work/photos/bedroom-1.jpg", filter: "interior", label: "Bedroom", title: "Bedroom 1" },
+  { slug: "bedroom-2", src: "/work/photos/bedroom-2.jpg", filter: "interior", label: "Bedroom", title: "Bedroom 2" },
+  { slug: "bedroom-3", src: "/work/photos/bedroom-3.jpg", filter: "interior", label: "Bedroom", title: "Bedroom 3" },
+  { slug: "bedroom-4", src: "/work/photos/bedroom-4.jpg", filter: "interior", label: "Bedroom", title: "Bedroom 4" },
+  { slug: "bedroom-5", src: "/work/photos/bedroom-5.jpg", filter: "interior", label: "Bedroom", title: "Bedroom 5" },
+  { slug: "bathroom-1", src: "/work/photos/bathroom-1.jpg", filter: "interior", label: "Bathroom", title: "Bathroom 1" },
+  { slug: "bathroom-2", src: "/work/photos/bathroom-2.jpg", filter: "interior", label: "Bathroom", title: "Bathroom 2" },
+  { slug: "bathroom-3", src: "/work/photos/bathroom-3.jpg", filter: "interior", label: "Bathroom", title: "Bathroom 3" },
+  { slug: "bathroom-4", src: "/work/photos/bathroom-4.jpg", filter: "interior", label: "Bathroom", title: "Bathroom 4" },
+  { slug: "dining-1", src: "/work/photos/dining-1.jpg", filter: "interior", label: "Dining Room", title: "Dining Room 1" },
+];

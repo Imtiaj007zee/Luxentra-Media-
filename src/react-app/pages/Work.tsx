@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Play, X } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
+import { PHOTOS, PHOTO_FILTERS, type PhotoFilter, type PhotoItem } from "@/react-app/data/photos";
 
 function Lightbox({
   item,
@@ -109,14 +110,125 @@ function Lightbox({
       >
         <button
           onClick={onPrev}
-          aria-label="Previous video"
+          aria-label="Previous photo"
           className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white"
         >
           <ChevronLeft className="w-6 h-6" />
         </button>
         <button
           onClick={onNext}
-          aria-label="Next video"
+          aria-label="Next photo"
+          className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PhotoLightbox({
+  item,
+  index,
+  total,
+  onClose,
+  onPrev,
+  onNext,
+}: {
+  item: PhotoItem;
+  index: number;
+  total: number;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrev();
+      if (e.key === "ArrowRight") onNext();
+    };
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose, onPrev, onNext]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-black/95 flex flex-col"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={item.title}
+    >
+      {/* Top bar */}
+      <div
+        className="flex items-center justify-between px-6 py-4 shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div>
+          <p className="eyebrow text-[#c7ff00] mb-1">{item.label}</p>
+          <h3 className="text-white text-[20px] font-bold tracking-tight">{item.title}</h3>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-white/40 text-[14px] tabular-nums">
+            {index + 1} / {total}
+          </span>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#c7ff00] hover:text-black transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Photo */}
+      <div
+        className="flex-1 flex items-center justify-center px-4 md:px-20 pb-6 min-h-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onPrev}
+          aria-label="Previous photo"
+          className="hidden md:flex w-12 h-12 rounded-full bg-white/10 items-center justify-center text-white hover:bg-[#c7ff00] hover:text-black transition-colors shrink-0 mr-6"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <img
+          key={item.slug}
+          src={item.src}
+          alt={item.title}
+          className="max-h-full max-w-full rounded-md object-contain"
+        />
+        <button
+          onClick={onNext}
+          aria-label="Next photo"
+          className="hidden md:flex w-12 h-12 rounded-full bg-white/10 items-center justify-center text-white hover:bg-[#c7ff00] hover:text-black transition-colors shrink-0 ml-6"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Mobile prev/next */}
+      <div
+        className="flex md:hidden items-center justify-center gap-4 pb-8 shrink-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onPrev}
+          aria-label="Previous photo"
+          className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={onNext}
+          aria-label="Next photo"
           className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white"
         >
           <ChevronRight className="w-6 h-6" />
@@ -127,7 +239,10 @@ function Lightbox({
 }
 
 export default function WorkPage() {
+  const [tab, setTab] = useState<"films" | "photos">("films");
   const [active, setActive] = useState<number | null>(null);
+  const [photoFilter, setPhotoFilter] = useState<PhotoFilter>("all");
+  const [activePhoto, setActivePhoto] = useState<number | null>(null);
 
   const close = useCallback(() => setActive(null), []);
   const prev = useCallback(
@@ -137,6 +252,24 @@ export default function WorkPage() {
   const next = useCallback(
     () => setActive((i) => (i === null ? i : (i + 1) % PORTFOLIO.length)),
     []
+  );
+
+  const filteredPhotos = useMemo(
+    () => (photoFilter === "all" ? PHOTOS : PHOTOS.filter((p) => p.filter === photoFilter)),
+    [photoFilter]
+  );
+
+  const closePhoto = useCallback(() => setActivePhoto(null), []);
+  const prevPhoto = useCallback(
+    () =>
+      setActivePhoto((i) =>
+        i === null ? i : (i - 1 + filteredPhotos.length) % filteredPhotos.length
+      ),
+    [filteredPhotos.length]
+  );
+  const nextPhoto = useCallback(
+    () => setActivePhoto((i) => (i === null ? i : (i + 1) % filteredPhotos.length)),
+    [filteredPhotos.length]
   );
 
   return (
@@ -153,46 +286,118 @@ export default function WorkPage() {
             every frame.
           </h1>
           <p className="text-[18px] md:text-[21px] leading-snug text-white/70 max-w-2xl">
-            Property films and brand stories from recent LuxEntra shoots —
+            Property films, brand stories, and photography from recent LuxEntra shoots —
             including the pieces behind our best-performing content.
           </p>
         </div>
       </section>
 
-      {/* Portfolio grid */}
+      {/* Gallery */}
       <section className="bg-white py-16 md:py-24">
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5">
-            {PORTFOLIO.map((item, i) => (
+          {/* Tabs */}
+          <div className="flex items-center gap-3 mb-8">
+            {(["films", "photos"] as const).map((t) => (
               <button
-                key={item.slug}
-                onClick={() => setActive(i)}
-                className="group relative block w-full break-inside-avoid rounded-md overflow-hidden bg-[#111] text-left"
-                aria-label={`Play ${item.title}`}
+                key={t}
+                onClick={() => setTab(t)}
+                className={`px-6 py-2.5 rounded-full text-[15px] font-semibold transition-colors ${
+                  tab === t
+                    ? "bg-black text-white"
+                    : "bg-black/5 text-black/60 hover:bg-black/10"
+                }`}
               >
-                <img
-                  src={item.poster}
-                  alt={item.title}
-                  loading="lazy"
-                  className={`w-full object-cover ${
-                    item.ratio === "portrait" ? "aspect-[3/4]" : "aspect-video"
-                  }`}
-                />
-                <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <span className="w-14 h-14 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white group-hover:bg-[#c7ff00] group-hover:text-black group-hover:scale-110 transition-all">
-                    <Play className="w-6 h-6 fill-current ml-0.5" />
-                  </span>
-                </span>
-                <span className="absolute bottom-0 left-0 right-0 p-5">
-                  <span className="eyebrow text-[#c7ff00] block mb-1.5">{item.category}</span>
-                  <span className="text-white text-[19px] font-bold tracking-tight block">
-                    {item.title}
-                  </span>
-                </span>
+                {t === "films" ? `Films (${PORTFOLIO.length})` : `Photos (${PHOTOS.length})`}
               </button>
             ))}
           </div>
+
+          {tab === "films" ? (
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5">
+              {PORTFOLIO.map((item, i) => (
+                <button
+                  key={item.slug}
+                  onClick={() => setActive(i)}
+                  className="group relative block w-full break-inside-avoid rounded-md overflow-hidden bg-[#111] text-left"
+                  aria-label={`Play ${item.title}`}
+                >
+                  <img
+                    src={item.poster}
+                    alt={item.title}
+                    loading="lazy"
+                    className={`w-full object-cover ${
+                      item.ratio === "portrait" ? "aspect-[3/4]" : "aspect-video"
+                    }`}
+                  />
+                  <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-14 h-14 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white group-hover:bg-[#c7ff00] group-hover:text-black group-hover:scale-110 transition-all">
+                      <Play className="w-6 h-6 fill-current ml-0.5" />
+                    </span>
+                  </span>
+                  <span className="absolute bottom-0 left-0 right-0 p-5">
+                    <span className="eyebrow text-[#c7ff00] block mb-1.5">{item.category}</span>
+                    <span className="text-white text-[19px] font-bold tracking-tight block">
+                      {item.title}
+                    </span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Photo filters */}
+              <div className="flex flex-wrap items-center gap-2.5 mb-8">
+                {PHOTO_FILTERS.map((f) => {
+                  const count = f.id === "all" ? PHOTOS.length : PHOTOS.filter((p) => p.filter === f.id).length;
+                  return (
+                    <button
+                      key={f.id}
+                      onClick={() => {
+                        setPhotoFilter(f.id);
+                        setActivePhoto(null);
+                      }}
+                      className={`px-5 py-2 rounded-full text-[14px] font-medium border transition-colors ${
+                        photoFilter === f.id
+                          ? "bg-[#c7ff00] text-black border-[#c7ff00]"
+                          : "bg-transparent text-black/60 border-black/15 hover:border-black/40"
+                      }`}
+                    >
+                      {f.label} ({count})
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5">
+                {filteredPhotos.map((item, i) => (
+                  <button
+                    key={item.slug}
+                    onClick={() => setActivePhoto(i)}
+                    className="group relative block w-full break-inside-avoid rounded-md overflow-hidden bg-[#111] text-left"
+                    aria-label={`View ${item.title}`}
+                  >
+                    <img
+                      src={item.src}
+                      alt={item.title}
+                      loading="lazy"
+                      className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Maximize2 className="w-4 h-4" />
+                    </span>
+                    <span className="absolute bottom-0 left-0 right-0 p-5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="eyebrow text-[#c7ff00] block mb-1">{item.label}</span>
+                      <span className="text-white text-[17px] font-bold tracking-tight block">
+                        {item.title}
+                      </span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -231,6 +436,17 @@ export default function WorkPage() {
           onClose={close}
           onPrev={prev}
           onNext={next}
+        />
+      )}
+
+      {activePhoto !== null && filteredPhotos[activePhoto] && (
+        <PhotoLightbox
+          item={filteredPhotos[activePhoto]}
+          index={activePhoto}
+          total={filteredPhotos.length}
+          onClose={closePhoto}
+          onPrev={prevPhoto}
+          onNext={nextPhoto}
         />
       )}
     </div>
