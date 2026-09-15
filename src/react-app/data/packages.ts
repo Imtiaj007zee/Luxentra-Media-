@@ -28,6 +28,8 @@ export const LAUNCH_BUNDLES: LaunchBundle[] = [
     id: "listing-premiere",
     name: "Listing Premiere",
     price: 699,
+    badge: "Most chosen",
+    featured: true,
     blurb: "Create the kind of listing buyers stop scrolling to experience.",
     features: [
       "Everything included in Market Launch",
@@ -41,8 +43,6 @@ export const LAUNCH_BUNDLES: LaunchBundle[] = [
     id: "agent-authority",
     name: "Agent Authority",
     price: 899,
-    badge: "Most chosen",
-    featured: true,
     blurb: "Showcase the property while building the trusted name behind it.",
     features: [
       "Everything included in Listing Premiere",

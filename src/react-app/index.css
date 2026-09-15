@@ -124,6 +124,47 @@
     @apply inline-flex items-center justify-center rounded-full bg-black px-7 py-3 text-[15px] font-bold text-white transition-colors hover:bg-[#1c1c1c] active:bg-[#000];
   }
 
+  /* ── Interactive package button: lift + glow on hover, press scale, click ripple ── */
+  .btn-interactive {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s ease-out, box-shadow 0.25s ease-out;
+  }
+  .btn-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -8px rgba(199, 255, 0, 0.6), 0 4px 14px -4px rgba(0, 0, 0, 0.4);
+  }
+  .btn-interactive:active {
+    transform: scale(0.96);
+  }
+  .btn-ripple {
+    position: absolute;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    opacity: 0.9;
+    animation: btn-ripple 0.55s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes btn-ripple {
+    to {
+      transform: scale(3.2);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pkg-card,
+    .btn-interactive {
+      transition: none !important;
+    }
+    .btn-ripple {
+      animation: none !important;
+      display: none;
+    }
+  }
+
   /* Lime text link (for dark backgrounds) */
   .link-lime {
     @apply inline-flex items-center gap-1 text-[#c7ff00] font-medium hover:underline underline-offset-4;

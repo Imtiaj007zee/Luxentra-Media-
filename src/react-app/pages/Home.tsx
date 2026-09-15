@@ -157,7 +157,71 @@ function FeaturedFilm() {
   );
 }
 
+// Soft premium click sound, played only on real clicks (never hover).
+// Low volume; if audio is blocked the button still works normally.
+let clickAudioCtx: AudioContext | null = null;
+function playClickSound() {
+  try {
+    const Ctor =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return;
+    if (!clickAudioCtx) clickAudioCtx = new Ctor();
+    const ctx = clickAudioCtx;
+    if (ctx.state === "suspended") void ctx.resume();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(1350, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(620, ctx.currentTime + 0.07);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.09);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.1);
+  } catch {
+    // Audio unavailable or blocked — button keeps working.
+  }
+}
+
+function PackageButton({ to, dark, children }: { to: string; dark?: boolean; children: React.ReactNode }) {
+  const btnRef = useRef<HTMLAnchorElement>(null);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    playClickSound();
+    const el = btnRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 1.1;
+      const ripple = document.createElement("span");
+      ripple.className = "btn-ripple";
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+      ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+      el.appendChild(ripple);
+      window.setTimeout(() => ripple.remove(), 600);
+    }
+  };
+
+  return (
+    <Link
+      ref={btnRef}
+      to={to}
+      onClick={handleClick}
+      className={`${dark ? "btn-dark" : "btn-lime"} btn-interactive`}
+    >
+      {children}
+    </Link>
+  );
+}
+
 export default function HomePage() {
+  // Hovered / focused / tapped package card. Defaults to the featured
+  // ("Most chosen") package; resets when the cursor leaves the section.
+  const defaultPackage = LAUNCH_BUNDLES.find((b) => b.featured)?.id ?? LAUNCH_BUNDLES[0].id;
+  const [activePackage, setActivePackage] = useState(defaultPackage);
+
   return (
     <div className="min-h-screen bg-white text-black pt-16">
       <SiteNav />
@@ -314,7 +378,10 @@ export default function HomePage() {
       </section>
 
       {/* ── Don't just list it. Launch it. ─────────────────── */}
-      <section className="bg-black text-white py-20 md:py-28">
+      <section
+        className="bg-black text-white py-20 md:py-28"
+        onMouseLeave={() => setActivePackage(defaultPackage)}
+      >
         <div className="max-w-[1200px] mx-auto px-6">
           <p className="apple-eyebrow !text-[#c7ff00] mb-4">Launch packages</p>
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
@@ -328,19 +395,25 @@ export default function HomePage() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {LAUNCH_BUNDLES.map((p) => (
+            {LAUNCH_BUNDLES.map((p) => {
+              const isActive = activePackage === p.id;
+              return (
               <div
-                key={p.name}
-                className={`relative rounded-md p-8 md:p-10 flex flex-col ${
-                  p.featured
-                    ? "bg-[#c7ff00] text-black"
-                    : "bg-white/5 border border-white/10"
+                key={p.id}
+                tabIndex={0}
+                onMouseEnter={() => setActivePackage(p.id)}
+                onFocus={() => setActivePackage(p.id)}
+                onTouchStart={() => setActivePackage(p.id)}
+                className={`pkg-card relative rounded-md p-8 md:p-10 flex flex-col outline-none transition-all duration-300 ease-out ${
+                  isActive
+                    ? "bg-[#c7ff00] text-black scale-[1.06] -translate-y-4 z-10 shadow-[0_25px_70px_-15px_rgba(199,255,0,0.5),0_12px_32px_-10px_rgba(0,0,0,0.6)]"
+                    : "bg-white/5 border border-white/10 text-white scale-[0.98] z-0"
                 }`}
               >
                 {p.badge && (
                   <span
                     className={`absolute -top-3.5 left-8 text-[11px] font-bold uppercase tracking-[0.14em] px-3.5 py-1.5 rounded-full ${
-                      p.featured ? "bg-black text-[#c7ff00]" : "bg-[#c7ff00] text-black"
+                      isActive ? "bg-black text-[#c7ff00]" : "bg-[#c7ff00] text-black"
                     }`}
                   >
                     {p.badge}
@@ -349,13 +422,13 @@ export default function HomePage() {
                 <h3 className="text-[24px] font-bold tracking-tight mb-3">
                   {p.name}
                 </h3>
-                <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${p.featured ? "text-black/60" : "text-white/50"}`}>
+                <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${isActive ? "text-black/60" : "text-white/50"}`}>
                   Starting at
                 </p>
                 <p className="text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
                   ${p.price}
                 </p>
-                <p className={`text-[15px] leading-relaxed mb-8 ${p.featured ? "text-black/70" : "text-white/60"}`}>
+                <p className={`text-[15px] leading-relaxed mb-8 ${isActive ? "text-black/70" : "text-white/60"}`}>
                   {p.blurb}
                 </p>
                 <ul className="space-y-3.5 mb-10 flex-1">
@@ -363,11 +436,11 @@ export default function HomePage() {
                     <li key={f} className="flex items-start gap-3 text-[15px]">
                       <span
                         className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                          p.featured ? "bg-black" : "bg-[#c7ff00]"
+                          isActive ? "bg-black" : "bg-[#c7ff00]"
                         }`}
                       >
                         <Check
-                          className={`w-3 h-3 ${p.featured ? "text-[#c7ff00]" : "text-black"}`}
+                          className={`w-3 h-3 ${isActive ? "text-[#c7ff00]" : "text-black"}`}
                           strokeWidth={3}
                         />
                       </span>
@@ -375,11 +448,12 @@ export default function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Link to={`/order?package=${p.id}`} className={p.featured ? "btn-dark" : "btn-lime"}>
+                <PackageButton to={`/order?package=${p.id}`} dark={isActive}>
                   Choose This Package
-                </Link>
+                </PackageButton>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
