@@ -6,6 +6,8 @@ import SiteFooter from "@/react-app/components/SiteFooter";
 import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
 import { PHOTOS, PHOTO_FILTERS, type PhotoFilter, type PhotoItem } from "@/react-app/data/photos";
 
+const FILM_GROUPS = ["Listing Films", "Personal Branding", "Brand Story"];
+
 function Lightbox({
   item,
   index,
@@ -313,37 +315,56 @@ export default function WorkPage() {
           </div>
 
           {tab === "films" ? (
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5">
-              {PORTFOLIO.map((item, i) => (
-                <button
-                  key={item.slug}
-                  onClick={() => setActive(i)}
-                  className="group relative block w-full break-inside-avoid rounded-md overflow-hidden bg-[#111] text-left"
-                  aria-label={`Play ${item.title}`}
-                >
-                  <img
-                    src={item.poster}
-                    alt={item.title}
-                    loading="lazy"
-                    className={`w-full object-cover ${
-                      item.ratio === "portrait" ? "aspect-[3/4]" : "aspect-video"
-                    }`}
-                  />
-                  <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="w-14 h-14 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white group-hover:bg-[#c7ff00] group-hover:text-black group-hover:scale-110 transition-all">
-                      <Play className="w-6 h-6 fill-current ml-0.5" />
-                    </span>
-                  </span>
-                  <span className="absolute bottom-0 left-0 right-0 p-5">
-                    <span className="eyebrow text-[#c7ff00] block mb-1.5">{item.category}</span>
-                    <span className="text-white text-[19px] font-bold tracking-tight block">
-                      {item.title}
-                    </span>
-                  </span>
-                </button>
-              ))}
-            </div>
+            <>
+              {FILM_GROUPS.map((group) => {
+                const items = PORTFOLIO.map((item, i) => ({ ...item, index: i })).filter(
+                  (x) => x.category === group
+                );
+                if (items.length === 0) return null;
+                return (
+                  <div key={group} className="mb-14 last:mb-0">
+                    <div className="flex items-baseline justify-between mb-6">
+                      <h3 className="text-[26px] md:text-[32px] font-bold tracking-[-0.02em]">
+                        {group}
+                      </h3>
+                      <span className="text-black/40 text-[14px] tabular-nums">
+                        {items.length} {items.length === 1 ? "film" : "films"}
+                      </span>
+                    </div>
+                    <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5">
+                      {items.map((item) => (
+                        <button
+                          key={item.slug}
+                          onClick={() => setActive(item.index)}
+                          className="group relative block w-full break-inside-avoid rounded-md overflow-hidden bg-[#111] text-left"
+                          aria-label={`Play ${item.title}`}
+                        >
+                          <img
+                            src={item.poster}
+                            alt={item.title}
+                            loading="lazy"
+                            className={`w-full object-cover ${
+                              item.ratio === "portrait" ? "aspect-[3/4]" : "aspect-video"
+                            }`}
+                          />
+                          <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80 group-hover:opacity-95 transition-opacity" />
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            <span className="w-14 h-14 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white group-hover:bg-[#c7ff00] group-hover:text-black group-hover:scale-110 transition-all">
+                              <Play className="w-6 h-6 fill-current ml-0.5" />
+                            </span>
+                          </span>
+                          <span className="absolute bottom-0 left-0 right-0 p-5">
+                            <span className="text-white text-[19px] font-bold tracking-tight block">
+                              {item.title}
+                            </span>
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
           ) : (
             <>
               {/* Photo filters */}
