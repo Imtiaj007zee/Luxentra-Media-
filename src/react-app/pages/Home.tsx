@@ -138,7 +138,7 @@ function FeaturedFilm() {
         playsInline
         controls={playing}
         preload="metadata"
-        poster="/stills/still-1.jpg"
+        poster="/stills/poster.jpg"
         className="w-full aspect-video object-cover"
         onPause={() => setPlaying(false)}
       >
