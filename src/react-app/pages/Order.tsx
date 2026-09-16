@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket } from "lucide-react";
-import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById } from "@/react-app/data/packages";
+import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById, SERVICE_TYPES } from "@/react-app/data/packages";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -38,7 +38,7 @@ export default function OrderPage() {
   const [includeStandard, setIncludeStandard] = useState(true);
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null);
   const [selectedBranding, setSelectedBranding] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -106,7 +106,7 @@ export default function OrderPage() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} ($${selectedBundleData.price})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} ($${selectedBrandingData.price.toLocaleString()}/mo)` : "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); setSelectedBundle(null); setSelectedBranding(null); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); setSelectedBundle(null); setSelectedBranding(null); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -516,17 +516,13 @@ export default function OrderPage() {
                   </div>
                 )}
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Listing Type *</Label>
-                  <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required>
-                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger>
+                  <Label className="text-base font-medium">Service Type *</Label>
+                  <Select value={formData.service_type} onValueChange={(v) => setFormData({ ...formData, service_type: v })} required>
+                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select service type" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="House/Single-Family">House/Single-Family</SelectItem>
-                      <SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem>
-                      <SelectItem value="Luxury Home">Luxury Home</SelectItem>
-                      <SelectItem value="Commercial">Commercial</SelectItem>
-                      <SelectItem value="Multi-Family">Multi-Family</SelectItem>
-                      <SelectItem value="Rental Listing">Rental Listing</SelectItem>
-                      <SelectItem value="Other">Other</SelectItem>
+                      {SERVICE_TYPES.map((s) => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

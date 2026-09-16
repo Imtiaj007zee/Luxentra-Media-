@@ -160,3 +160,17 @@ export const BRANDING_PLANS: BrandingPlan[] = [
 
 export const getBrandingPlanById = (id: string | null | undefined): BrandingPlan | null =>
   BRANDING_PLANS.find((p) => p.id === id) ?? null;
+
+// Every bookable LuxEntra service — used for the "Service Type" dropdown
+// on the booking forms.
+export const SERVICE_TYPES = [
+  "Real Estate Photography",
+  "Walkthrough / Cinematic Video",
+  "Personal Branding",
+  "Drone Photos & Video",
+  "3D Virtual Tour",
+  "Custom Listing Flyer",
+  "Virtual Staging",
+  "One-on-One Consultancy",
+  "Other",
+];

@@ -6,13 +6,14 @@ import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
 import { Label } from "@/react-app/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/react-app/components/ui/select";
+import { SERVICE_TYPES } from "@/react-app/data/packages";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
 const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 
 export default function BookPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", service_type: "", request_details: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
@@ -25,7 +26,7 @@ export default function BookPage() {
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...formData, _subject: `New Booking Request from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", listing_type: "", request_details: "" }); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", service_type: "", request_details: "" }); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -105,17 +106,13 @@ export default function BookPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-base font-medium">Listing Type *</Label>
-              <Select value={formData.listing_type} onValueChange={(v) => setFormData({ ...formData, listing_type: v })} required>
-                <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select listing type" /></SelectTrigger>
+              <Label className="text-base font-medium">Service Type *</Label>
+              <Select value={formData.service_type} onValueChange={(v) => setFormData({ ...formData, service_type: v })} required>
+                <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select service type" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="House/Single-Family">House/Single-Family</SelectItem>
-                  <SelectItem value="Apartment/Condo">Apartment/Condo</SelectItem>
-                  <SelectItem value="Luxury Home">Luxury Home</SelectItem>
-                  <SelectItem value="Commercial">Commercial</SelectItem>
-                  <SelectItem value="Multi-Family">Multi-Family</SelectItem>
-                  <SelectItem value="Rental Listing">Rental Listing</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
+                  {SERVICE_TYPES.map((s) => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
