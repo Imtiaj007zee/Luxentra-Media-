@@ -315,15 +315,15 @@ function ImpactDashboard() {
           <PackageButton to="/order" dark={false}>
             Book a Shoot
           </PackageButton>
-          <PackageButton to="/consultation" dark={false}>
-            Free Consultancy
-          </PackageButton>
           <Link
             to="/work"
             className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
           >
             Explore the work <ArrowUpRight className="w-4 h-4" />
           </Link>
+          <PackageButton to="/consultation" dark={false}>
+            Free Consultancy
+          </PackageButton>
         </div>
 
         <div ref={dashboardRef}>
