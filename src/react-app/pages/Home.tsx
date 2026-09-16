@@ -315,6 +315,9 @@ function ImpactDashboard() {
           <PackageButton to="/order" dark={false}>
             Book a Shoot
           </PackageButton>
+          <PackageButton to="/consultation" dark={false}>
+            Free Consultancy
+          </PackageButton>
           <Link
             to="/work"
             className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
