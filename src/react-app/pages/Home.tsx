@@ -116,7 +116,7 @@ const IMPACT_METRICS = [
     decimals: 0,
     prefix: "",
     suffix: "+",
-    ring: 84,
+    ring: 100,
     label: "Properties Covered",
     desc: "More than 25 properties professionally captured and marketed and counting.",
   },
@@ -126,7 +126,7 @@ const IMPACT_METRICS = [
     decimals: 1,
     prefix: "$",
     suffix: "M+",
-    ring: 84,
+    ring: 100,
     label: "Property Value Covered",
     desc: "Total property value represented through our professional real estate media campaigns.",
   },
@@ -136,7 +136,7 @@ const IMPACT_METRICS = [
     decimals: 0,
     prefix: "",
     suffix: "%+",
-    ring: 92,
+    ring: 100,
     label: "Marketing Success Rate",
     desc: "Percentage of campaigns that successfully achieved their intended marketing goals.",
   },
@@ -214,7 +214,7 @@ function ImpactGauge({
           fill="none"
           stroke={`url(#gauge-grad-${id})`}
           strokeWidth="10"
-          strokeLinecap="round"
+          strokeLinecap="butt"
           strokeDasharray={C}
           strokeDashoffset={started ? C * (1 - percent / 100) : C}
           className="gauge-arc"
@@ -249,7 +249,7 @@ function ImpactCard({
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-[#c7ff00]/70 to-transparent" />
       <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-40 bg-[#c7ff00]/[0.06] blur-[60px] rounded-full pointer-events-none" />
       <ImpactGauge id={metric.id} percent={metric.ring} started={started}>
-        <p className="text-[46px] md:text-[54px] font-bold tracking-[-0.03em] leading-none text-white tabular-nums">
+        <p className="text-[36px] md:text-[42px] font-bold tracking-[-0.03em] leading-none text-white tabular-nums whitespace-nowrap">
           {metric.prefix}
           {display}
           {metric.suffix}
