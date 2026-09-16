@@ -317,7 +317,7 @@ function ImpactDashboard() {
             className="inline-flex items-center gap-2 text-[15px] font-medium text-white/55 transition-colors hover:text-[#c7ff00]"
           >
             <HelpCircle className="w-4 h-4" />
-            What brings you here today?
+            Find the right service for you →
           </button>
         </div>
 
