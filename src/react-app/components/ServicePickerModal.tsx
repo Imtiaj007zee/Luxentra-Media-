@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, X } from "lucide-react";
 
-const SESSION_KEY = "luxentra_service_picker_seen";
+const SESSION_KEY = "luxentra_service_picker_seen_v2";
 const OPEN_EVENT = "luxentra:open-service-picker";
 
 /** Opens the service picker from anywhere (e.g. the hero trigger button). */
@@ -127,8 +127,9 @@ function OptionCard({
 export default function ServicePickerModal() {
   const [open, setOpen] = useState(false);
 
-  // Show once per session, after the visitor scrolls ~50% past the hero.
-  // Also opens on demand via openServicePicker() (hero trigger button).
+  // Auto-popup: once per session, after the visitor scrolls ~50% past the hero.
+  // The hero button (openServicePicker) opens on demand and never counts
+  // against the auto-popup budget.
   useEffect(() => {
     let triggered = false;
     const onScroll = () => {
@@ -143,9 +144,9 @@ export default function ServicePickerModal() {
         setOpen(true);
       }
     };
+    // Manual opens (hero button) never consume the auto-popup's
+    // once-per-session budget — the scroll trigger stays alive.
     const onManualOpen = () => {
-      triggered = true;
-      markSeen();
       setOpen(true);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
