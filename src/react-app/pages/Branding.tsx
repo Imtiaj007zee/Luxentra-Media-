@@ -77,8 +77,24 @@ const BRAND_CONTENT = getBrandingPlanById("brand-content")!;
 
 export default function BrandingPage() {
   return (
-    <div className="bg-[#0b0b0b] text-white min-h-screen">
+    <div className="bg-[#0b0b0b] text-white min-h-screen relative">
       <SiteNav />
+
+      {/* ── Continuous-flow ambient canvas: soft glows bleed across
+          section boundaries so the page reads as one scroll, not boxes ── */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 55% 22% at 50% 16%, rgba(199,255,0,0.05), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 36%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 55% 20% at 50% 56%, rgba(199,255,0,0.035), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 76%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 60% 22% at 50% 94%, rgba(199,255,0,0.05), transparent 70%)",
+          ].join(","),
+        }}
+      />
 
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden pt-36 pb-24 md:pt-44 md:pb-32">
@@ -125,7 +141,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── The market is becoming people-first ───────────── */}
-      <section className="py-20 md:py-28 border-t border-white/10">
+      <section className="py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">Why personal brand wins</p>
@@ -154,7 +170,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── The Shift ────────────────────────────────────── */}
-      <section id="shift" className="py-20 md:py-28 border-t border-white/10 scroll-mt-16">
+      <section id="shift" className="py-20 md:py-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">The shift</p>
@@ -186,7 +202,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── We handle everything ─────────────────────────── */}
-      <section className="py-20 md:py-28 border-t border-white/10">
+      <section className="py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05]">
@@ -214,7 +230,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Packages ─────────────────────────────────────── */}
-      <section id="packages" className="py-20 md:py-28 border-t border-white/10 scroll-mt-16">
+      <section id="packages" className="py-20 md:py-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">Personal branding packages</p>
@@ -302,7 +318,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Brand Content ────────────────────────────────── */}
-      <section className="py-20 md:py-28 border-t border-white/10">
+      <section className="py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <div className="rounded-md bg-white/[0.03] border border-white/10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center hover:border-[#c7ff00]/40 transition-colors">
@@ -341,7 +357,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Not sure where to start ──────────────────────── */}
-      <section className="py-20 md:py-28 border-t border-white/10">
+      <section className="py-20 md:py-28">
         <div className="max-w-[900px] mx-auto px-6">
           <Reveal>
             <div
@@ -381,7 +397,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Final CTA ────────────────────────────────────── */}
-      <section className="py-24 md:py-32 border-t border-white/10 relative overflow-hidden">
+      <section className="py-24 md:py-32 relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"
