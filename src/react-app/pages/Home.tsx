@@ -78,7 +78,7 @@ function FeaturedTwilight() {
       aria-label="View twilight photography"
     >
       <img
-        src="/work/photos/new-twilight-2.jpg"
+        src="/work/photos/new-twilight-4.jpg"
         alt="Twilight exterior of a featured property"
         loading="lazy"
         className="w-full aspect-video object-cover group-hover:scale-[1.02] transition-transform duration-500"
