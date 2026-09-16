@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket } from "lucide-react";
-import { LAUNCH_BUNDLES, getBundleById } from "@/react-app/data/packages";
+import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById } from "@/react-app/data/packages";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -36,25 +36,37 @@ export default function OrderPage() {
   const [reelQty, setReelQty] = useState(1);
   const [includeStandard, setIncludeStandard] = useState(true);
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null);
+  const [selectedBranding, setSelectedBranding] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  // Read ?package=<id> from the URL and pre-select the matching bundle.
-  // The id is only a lookup key — the price always comes from our package
-  // data, never from the URL. A single selectedBundle value means refresh
-  // can't duplicate it and picking another bundle replaces the previous one.
+  // Read ?package=<id> from the URL and pre-select the matching bundle or
+  // personal-branding plan. The id is only a lookup key — the price always
+  // comes from our package data, never from the URL. A single selected value
+  // means refresh can't duplicate it and picking another replaces the previous.
   const packageParam = searchParams.get("package");
   useEffect(() => {
     const bundle = getBundleById(packageParam);
     if (bundle) {
       setSelectedBundle(bundle.id);
+      setSelectedBranding(null);
+      setIncludeStandard(false);
+      return;
+    }
+    const plan = getBrandingPlanById(packageParam);
+    if (plan) {
+      setSelectedBranding(plan.id);
+      setSelectedBundle(null);
       setIncludeStandard(false);
     }
   }, [packageParam]);
 
   const selectedBundleData = getBundleById(selectedBundle);
   const bundlePrice = selectedBundleData?.price ?? 0;
+
+  const selectedBrandingData = getBrandingPlanById(selectedBranding);
+  const brandingPrice = selectedBrandingData?.price ?? 0;
 
   const toggleAddOn = (id: string) => {
     const newSet = new Set(selectedAddOns);
@@ -75,10 +87,11 @@ export default function OrderPage() {
     if (id === "reel") return sum + (addon.price * reelQty);
     return sum + addon.price;
   }, 0);
-  const totalPrice = (includeStandard ? standardPackagePrice : 0) + bundlePrice + addOnsTotal + stagingPrice;
+  const totalPrice = (includeStandard ? standardPackagePrice : 0) + bundlePrice + brandingPrice + addOnsTotal + stagingPrice;
 
   const selectedAddOnNames = [
     selectedBundleData ? `${selectedBundleData.name} Bundle` : null,
+    selectedBrandingData ? `${selectedBrandingData.name} Personal Branding ($${selectedBrandingData.price.toLocaleString()}/mo)` : null,
     ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
     selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
   ].filter(Boolean).join(", ");
@@ -90,9 +103,9 @@ export default function OrderPage() {
       const res = await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} ($${selectedBundleData.price})` : "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
+        body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} ($${selectedBundleData.price})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} ($${selectedBrandingData.price.toLocaleString()}/mo)` : "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); setSelectedBundle(null); }
+      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", listing_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); setSelectedBundle(null); setSelectedBranding(null); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -153,7 +166,7 @@ export default function OrderPage() {
                 onClick={() => {
                   const next = !includeStandard;
                   setIncludeStandard(next);
-                  if (next) setSelectedBundle(null);
+                  if (next) { setSelectedBundle(null); setSelectedBranding(null); }
                 }}
               >
                 <div className="flex items-start gap-4">
@@ -198,6 +211,7 @@ export default function OrderPage() {
                           setSelectedBundle(null);
                         } else {
                           setSelectedBundle(bundle.id);
+                          setSelectedBranding(null);
                           setIncludeStandard(false);
                         }
                       }}>
@@ -232,6 +246,67 @@ export default function OrderPage() {
                             <li key={f}>• {f}</li>
                           ))}
                         </ul>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Personal branding plans */}
+              <h2 className="text-[24px] font-semibold tracking-tight mb-5">Personal branding plans</h2>
+              <div className="space-y-3 mb-8">
+                {BRANDING_PLANS.map((plan) => {
+                  const isSelected = selectedBranding === plan.id;
+                  return (
+                    <div
+                      key={plan.id}
+                      className={`rounded-md p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
+                    >
+                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => {
+                        if (isSelected) {
+                          setSelectedBranding(null);
+                        } else {
+                          setSelectedBranding(plan.id);
+                          setSelectedBundle(null);
+                          setIncludeStandard(false);
+                        }
+                      }}>
+                        <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-white/10"}`}>
+                          <Video className={`w-5 h-5 ${isSelected ? "text-black" : "text-white/60"}`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="font-semibold text-[17px]">
+                              {plan.name}
+                              {plan.badge && (
+                                <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">
+                                  {plan.badge}
+                                </span>
+                              )}
+                            </h3>
+                            <span className="font-semibold shrink-0">${plan.price.toLocaleString()}<span className="text-white/45 text-[13px] font-normal">/mo</span></span>
+                          </div>
+                          <p className="text-[13px] text-white/40 mt-0.5">{plan.tagline}</p>
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={isSelected ? `Remove ${plan.name}` : `Add ${plan.name}`}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
+                        >
+                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
+                        </button>
+                      </div>
+                      {isSelected && (
+                        <div className="mt-3 pt-3 border-t border-white/10">
+                          <ul className="text-[14px] text-white/60 space-y-1.5">
+                            {plan.features.map((f) => (
+                              <li key={f}>• {f}</li>
+                            ))}
+                          </ul>
+                          <p className="text-[12.5px] text-white/40 mt-3">
+                            3-month minimum commitment. Active clients get 15% off additional services during their agreement.
+                          </p>
+                        </div>
                       )}
                     </div>
                   );
@@ -357,6 +432,12 @@ export default function OrderPage() {
                     <div className="flex justify-between">
                       <span className="text-white/60">{selectedBundleData.name} Bundle</span>
                       <span className="font-medium">${selectedBundleData.price}</span>
+                    </div>
+                  )}
+                  {selectedBrandingData && (
+                    <div className="flex justify-between">
+                      <span className="text-white/60">{selectedBrandingData.name} — Personal Branding</span>
+                      <span className="font-medium">${selectedBrandingData.price.toLocaleString()}/mo</span>
                     </div>
                   )}
                   {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}

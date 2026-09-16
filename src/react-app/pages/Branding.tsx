@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, ArrowUpRight, Check, MoveRight } from "lucide-react";
+import { BRANDING_PLANS, getBrandingPlanById } from "@/react-app/data/packages";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
@@ -69,87 +70,10 @@ const HANDLED = [
   "Paid advertising",
 ];
 
-const PACKAGES = [
-  {
-    id: "essential",
-    name: "Essential",
-    price: "$5,999",
-    tagline: "Build Your Presence",
-    desc: "For professionals who need a consistent, polished, and fully managed personal brand.",
-    features: [
-      "15 short-form videos",
-      "5 carousel posts",
-      "15–20 stories",
-      "Personal-brand and content strategy",
-      "Monthly content planning",
-      "Scripts, hooks, storytelling frameworks, and calls to action",
-      "Professional filming and editing",
-      "Captions, scheduling, and publishing",
-      "Instagram, Facebook, and TikTok management",
-      "Trend and algorithm research",
-      "Monthly performance summary",
-    ],
-    featured: false,
-  },
-  {
-    id: "growth",
-    name: "Growth",
-    price: "$7,999",
-    tagline: "Turn Attention Into Leads",
-    desc: "For professionals ready to expand their reach and turn content engagement into qualified opportunities.",
-    features: [
-      "20 short-form videos",
-      "10 carousel posts",
-      "30 stories",
-      "Everything included in Essential",
-      "In-depth competitor and audience research",
-      "Offer and campaign positioning",
-      "Complete lead-generation funnel",
-      "Lead-capture page or inquiry form",
-      "Clear booking or consultation pathway",
-      "Lead tracking and follow-up framework",
-      "Paid-ad strategy and campaign development",
-      "Advertising creatives and copy",
-      "Audience targeting",
-      "Campaign setup and management",
-      "Dedicated brand-management device purchased, set up, and operated by our team",
-      "Detailed monthly performance reporting",
-    ],
-    featured: false,
-  },
-  {
-    id: "premium",
-    name: "Premium",
-    price: "$10,999",
-    tagline: "Convert, Optimize, and Scale",
-    desc: "Our most advanced system for turning content into leads, potential clients, and measurable revenue opportunities.",
-    features: [
-      "30 short-form videos",
-      "15 carousel posts",
-      "60 stories",
-      "Everything included in Growth",
-      "Advanced multi-stage lead-generation funnel",
-      "Full-funnel advertising strategy",
-      "Audience targeting and retargeting",
-      "Continuous campaign testing and optimization",
-      "Lead-nurturing and conversion framework",
-      "Advanced algorithm and audience analysis",
-      "Platform monetization preparation and optimization",
-      "Advanced performance and conversion reporting",
-      "Priority production and account support",
-      "50% money-back guarantee if the agreed-upon performance benchmark is not achieved, subject to the campaign terms",
-    ],
-    featured: true,
-  },
-];
-
-const BRAND_CONTENT_FEATURES = [
-  "4 branding videos per month",
-  "Strategy, scripting, filming, and editing",
-  "1 complimentary video in your first month",
-  "15% off additional services",
-  "3-month minimum commitment",
-];
+// Package data lives in the shared catalog (src/react-app/data/packages.ts)
+// so the branding page and the booking page always use the same official prices.
+const PACKAGES = BRANDING_PLANS.filter((p) => p.id !== "brand-content");
+const BRAND_CONTENT = getBrandingPlanById("brand-content")!;
 
 export default function BrandingPage() {
   return (
@@ -313,7 +237,7 @@ export default function BrandingPage() {
                   {p.featured && (
                     <div className="mb-6 -mt-2">
                       <span className="blink-attention inline-block rounded-full bg-[#c7ff00] text-black text-[13px] font-extrabold uppercase tracking-[0.08em] px-4 py-2 shadow-[0_0_24px_rgba(199,255,0,0.7)]">
-                        Money-back guarantee
+                        {p.badge}
                       </span>
                       <p className="text-[13px] text-white/50 mt-2 leading-snug">
                         50% money-back if the agreed-upon performance benchmark is not
@@ -330,7 +254,7 @@ export default function BrandingPage() {
 
                   <p className="mb-8">
                     <span className="text-[44px] font-bold tracking-[-0.03em] text-white">
-                      {p.price}
+                      ${p.price.toLocaleString()}
                     </span>
                     <span className="text-white/45 text-[15px]"> /month</span>
                   </p>
@@ -346,7 +270,7 @@ export default function BrandingPage() {
 
                   <div className="mt-auto">
                     <Link
-                      to="/order"
+                      to={`/order?package=${p.id}`}
                       className={
                         p.featured
                           ? "btn-lime w-full"
@@ -383,7 +307,7 @@ export default function BrandingPage() {
                 <p className="eyebrow text-[#c7ff00] mb-4">Brand content</p>
                 <p className="mb-2">
                   <span className="text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
-                    $1,800
+                    ${BRAND_CONTENT.price.toLocaleString()}
                   </span>
                   <span className="text-white/45 text-[16px]"> /month</span>
                 </p>
@@ -391,13 +315,13 @@ export default function BrandingPage() {
                   Already have your brand but need professional content? We'll handle the
                   production and deliver videos ready to post.
                 </p>
-                <Link to="/order" className="btn-lime mt-8">
+                <Link to={`/order?package=${BRAND_CONTENT.id}`} className="btn-lime mt-8">
                   Choose Brand Content <ArrowUpRight className="w-4 h-4 ml-1" />
                 </Link>
               </div>
               <div>
                 <ul className="space-y-3.5">
-                  {BRAND_CONTENT_FEATURES.map((f) => (
+                  {BRAND_CONTENT.features.map((f) => (
                     <li key={f} className="flex items-start gap-3 text-[15px] text-white/75 leading-snug">
                       <Check className="w-5 h-5 shrink-0 text-[#c7ff00]" />
                       <span>{f}</span>
