@@ -195,10 +195,10 @@ export default function ServicePickerModal() {
           <div>
             <p className="eyebrow mb-2 text-black/40">Welcome to LuxEntra Media</p>
             <h2 className="text-[28px] font-bold leading-tight tracking-tight sm:text-[36px]">
-              What are you looking to do?
+              How can we help you today?
             </h2>
             <p className="mt-2 text-[15px] leading-relaxed text-black/60 sm:text-[16px]">
-              Choose an option, and we&rsquo;ll take you directly to the right place.
+              Choose an option, and we&rsquo;ll guide you to the right place.
             </p>
           </div>
           <button
