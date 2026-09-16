@@ -197,6 +197,53 @@
     @apply inline-flex items-center gap-1 text-black font-medium hover:underline underline-offset-4;
   }
 
+  /* ── Service picker modal entrance ── */
+  @keyframes spm-overlay-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes spm-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  @keyframes spm-card-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .spm-overlay {
+    animation: spm-overlay-in 0.4s ease-out both;
+  }
+  .spm-panel {
+    animation: spm-panel-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .spm-card {
+    animation: spm-card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spm-overlay,
+    .spm-panel,
+    .spm-card {
+      animation: none !important;
+    }
+  }
+
   /* ── Legacy classes (kept for Book / Special / About pages) ── */
   .apple-eyebrow {
     @apply text-xs font-semibold uppercase tracking-[0.2em] text-[#6e6e73];

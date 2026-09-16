@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
+import ServicePickerModal from "@/react-app/components/ServicePickerModal";
 
 const SERVICES = [
   {
@@ -267,7 +268,7 @@ function ImpactDashboard() {
   }, []);
 
   return (
-    <section className="relative bg-[#070707] text-white overflow-hidden">
+    <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
@@ -416,6 +417,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-black pt-16">
       <SiteNav />
+      <ServicePickerModal />
 
       <ImpactDashboard />
 
