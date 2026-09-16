@@ -19,8 +19,8 @@ const SERVICES = [
     label: "PERSONAL BRANDING",
     title: "Be the name everyone remembers.",
     copy: "Your next client will meet your content before they meet you. We turn your expertise and personality into trust, qualified leads, and revenue.",
-    cta: "Explore branding",
-    href: "/order",
+    cta: "Build my brand",
+    href: "/branding",
     dark: true,
   },
   {

@@ -154,11 +154,26 @@
     }
   }
 
+  /* ── Continuous attention blink (e.g. guarantee badge) ── */
+  @keyframes brand-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.15;
+    }
+  }
+  .blink-attention {
+    animation: brand-blink 1.1s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .pkg-card,
     .btn-interactive,
     .impact-card,
-    .impact-fade {
+    .impact-fade,
+    .blink-attention {
       transition: none !important;
     }
     .gauge-arc {
@@ -167,6 +182,9 @@
     .btn-ripple {
       animation: none !important;
       display: none;
+    }
+    .blink-attention {
+      animation: none !important;
     }
   }
 
