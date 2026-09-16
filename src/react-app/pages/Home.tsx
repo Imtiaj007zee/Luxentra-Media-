@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check, HelpCircle, Play } from "lucide-react";
+import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
@@ -314,10 +314,9 @@ function ImpactDashboard() {
           <button
             type="button"
             onClick={openServicePicker}
-            className="inline-flex items-center gap-2 text-[15px] font-medium text-white/55 transition-colors hover:text-[#c7ff00]"
+            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors breathe-attention"
           >
-            <HelpCircle className="w-4 h-4" />
-            Find the right service for you →
+            Find the right service for you <ArrowUpRight className="w-4 h-4" />
           </button>
         </div>
 

@@ -236,10 +236,27 @@
     animation: spm-card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
+  /* ── Breathing attention loop for the service-picker trigger ── */
+  @keyframes service-trigger-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.07);
+    }
+  }
+  .breathe-attention {
+    animation: service-trigger-breathe 2.4s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .spm-overlay,
     .spm-panel,
     .spm-card {
+      animation: none !important;
+    }
+    .breathe-attention {
       animation: none !important;
     }
   }
