@@ -649,7 +649,7 @@ export default function HomePage() {
             coverage for your listing.
           </p>
           <Link to="/consultation" className="btn-dark">
-            Book a Consultation
+            Request a Consultation
           </Link>
         </div>
       </section>
