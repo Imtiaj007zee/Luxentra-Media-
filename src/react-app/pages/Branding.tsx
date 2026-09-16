@@ -337,6 +337,46 @@ export default function BrandingPage() {
         </div>
       </section>
 
+      {/* ── Not sure where to start ──────────────────────── */}
+      <section className="py-20 md:py-28 border-t border-white/10">
+        <div className="max-w-[900px] mx-auto px-6">
+          <Reveal>
+            <div
+              className="relative overflow-hidden rounded-md border border-[#c7ff00]/25 p-8 md:p-14 text-center"
+              style={{
+                background:
+                  "radial-gradient(ellipse 80% 90% at 50% 0%, rgba(199,255,0,0.08), transparent 70%), rgba(255,255,255,0.03)",
+              }}
+            >
+              <p className="eyebrow text-[#c7ff00] mb-6">Not sure where to start?</p>
+              <h2 className="text-[32px] md:text-[52px] font-bold tracking-[-0.03em] leading-[1.08]">
+                Let&apos;s sit down <span className="text-[#c7ff00]">and talk.</span>
+              </h2>
+              <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-6">
+                You know your personal brand needs attention — but what to post, how to
+                position yourself, and what will actually bring you clients? That&apos;s
+                the hard part to figure out alone.
+              </p>
+              <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-4">
+                Every month your value stays unclear online, the right people scroll
+                right past you.
+              </p>
+              <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-4">
+                So let&apos;s meet one-on-one. We&apos;ll hear your story, understand your
+                goals, and find the right direction for you. If we genuinely believe we
+                can help — and it feels right for you — we&apos;ll build it together.
+                If not, you&apos;ll still leave with a clear next step.
+              </p>
+              <div className="mt-10">
+                <Link to="/order" className="btn-lime text-[16px] px-9 py-4">
+                  Let&apos;s meet one-on-one <ArrowRight className="w-5 h-5 ml-1" />
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ── Final CTA ────────────────────────────────────── */}
       <section className="py-24 md:py-32 border-t border-white/10 relative overflow-hidden">
         <div
