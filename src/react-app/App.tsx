@@ -6,6 +6,7 @@ import BookPage from "@/react-app/pages/Book";
 import OrderPage from "@/react-app/pages/Order";
 import WorkPage from "@/react-app/pages/Work";
 import BrandingPage from "./pages/Branding";
+import ConsultationPage from "./pages/Consultation";
 
 /** Scrolls to an in-page anchor (e.g. /#package) after navigation. */
 function ScrollToHash() {
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/order" element={<OrderPage />} />
         <Route path="/work" element={<WorkPage />} />
         <Route path="/branding" element={<BrandingPage />} />
+        <Route path="/consultation" element={<ConsultationPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
