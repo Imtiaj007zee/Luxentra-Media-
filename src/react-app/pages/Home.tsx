@@ -648,8 +648,8 @@ export default function HomePage() {
             Tell us about your property, and we&apos;ll create the right level of
             coverage for your listing.
           </p>
-          <Link to="/order" className="btn-dark">
-            Request a Custom Quote
+          <Link to="/consultation" className="btn-dark">
+            Book a Consultation
           </Link>
         </div>
       </section>
