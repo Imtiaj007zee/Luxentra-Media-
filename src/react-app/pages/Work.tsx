@@ -359,7 +359,11 @@ export default function WorkPage() {
                 );
                 if (items.length === 0) return null;
                 return (
-                  <div key={group} className="mb-14 last:mb-0">
+                  <div
+                    key={group}
+                    id={group === "Personal Branding" ? "films-personal-branding" : undefined}
+                    className="mb-14 last:mb-0 scroll-mt-24"
+                  >
                     <div className="flex items-baseline justify-between mb-6">
                       <h3 className="text-[26px] md:text-[32px] font-bold tracking-[-0.02em]">
                         {group}

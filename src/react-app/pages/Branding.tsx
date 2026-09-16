@@ -107,14 +107,17 @@ export default function BrandingPage() {
           </Reveal>
           <Reveal delay={360}>
             <div className="flex flex-wrap items-center gap-4 mt-10">
-              <a href="#packages" className="btn-lime">
-                Choose your package <ArrowRight className="w-4 h-4 ml-1" />
-              </a>
+              <Link to="/work#films-personal-branding" className="btn-lime">
+                Watch Our Brand Films <ArrowUpRight className="w-4 h-4 ml-1" />
+              </Link>
               <a
                 href="#shift"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3 text-[15px] font-bold text-white hover:border-[#c7ff00] hover:text-[#c7ff00] transition-colors"
               >
                 See the shift
+              </a>
+              <a href="#packages" className="btn-lime">
+                Choose your package <ArrowRight className="w-4 h-4 ml-1" />
               </a>
             </div>
           </Reveal>
