@@ -3,12 +3,41 @@ import { Link } from "react-router";
 import { ArrowRight, X } from "lucide-react";
 
 const SESSION_KEY = "luxentra_service_picker_seen";
+const OPEN_EVENT = "luxentra:open-service-picker";
+
+/** Opens the service picker from anywhere (e.g. the hero trigger button). */
+export function openServicePicker() {
+  window.dispatchEvent(new CustomEvent(OPEN_EVENT));
+}
+
+function hasSeen(): boolean {
+  try {
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markSeen() {
+  try {
+    sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    /* ignore */
+  }
+}
 
 const PRIMARY_OPTIONS = [
   {
     title: "I Want to Market a Property",
     cta: "Explore Listing Packages",
-    href: "/order",
+    // Stays on the homepage: scrolls to the listing packages section.
+    action: () => {
+      window.setTimeout(() => {
+        document
+          .getElementById("pricing")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 80);
+    },
   },
   {
     title: "I Want to Build My Personal Brand",
@@ -34,28 +63,30 @@ function OptionCard({
   title,
   cta,
   href,
+  action,
   dark,
   index,
   onNavigate,
 }: {
   title: string;
   cta: string;
-  href: string;
+  href?: string;
+  action?: () => void;
   dark: boolean;
   index: number;
   onNavigate: () => void;
 }) {
-  return (
-    <Link
-      to={href}
-      onClick={onNavigate}
-      style={{ animationDelay: `${140 + index * 90}ms` }}
-      className={`spm-card group flex min-h-[128px] flex-col rounded-xl p-6 text-left transition-all duration-200 hover:-translate-y-0.5 sm:min-h-[148px] ${
-        dark
-          ? "bg-[#0b0b0b] text-white hover:shadow-[0_16px_44px_rgba(199,255,0,0.22)]"
-          : "border border-black/10 bg-white text-black hover:border-black hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)]"
-      }`}
-    >
+  const handleClick = () => {
+    onNavigate();
+    action?.();
+  };
+  const className = `spm-card group flex min-h-[128px] w-full flex-col rounded-xl p-6 text-left transition-all duration-200 hover:-translate-y-0.5 sm:min-h-[148px] ${
+    dark
+      ? "bg-[#0b0b0b] text-white hover:shadow-[0_16px_44px_rgba(199,255,0,0.22)]"
+      : "border border-black/10 bg-white text-black hover:border-black hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)]"
+  }`;
+  const inner = (
+    <>
       <span className="text-[19px] font-bold leading-snug tracking-tight sm:text-[21px]">
         {title}
       </span>
@@ -67,6 +98,28 @@ function OptionCard({
         {cta}
         <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
       </span>
+    </>
+  );
+  if (action) {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        style={{ animationDelay: `${140 + index * 90}ms` }}
+        className={className}
+      >
+        {inner}
+      </button>
+    );
+  }
+  return (
+    <Link
+      to={href!}
+      onClick={handleClick}
+      style={{ animationDelay: `${140 + index * 90}ms` }}
+      className={className}
+    >
+      {inner}
     </Link>
   );
 }
@@ -74,37 +127,33 @@ function OptionCard({
 export default function ServicePickerModal() {
   const [open, setOpen] = useState(false);
 
-  // Show once per session, after the visitor scrolls ~80% past the hero.
+  // Show once per session, after the visitor scrolls ~50% past the hero.
+  // Also opens on demand via openServicePicker() (hero trigger button).
   useEffect(() => {
     let triggered = false;
-    const seen = () => {
-      try {
-        return sessionStorage.getItem(SESSION_KEY) === "1";
-      } catch {
-        return false;
-      }
-    };
-    const markSeen = () => {
-      try {
-        sessionStorage.setItem(SESSION_KEY, "1");
-      } catch {
-        /* ignore */
-      }
-    };
     const onScroll = () => {
-      if (triggered || seen()) return;
+      if (triggered || hasSeen()) return;
       const hero = document.getElementById("hero");
       if (!hero) return;
       const rect = hero.getBoundingClientRect();
       const heroTop = rect.top + window.scrollY;
-      if (window.scrollY >= heroTop + rect.height * 0.8) {
+      if (window.scrollY >= heroTop + rect.height * 0.5) {
         triggered = true;
         markSeen();
         setOpen(true);
       }
     };
+    const onManualOpen = () => {
+      triggered = true;
+      markSeen();
+      setOpen(true);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener(OPEN_EVENT, onManualOpen);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener(OPEN_EVENT, onManualOpen);
+    };
   }, []);
 
   // Lock background scroll while open; restore the exact position on close.

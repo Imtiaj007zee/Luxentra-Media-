@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check, Play } from "lucide-react";
+import { ArrowUpRight, Check, HelpCircle, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
-import ServicePickerModal from "@/react-app/components/ServicePickerModal";
+import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
 
 const SERVICES = [
   {
@@ -309,6 +309,16 @@ function ImpactDashboard() {
           <PackageButton to="/consultation" dark={false}>
             Free Consultation
           </PackageButton>
+        </div>
+        <div className="flex justify-center -mt-16 md:-mt-24 mb-20 md:mb-28">
+          <button
+            type="button"
+            onClick={openServicePicker}
+            className="inline-flex items-center gap-2 text-[15px] font-medium text-white/55 transition-colors hover:text-[#c7ff00]"
+          >
+            <HelpCircle className="w-4 h-4" />
+            What brings you here today?
+          </button>
         </div>
 
         <div ref={dashboardRef}>
