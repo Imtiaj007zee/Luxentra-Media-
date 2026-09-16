@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router";
-import { ArrowLeft, Check, AlertCircle, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket } from "lucide-react";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket } from "lucide-react";
 import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById } from "@/react-app/data/packages";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
@@ -30,6 +30,7 @@ const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 
 export default function OrderPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [flyerQty, setFlyerQty] = useState(1);
@@ -311,6 +312,29 @@ export default function OrderPage() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* One-on-one consultancy — opens the consultation booking page */}
+              <div
+                className="rounded-md p-4 border border-[#c7ff00]/50 bg-[#c7ff00]/[0.06] cursor-pointer hover:bg-[#c7ff00]/[0.12] transition-colors"
+                onClick={() => navigate("/consultation")}
+                role="link"
+                aria-label="Book a one-on-one consultancy"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
+                    <CalendarCheck className="w-5 h-5 text-black" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-[17px]">One-on-One Consultancy</h3>
+                    <p className="text-[13px] text-white/40 mt-0.5">
+                      Not sure which plan fits? Book a consultation and we&apos;ll find the right direction together.
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-[#c7ff00] flex items-center justify-center shrink-0">
+                    <ArrowRight className="w-4 h-4 text-black" />
+                  </div>
+                </div>
               </div>
 
               {/* Add-ons */}
