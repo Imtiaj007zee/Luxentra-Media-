@@ -313,11 +313,11 @@ export default function BrandingPage() {
                   {p.featured && (
                     <div className="mb-6 -mt-2">
                       <span className="blink-attention inline-block rounded-full bg-[#c7ff00] text-black text-[13px] font-extrabold uppercase tracking-[0.08em] px-4 py-2 shadow-[0_0_24px_rgba(199,255,0,0.7)]">
-                        50% money-back guarantee
+                        Money-back guarantee
                       </span>
                       <p className="text-[13px] text-white/50 mt-2 leading-snug">
-                        If the agreed-upon performance benchmark is not achieved, subject
-                        to the campaign terms.
+                        50% money-back if the agreed-upon performance benchmark is not
+                        achieved, subject to the campaign terms.
                       </p>
                     </div>
                   )}
