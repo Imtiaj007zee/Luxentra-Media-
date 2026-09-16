@@ -355,6 +355,10 @@ export default function BrandingPage() {
                     >
                       Choose {p.name} <ArrowUpRight className="w-4 h-4 ml-1" />
                     </Link>
+                    <p className="text-[12.5px] text-white/40 leading-snug text-center mt-4">
+                      3-month minimum commitment. Active clients get 15% off
+                      additional services during their agreement.
+                    </p>
                   </div>
                 </div>
               </Reveal>
@@ -405,20 +409,6 @@ export default function BrandingPage() {
                 </p>
               </div>
             </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ── Package terms ────────────────────────────────── */}
-      <section className="py-16 md:py-20 border-t border-white/10">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <Reveal>
-            <p className="eyebrow text-white/40 mb-4">Package terms</p>
-            <p className="text-[15px] text-white/50 leading-relaxed max-w-3xl">
-              All monthly personal-branding packages require a minimum three-month
-              commitment. Active package clients receive 15% off additional services
-              booked during their agreement.
-            </p>
           </Reveal>
         </div>
       </section>
