@@ -306,7 +306,7 @@ function ImpactDashboard() {
             Explore the work <ArrowUpRight className="w-4 h-4" />
           </Link>
           <PackageButton to="/consultation" dark={false}>
-            Free Consultancy
+            Free Consultation
           </PackageButton>
         </div>
 

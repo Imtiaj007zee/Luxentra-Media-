@@ -314,19 +314,19 @@ export default function OrderPage() {
                 })}
               </div>
 
-              {/* One-on-one consultancy — opens the consultation booking page */}
+              {/* One-on-one consultation — opens the consultation booking page */}
               <div
                 className="rounded-md p-4 border border-[#c7ff00]/50 bg-[#c7ff00]/[0.06] cursor-pointer hover:bg-[#c7ff00]/[0.12] transition-colors"
                 onClick={() => navigate("/consultation")}
                 role="link"
-                aria-label="Book a one-on-one consultancy"
+                aria-label="Book a one-on-one consultation"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
                     <CalendarCheck className="w-5 h-5 text-black" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-[17px]">One-on-One Consultancy</h3>
+                    <h3 className="font-semibold text-[17px]">One-on-One Consultation</h3>
                     <p className="text-[13px] text-white/40 mt-0.5">
                       Not sure which plan fits? Book a consultation and we&apos;ll find the right direction together.
                     </p>

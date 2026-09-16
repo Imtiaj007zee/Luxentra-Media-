@@ -171,6 +171,6 @@ export const SERVICE_TYPES = [
   "3D Virtual Tour",
   "Custom Listing Flyer",
   "Virtual Staging",
-  "One-on-One Consultancy",
+  "One-on-One Consultation",
   "Other",
 ];

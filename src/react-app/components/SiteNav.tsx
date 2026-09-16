@@ -58,7 +58,7 @@ export default function SiteNav() {
               to="/consultation"
               className="hidden md:inline-flex items-center rounded-full border border-[#c7ff00]/70 px-5 py-2 text-[13px] font-bold text-[#c7ff00] hover:bg-[#c7ff00] hover:text-black transition-colors"
             >
-              Consultancy
+              Consultation
             </Link>
             <Link to="/order" className="btn-lime-sm hidden md:inline-flex">
               Book a Shoot
@@ -108,7 +108,7 @@ export default function SiteNav() {
               onClick={() => setOpen(false)}
               className="inline-flex items-center rounded-full border border-[#c7ff00]/70 px-6 py-3 text-[15px] font-bold text-[#c7ff00] hover:bg-[#c7ff00] hover:text-black transition-colors self-start"
             >
-              Consultancy
+              Consultation
             </Link>
           </div>
         </div>
