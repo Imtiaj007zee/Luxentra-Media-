@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check, Pause, Play } from "lucide-react";
+import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
@@ -67,56 +67,6 @@ const STEPS = [
   },
 ];
 
-function HeroFilm() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = true;
-    video.play().catch(() => {});
-  }, []);
-
-  const toggle = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      video.play().catch(() => {});
-      setPaused(false);
-    } else {
-      video.pause();
-      setPaused(true);
-    }
-  };
-
-  return (
-    <div className="relative rounded-md overflow-hidden bg-[#1a1a1a]">
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        className="w-full aspect-[16/8] object-cover"
-      >
-        <source src="/hero-video.mp4" type="video/mp4" />
-      </video>
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
-        <p className="text-white text-[15px] font-medium">Spaces. Seen differently.</p>
-        <button
-          onClick={toggle}
-          aria-label={paused ? "Play film" : "Pause film"}
-          className="w-11 h-11 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white hover:bg-white/25 transition-colors"
-        >
-          {paused ? <Play className="w-5 h-5 fill-white" /> : <Pause className="w-5 h-5 fill-white" />}
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function FeaturedFilm() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -154,6 +104,225 @@ function FeaturedFilm() {
         </span>
       )}
     </button>
+  );
+}
+
+// ── Real Estate Impact Dashboard ─────────────────────────────
+
+const IMPACT_METRICS = [
+  {
+    id: "value-covered",
+    value: 5,
+    decimals: 0,
+    prefix: "$",
+    suffix: "M+",
+    ring: 84,
+    label: "Total Property Value Covered",
+    desc: "Property value represented through our professional real estate media campaigns.",
+  },
+  {
+    id: "transaction-value",
+    value: 3.7,
+    decimals: 1,
+    prefix: "$",
+    suffix: "M+",
+    ring: 72,
+    label: "Transaction Value Supported",
+    desc: "Property transactions supported through strategic visual marketing, professional content, and increased market exposure.",
+  },
+  {
+    id: "success-rate",
+    value: 90,
+    decimals: 0,
+    prefix: "",
+    suffix: "%+",
+    ring: 90,
+    label: "Marketing Success Rate",
+    desc: "Percentage of professionally marketed properties that successfully achieved their intended market goals.",
+  },
+];
+
+function useCountUp(target: number, decimals: number, start: boolean, duration = 1800) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!start) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setVal(target);
+      return;
+    }
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / duration);
+      const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+      setVal(target * eased);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [start, target, duration]);
+  return val.toFixed(decimals);
+}
+
+function ImpactGauge({
+  id,
+  percent,
+  started,
+  children,
+}: {
+  id: string;
+  percent: number;
+  started: boolean;
+  children: React.ReactNode;
+}) {
+  const R = 88;
+  const C = 2 * Math.PI * R;
+  return (
+    <div className="relative w-[216px] h-[216px] md:w-[236px] md:h-[236px] shrink-0">
+      <svg viewBox="0 0 220 220" className="w-full h-full -rotate-90" aria-hidden="true">
+        <defs>
+          <linearGradient id={`gauge-grad-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#e6ff70" />
+            <stop offset="100%" stopColor="#9dbf00" />
+          </linearGradient>
+        </defs>
+        {Array.from({ length: 48 }).map((_, i) => {
+          const a = (i / 48) * Math.PI * 2;
+          const major = i % 4 === 0;
+          const r1 = 104;
+          const r2 = major ? 96 : 100;
+          return (
+            <line
+              key={i}
+              x1={110 + r1 * Math.cos(a)}
+              y1={110 + r1 * Math.sin(a)}
+              x2={110 + r2 * Math.cos(a)}
+              y2={110 + r2 * Math.sin(a)}
+              stroke={major ? "rgba(255,255,255,0.32)" : "rgba(255,255,255,0.1)"}
+              strokeWidth={major ? 2 : 1}
+            />
+          );
+        })}
+        <circle cx="110" cy="110" r={R} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="10" />
+        <circle
+          cx="110"
+          cy="110"
+          r={R}
+          fill="none"
+          stroke={`url(#gauge-grad-${id})`}
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray={C}
+          strokeDashoffset={started ? C * (1 - percent / 100) : C}
+          style={{
+            transition: "stroke-dashoffset 1.8s cubic-bezier(0.22,1,0.36,1)",
+            filter: "drop-shadow(0 0 10px rgba(199,255,0,0.45))",
+          }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">{children}</div>
+    </div>
+  );
+}
+
+function ImpactCard({
+  metric,
+  started,
+}: {
+  metric: (typeof IMPACT_METRICS)[number];
+  started: boolean;
+}) {
+  const display = useCountUp(metric.value, metric.decimals, started);
+  return (
+    <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl px-8 py-10 flex flex-col items-center text-center overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-[#c7ff00]/70 to-transparent" />
+      <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-40 bg-[#c7ff00]/[0.06] blur-[60px] rounded-full pointer-events-none" />
+      <ImpactGauge id={metric.id} percent={metric.ring} started={started}>
+        <p className="text-[46px] md:text-[54px] font-bold tracking-[-0.03em] leading-none text-white tabular-nums">
+          {metric.prefix}
+          {display}
+          {metric.suffix}
+        </p>
+      </ImpactGauge>
+      <h3 className="text-[19px] font-bold tracking-tight mt-8 mb-3">{metric.label}</h3>
+      <p className="text-[14px] text-white/55 leading-relaxed max-w-[26ch]">{metric.desc}</p>
+    </div>
+  );
+}
+
+function ImpactDashboard() {
+  const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section ref={ref} className="relative bg-[#070707] text-white overflow-hidden">
+      {/* Cinematic backdrop */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
+        <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
+        <div
+          className="absolute inset-0 opacity-60"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
+            WebkitMaskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
+          }}
+        />
+      </div>
+
+      <div className="relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28">
+        <p className="eyebrow text-[#c7ff00] mb-6 text-center">LuxEntra Media · Performance</p>
+        <h1 className="text-[44px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.04] mb-6 text-center">
+          Our Real Estate Impact
+        </h1>
+        <p className="text-[17px] md:text-[20px] text-white/60 leading-relaxed mb-16 max-w-2xl mx-auto text-center">
+          Creating powerful property stories that increase visibility, build trust, and
+          support successful real estate outcomes.
+        </p>
+
+        <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-16 md:mb-20">
+          {IMPACT_METRICS.map((m) => (
+            <ImpactCard key={m.id} metric={m} started={inView} />
+          ))}
+        </div>
+
+        <p className="text-center text-[20px] md:text-[26px] text-white/85 font-medium max-w-3xl mx-auto mb-12 leading-relaxed tracking-[-0.01em]">
+          &ldquo;We don&rsquo;t just create content &mdash; we create{" "}
+          <span className="text-[#c7ff00]">market exposure</span> that helps properties
+          stand out.&rdquo;
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <PackageButton to="/order" dark={false}>
+            Book a Shoot
+          </PackageButton>
+          <Link
+            to="/work"
+            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
+          >
+            Explore the work <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -226,31 +395,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-black pt-16">
       <SiteNav />
 
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="bg-[#0b0b0b] text-white">
-        <div className="max-w-[1200px] mx-auto px-6 pt-20 md:pt-28 pb-10 text-center">
-          <p className="eyebrow text-white/50 mb-6">LuxEntra Media · New York</p>
-          <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6">
-            Every listing.
-            <br />
-            A lasting impression.
-          </h1>
-          <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10">
-            Photography, films and personal branding.
-            <br className="hidden md:block" /> Thoughtfully made for real estate.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-14">
-            <Link to="/order" className="btn-lime">
-              Book a Shoot
-            </Link>
-            <Link to="/work" className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors">
-              Explore the work <ArrowUpRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <HeroFilm />
-        </div>
-        <div className="h-16 md:h-24" />
-      </section>
+      <ImpactDashboard />
 
       {/* ── The Work ─────────────────────────────────────── */}
       <section id="work" className="bg-white py-20 md:py-28 scroll-mt-16">
