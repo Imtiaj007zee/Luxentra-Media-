@@ -126,7 +126,7 @@ const IMPACT_METRICS = [
     decimals: 1,
     prefix: "$",
     suffix: "M+",
-    ring: 72,
+    ring: 84,
     label: "Transaction Value Supported",
     desc: "Property transactions supported through strategic visual marketing, professional content, and increased market exposure.",
   },
@@ -136,7 +136,7 @@ const IMPACT_METRICS = [
     decimals: 0,
     prefix: "",
     suffix: "%+",
-    ring: 90,
+    ring: 84,
     label: "Marketing Success Rate",
     desc: "Percentage of professionally marketed properties that successfully achieved their intended market goals.",
   },
@@ -214,6 +214,7 @@ function ImpactGauge({
           strokeLinecap="round"
           strokeDasharray={C}
           strokeDashoffset={started ? C * (1 - percent / 100) : C}
+          className="gauge-arc"
           style={{
             transition: "stroke-dashoffset 1.8s cubic-bezier(0.22,1,0.36,1)",
             filter: "drop-shadow(0 0 10px rgba(199,255,0,0.45))",
@@ -227,14 +228,21 @@ function ImpactGauge({
 
 function ImpactCard({
   metric,
+  index,
   started,
 }: {
   metric: (typeof IMPACT_METRICS)[number];
+  index: number;
   started: boolean;
 }) {
   const display = useCountUp(metric.value, metric.decimals, started);
   return (
-    <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl px-8 py-10 flex flex-col items-center text-center overflow-hidden">
+    <div
+      className={`impact-card relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl px-8 py-10 flex flex-col items-center text-center overflow-hidden transition-all duration-700 ease-out ${
+        started ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      }`}
+      style={{ transitionDelay: started ? `${index * 130}ms` : "0ms" }}
+    >
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-[#c7ff00]/70 to-transparent" />
       <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-40 bg-[#c7ff00]/[0.06] blur-[60px] rounded-full pointer-events-none" />
       <ImpactGauge id={metric.id} percent={metric.ring} started={started}>
@@ -251,11 +259,11 @@ function ImpactCard({
 }
 
 function ImpactDashboard() {
-  const ref = useRef<HTMLElement>(null);
+  const dashboardRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
+    const el = dashboardRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => {
@@ -264,14 +272,14 @@ function ImpactDashboard() {
           obs.disconnect();
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0.2 }
     );
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
   return (
-    <section ref={ref} className="relative bg-[#070707] text-white overflow-hidden">
+    <section className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
@@ -311,26 +319,39 @@ function ImpactDashboard() {
           </Link>
         </div>
 
-        <p className="eyebrow text-[#c7ff00] mb-6 text-center">Performance</p>
-        <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.05] mb-6 text-center">
-          Our Real Estate Impact
-        </h2>
-        <p className="text-[17px] md:text-[20px] text-white/60 leading-relaxed mb-16 max-w-2xl mx-auto text-center">
-          Creating powerful property stories that increase visibility, build trust, and
-          support successful real estate outcomes.
-        </p>
+        <div ref={dashboardRef}>
+          <div
+            className={`impact-fade transition-all duration-700 ease-out ${
+              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+          >
+            <p className="eyebrow text-[#c7ff00] mb-6 text-center">Performance</p>
+            <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.05] mb-6 text-center">
+              Our Real Estate Impact
+            </h2>
+            <p className="text-[17px] md:text-[20px] text-white/60 leading-relaxed mb-16 max-w-2xl mx-auto text-center">
+              Creating powerful property stories that increase visibility, build trust, and
+              support successful real estate outcomes.
+            </p>
+          </div>
 
-        <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-16 md:mb-20">
-          {IMPACT_METRICS.map((m) => (
-            <ImpactCard key={m.id} metric={m} started={inView} />
-          ))}
+          <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-16 md:mb-20">
+            {IMPACT_METRICS.map((m, i) => (
+              <ImpactCard key={m.id} metric={m} index={i} started={inView} />
+            ))}
+          </div>
+
+          <p
+            className={`impact-fade text-center text-[20px] md:text-[26px] text-white/85 font-medium max-w-3xl mx-auto leading-relaxed tracking-[-0.01em] transition-all duration-700 ease-out ${
+              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            }`}
+            style={{ transitionDelay: inView ? "420ms" : "0ms" }}
+          >
+            &ldquo;We don&rsquo;t just create content &mdash; we create{" "}
+            <span className="text-[#c7ff00]">market exposure</span> that helps properties
+            stand out.&rdquo;
+          </p>
         </div>
-
-        <p className="text-center text-[20px] md:text-[26px] text-white/85 font-medium max-w-3xl mx-auto leading-relaxed tracking-[-0.01em]">
-          &ldquo;We don&rsquo;t just create content &mdash; we create{" "}
-          <span className="text-[#c7ff00]">market exposure</span> that helps properties
-          stand out.&rdquo;
-        </p>
       </div>
     </section>
   );

@@ -156,7 +156,12 @@
 
   @media (prefers-reduced-motion: reduce) {
     .pkg-card,
-    .btn-interactive {
+    .btn-interactive,
+    .impact-card,
+    .impact-fade {
+      transition: none !important;
+    }
+    .gauge-arc {
       transition: none !important;
     }
     .btn-ripple {
