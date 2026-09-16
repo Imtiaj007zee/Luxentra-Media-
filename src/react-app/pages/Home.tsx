@@ -18,7 +18,7 @@ const SERVICES = [
     n: "02",
     label: "PERSONAL BRANDING",
     title: "Be the name everyone remembers.",
-    copy: "Short-form content shaped around you, from the first idea and script to filming and editing.",
+    copy: "Your next client will meet your content before they meet you. We turn your expertise and personality into trust, qualified leads, and revenue.",
     cta: "Explore branding",
     href: "/order",
     dark: true,
