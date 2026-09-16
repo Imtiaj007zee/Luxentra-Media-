@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router";
 
 const LINKS = [
+  { label: "Branding", to: "/branding" },
   { label: "Work", to: "/work" },
   { label: "Services", to: "/#services" },
   { label: "Pricing", to: "/#pricing" },
