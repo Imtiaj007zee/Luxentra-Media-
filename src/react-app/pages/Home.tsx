@@ -497,7 +497,7 @@ export default function HomePage() {
                   {s.dark ? (
                     <Link
                       to={s.href}
-                      className="inline-flex items-center gap-2 rounded-full bg-[#c7ff00] text-black text-[14px] font-bold px-5 py-2.5 hover:bg-[#d9ff4d] transition-colors"
+                      className="blink-attention inline-flex items-center gap-2 rounded-full bg-[#c7ff00] text-black text-[14px] font-bold px-5 py-2.5 hover:bg-[#d9ff4d] transition-colors shadow-[0_0_24px_rgba(199,255,0,0.65)]"
                     >
                       {s.cta}{" "}
                       {s.href === "/order" ? (
