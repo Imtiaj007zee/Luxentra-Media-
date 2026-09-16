@@ -4,7 +4,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Play, X } from "luc
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
-import { PHOTOS, PHOTO_FILTERS, type PhotoFilter, type PhotoItem } from "@/react-app/data/photos";
+import { PHOTOS, PHOTO_FILTERS, NEW_SHOWCASE_ORDER, type PhotoFilter, type PhotoItem } from "@/react-app/data/photos";
 
 const FILM_GROUPS = ["Listing Films", "Personal Branding", "Brand Story"];
 
@@ -261,6 +261,19 @@ export default function WorkPage() {
     [photoFilter]
   );
 
+  const newPhotos = useMemo(
+    () =>
+      NEW_SHOWCASE_ORDER.map((slug) => PHOTOS.find((p) => p.slug === slug)).filter(
+        (p): p is PhotoItem => Boolean(p)
+      ),
+    []
+  );
+
+  const openShowcasePhoto = useCallback((item: PhotoItem) => {
+    setPhotoFilter("all");
+    setActivePhoto(PHOTOS.findIndex((p) => p.slug === item.slug));
+  }, []);
+
   const closePhoto = useCallback(() => setActivePhoto(null), []);
   const prevPhoto = useCallback(
     () =>
@@ -390,6 +403,56 @@ export default function WorkPage() {
                 })}
               </div>
 
+              {/* New additions showcase */}
+              {photoFilter === "all" && newPhotos.length > 0 && (
+                <div className="mb-14">
+                  <div className="flex items-baseline justify-between mb-6">
+                    <div>
+                      <p className="eyebrow text-black/40 mb-2">Latest shoots</p>
+                      <h3 className="text-[26px] md:text-[32px] font-bold tracking-[-0.02em]">
+                        New additions
+                      </h3>
+                    </div>
+                    <span className="text-black/40 text-[14px] tabular-nums">
+                      {newPhotos.length} photos
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    {newPhotos.map((item, i) => (
+                      <button
+                        key={item.slug}
+                        onClick={() => openShowcasePhoto(item)}
+                        className={`group relative block w-full overflow-hidden rounded-xl bg-[#111] text-left ${
+                          i === 0 ? "col-span-2 row-span-2 min-h-[280px] md:min-h-[420px]" : ""
+                        }`}
+                        aria-label={`View ${item.title}`}
+                      >
+                        <img
+                          src={item.src}
+                          alt={item.title}
+                          loading="lazy"
+                          className={
+                            i === 0
+                              ? "absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                              : "w-full aspect-[4/3] object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                          }
+                        />
+                        <span className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-90" />
+                        <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#c7ff00] text-black text-[11px] font-bold tracking-[0.08em]">
+                          NEW
+                        </span>
+                        <span className="absolute bottom-0 left-0 right-0 p-5">
+                          <span className="eyebrow text-[#c7ff00] block mb-1">{item.label}</span>
+                          <span className="text-white text-[17px] font-bold tracking-tight block">
+                            {item.title}
+                          </span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5">
                 {filteredPhotos.map((item, i) => (
                   <button
@@ -405,6 +468,11 @@ export default function WorkPage() {
                       className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
                     />
                     <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {item.isNew && (
+                      <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#c7ff00] text-black text-[11px] font-bold tracking-[0.08em]">
+                        NEW
+                      </span>
+                    )}
                     <span className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
                       <Maximize2 className="w-4 h-4" />
                     </span>
