@@ -38,7 +38,17 @@ export default function SiteNav() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#0b0b0b]">
         <nav className="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
-          <Link to="/" onClick={() => setOpen(false)} aria-label="LuxEntra Media home" className="flex items-center gap-3 shrink-0">
+          <Link
+            to="/"
+            onClick={() => {
+              setOpen(false);
+              // Already on home: a plain <Link> to the current route does nothing,
+              // so bring the user back to the very top explicitly.
+              if (isHome) window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            aria-label="LuxEntra Media home"
+            className="flex items-center gap-3 shrink-0"
+          >
             <img src="/brand/symbol-lime.png" alt="LuxEntra Media" className="h-9 w-9 object-contain" />
             <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
           </Link>
