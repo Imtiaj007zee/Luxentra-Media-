@@ -1,4 +1,4 @@
-export type PhotoFilter = "all" | "twilight" | "aerial" | "exterior" | "interior";
+export type PhotoFilter = "all" | "twilight" | "aerial" | "exterior" | "interior" | "staging";
 
 export interface PhotoItem {
   slug: string;
@@ -14,6 +14,7 @@ export const PHOTO_FILTERS: { id: PhotoFilter; label: string }[] = [
   { id: "aerial", label: "Aerial" },
   { id: "exterior", label: "Exterior" },
   { id: "interior", label: "Interior" },
+  { id: "staging", label: "Staging" },
 ];
 
 export const PHOTOS: PhotoItem[] = [
@@ -66,4 +67,21 @@ export const PHOTOS: PhotoItem[] = [
   { slug: "bathroom-3", src: "/work/photos/bathroom-3.jpg", filter: "interior", label: "Bathroom", title: "Bathroom 3" },
   { slug: "bathroom-4", src: "/work/photos/bathroom-4.jpg", filter: "interior", label: "Bathroom", title: "Bathroom 4" },
   { slug: "dining-1", src: "/work/photos/dining-1.jpg", filter: "interior", label: "Dining Room", title: "Dining Room 1" },
+  { slug: "new-aerial-1", src: "/work/photos/new-aerial-1.jpg", filter: "aerial", label: "Aerial", title: "Aerial 9" },
+  { slug: "new-aerial-2", src: "/work/photos/new-aerial-2.jpg", filter: "aerial", label: "Aerial", title: "Aerial 10" },
+  { slug: "new-aerial-3", src: "/work/photos/new-aerial-3.jpg", filter: "aerial", label: "Aerial", title: "Aerial 11" },
+  { slug: "staging-1", src: "/work/photos/staging-1.jpg", filter: "staging", label: "Staging", title: "Staging 1" },
+  { slug: "staging-2", src: "/work/photos/staging-2.jpg", filter: "staging", label: "Staging", title: "Staging 2" },
+  { slug: "staging-3", src: "/work/photos/staging-3.jpg", filter: "staging", label: "Staging", title: "Staging 3" },
+  { slug: "new-exterior-1", src: "/work/photos/new-exterior-1.jpg", filter: "exterior", label: "Exterior", title: "Exterior 9" },
+  { slug: "new-exterior-2", src: "/work/photos/new-exterior-2.jpg", filter: "exterior", label: "Exterior", title: "Exterior 10" },
+  { slug: "new-exterior-3", src: "/work/photos/new-exterior-3.jpg", filter: "exterior", label: "Exterior", title: "Exterior 11" },
+  { slug: "new-twilight-1", src: "/work/photos/new-twilight-1.jpg", filter: "twilight", label: "Twilight", title: "Twilight 4" },
+  { slug: "new-twilight-2", src: "/work/photos/new-twilight-2.jpg", filter: "twilight", label: "Twilight", title: "Twilight 5" },
+  { slug: "new-twilight-3", src: "/work/photos/new-twilight-3.jpg", filter: "twilight", label: "Twilight", title: "Twilight 6" },
+  { slug: "new-interior-1", src: "/work/photos/new-interior-1.jpg", filter: "interior", label: "Living Room", title: "Living Room 9" },
+  { slug: "new-interior-2", src: "/work/photos/new-interior-2.jpg", filter: "interior", label: "Living Room", title: "Living Room 10" },
+  { slug: "new-interior-3", src: "/work/photos/new-interior-3.jpg", filter: "interior", label: "Kitchen", title: "Kitchen 4" },
+  { slug: "new-interior-4", src: "/work/photos/new-interior-4.jpg", filter: "interior", label: "Kitchen", title: "Kitchen 5" },
+  { slug: "new-interior-5", src: "/work/photos/new-interior-5.jpg", filter: "interior", label: "Bedroom", title: "Bedroom 6" },
 ];
