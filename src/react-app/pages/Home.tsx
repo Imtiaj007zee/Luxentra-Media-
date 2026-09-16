@@ -11,7 +11,7 @@ const SERVICES = [
     title: "Make the first look count.",
     copy: "Interior and exterior photography and twilight imagery. Ready for your listing.",
     cta: "Explore photography",
-    href: "/#work",
+    href: "/work?tab=photos",
     dark: false,
   },
   {
@@ -70,43 +70,27 @@ const STEPS = [
   },
 ];
 
-function FeaturedFilm() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [playing, setPlaying] = useState(false);
-
-  const play = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.play().catch(() => {});
-    setPlaying(true);
-  };
-
+function FeaturedTwilight() {
   return (
-    <button
-      onClick={play}
+    <Link
+      to="/work?tab=photos&filter=twilight"
       className="relative block w-full rounded-md overflow-hidden bg-[#1a1a1a] text-left group"
-      aria-label="Play featured property film"
+      aria-label="View twilight photography"
     >
-      <video
-        ref={videoRef}
-        playsInline
-        controls={playing}
-        preload="metadata"
-        poster="/stills/poster.jpg"
-        className="w-full aspect-video object-cover"
-        onPause={() => setPlaying(false)}
-      >
-        <source src="/hero-video.mp4" type="video/mp4" />
-      </video>
-      {!playing && (
-        <span className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/30 group-hover:bg-black/40 transition-colors">
-          <span className="w-16 h-16 rounded-full bg-white/15 backdrop-blur flex items-center justify-center text-white group-hover:bg-[#c7ff00] group-hover:text-black transition-colors">
-            <Play className="w-7 h-7 fill-current ml-1" />
-          </span>
-          <span className="text-white text-[15px] font-medium">Featured property film</span>
+      <img
+        src="/work/photos/new-twilight-2.jpg"
+        alt="Twilight exterior of a featured property"
+        loading="lazy"
+        className="w-full aspect-video object-cover group-hover:scale-[1.02] transition-transform duration-500"
+      />
+      <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <span className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="eyebrow text-[#c7ff00] block mb-1">Twilight</span>
+        <span className="text-white text-[17px] font-bold tracking-tight block">
+          View twilight photos
         </span>
-      )}
-    </button>
+      </span>
+    </Link>
   );
 }
 
@@ -442,31 +426,39 @@ export default function HomePage() {
             Step inside.
           </h2>
           <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12 max-w-2xl">
-            A closer look at our featured property film.
+            A closer look at our featured property.
             <br />
             From the first approach to the smallest detail.
           </p>
 
           <div className="grid lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2">
-              <FeaturedFilm />
+              <FeaturedTwilight />
             </div>
             <div className="grid grid-rows-2 gap-5">
-              <figure className="relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px]">
-                <img src="/stills/still-1.jpg" alt="Room to explore" className="absolute inset-0 w-full h-full object-cover" />
+              <Link
+                to="/work?tab=photos&filter=interior"
+                className="group relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px] block"
+                aria-label="View interior photography"
+              >
+                <img src="/stills/still-1.jpg" alt="Room to explore" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                 <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
                   Room to explore.
                 </figcaption>
-              </figure>
-              <figure className="relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px]">
-                <img src="/stills/still-2.jpg" alt="Details worth seeing" className="absolute inset-0 w-full h-full object-cover" />
+              </Link>
+              <Link
+                to="/work?tab=photos&filter=interior"
+                className="group relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px] block"
+                aria-label="View interior photography"
+              >
+                <img src="/stills/still-2.jpg" alt="Details worth seeing" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                 <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
                   Details worth seeing.
                 </figcaption>
-              </figure>
+              </Link>
             </div>
           </div>
-          <p className="text-[13px] text-black/40 mt-5">Stills from the featured film.</p>
+          <p className="text-[13px] text-black/40 mt-5">Stills from the featured property.</p>
           <Link to="/work" className="link-dark text-[16px] mt-6 inline-flex">
             View all work <ArrowUpRight className="w-4 h-4" />
           </Link>

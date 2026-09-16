@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Play, X } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
@@ -241,10 +241,34 @@ function PhotoLightbox({
 }
 
 export default function WorkPage() {
-  const [tab, setTab] = useState<"films" | "photos">("films");
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState<"films" | "photos">(() =>
+    searchParams.get("tab") === "photos" ? "photos" : "films"
+  );
   const [active, setActive] = useState<number | null>(null);
-  const [photoFilter, setPhotoFilter] = useState<PhotoFilter>("all");
+  const [photoFilter, setPhotoFilter] = useState<PhotoFilter>(() => {
+    const f = searchParams.get("filter");
+    return searchParams.get("tab") === "photos" &&
+      f &&
+      PHOTO_FILTERS.some((x) => x.id === f)
+      ? (f as PhotoFilter)
+      : "all";
+  });
   const [activePhoto, setActivePhoto] = useState<number | null>(null);
+
+  // Deep links like /work?tab=photos&filter=twilight (from the homepage)
+  useEffect(() => {
+    const t = searchParams.get("tab");
+    const f = searchParams.get("filter");
+    if (t === "photos" || t === "films") setTab(t);
+    if (t === "photos") {
+      setPhotoFilter(
+        f && PHOTO_FILTERS.some((x) => x.id === f) ? (f as PhotoFilter) : "all"
+      );
+      setActivePhoto(null);
+      document.getElementById("films")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [searchParams]);
 
   const close = useCallback(() => setActive(null), []);
   const prev = useCallback(
