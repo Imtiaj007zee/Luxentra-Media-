@@ -24,7 +24,7 @@ const SERVICES = [
   {
     n: "03",
     label: "PERSONAL BRANDING",
-    title: "Be the agent they remember.",
+    title: "Be the agent everyone remembers.",
     copy: "Short-form content shaped around you, from the first idea and script to filming and editing.",
     cta: "Explore branding",
     dark: false,
