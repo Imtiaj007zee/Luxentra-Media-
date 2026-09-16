@@ -11,22 +11,25 @@ const SERVICES = [
     title: "Make the first look count.",
     copy: "Interior and exterior photography and twilight imagery. Ready for your listing.",
     cta: "Explore photography",
+    href: "/#work",
     dark: false,
   },
   {
     n: "02",
-    label: "FILM",
-    title: "Give the space a story.",
-    copy: "Walkthrough films and aerial perspectives that show how a property feels and connects.",
-    cta: "Watch the film",
-    dark: true,
-  },
-  {
-    n: "03",
     label: "PERSONAL BRANDING",
     title: "Be the name everyone remembers.",
     copy: "Short-form content shaped around you, from the first idea and script to filming and editing.",
     cta: "Explore branding",
+    href: "/order",
+    dark: true,
+  },
+  {
+    n: "03",
+    label: "FILM",
+    title: "Give the space a story.",
+    copy: "Walkthrough films and aerial perspectives that show how a property feels and connects.",
+    cta: "Watch the film",
+    href: "/#work",
     dark: false,
   },
 ];
@@ -493,16 +496,18 @@ export default function HomePage() {
                 <div className="mt-auto">
                   {s.dark ? (
                     <Link
-                      to="/#work"
+                      to={s.href}
                       className="inline-flex items-center gap-2 rounded-full bg-[#c7ff00] text-black text-[14px] font-bold px-5 py-2.5 hover:bg-[#d9ff4d] transition-colors"
                     >
-                      {s.cta} <Play className="w-3.5 h-3.5 fill-black" />
+                      {s.cta}{" "}
+                      {s.href === "/order" ? (
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      ) : (
+                        <Play className="w-3.5 h-3.5 fill-black" />
+                      )}
                     </Link>
                   ) : (
-                    <Link
-                      to={s.n === "03" ? "/order" : "/#work"}
-                      className="link-dark text-[15px]"
-                    >
+                    <Link to={s.href} className="link-dark text-[15px]">
                       {s.cta} <ArrowUpRight className="w-4 h-4" />
                     </Link>
                   )}
