@@ -289,10 +289,32 @@ function ImpactDashboard() {
       </div>
 
       <div className="relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28">
-        <p className="eyebrow text-[#c7ff00] mb-6 text-center">LuxEntra Media · Performance</p>
-        <h1 className="text-[44px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.04] mb-6 text-center">
-          Our Real Estate Impact
+        <p className="eyebrow text-white/50 mb-6 text-center">LuxEntra Media · New York</p>
+        <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6 text-center">
+          Every listing.
+          <br />
+          A lasting impression.
         </h1>
+        <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center">
+          Photography, films and personal branding.
+          <br className="hidden md:block" /> Thoughtfully made for real estate.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32">
+          <PackageButton to="/order" dark={false}>
+            Book a Shoot
+          </PackageButton>
+          <Link
+            to="/work"
+            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
+          >
+            Explore the work <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <p className="eyebrow text-[#c7ff00] mb-6 text-center">Performance</p>
+        <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.05] mb-6 text-center">
+          Our Real Estate Impact
+        </h2>
         <p className="text-[17px] md:text-[20px] text-white/60 leading-relaxed mb-16 max-w-2xl mx-auto text-center">
           Creating powerful property stories that increase visibility, build trust, and
           support successful real estate outcomes.
@@ -304,23 +326,11 @@ function ImpactDashboard() {
           ))}
         </div>
 
-        <p className="text-center text-[20px] md:text-[26px] text-white/85 font-medium max-w-3xl mx-auto mb-12 leading-relaxed tracking-[-0.01em]">
+        <p className="text-center text-[20px] md:text-[26px] text-white/85 font-medium max-w-3xl mx-auto leading-relaxed tracking-[-0.01em]">
           &ldquo;We don&rsquo;t just create content &mdash; we create{" "}
           <span className="text-[#c7ff00]">market exposure</span> that helps properties
           stand out.&rdquo;
         </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-          <PackageButton to="/order" dark={false}>
-            Book a Shoot
-          </PackageButton>
-          <Link
-            to="/work"
-            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
-          >
-            Explore the work <ArrowUpRight className="w-4 h-4" />
-          </Link>
-        </div>
       </div>
     </section>
   );
