@@ -29,7 +29,7 @@ const SERVICES = [
     title: "Give the space a story.",
     copy: "Walkthrough films and aerial perspectives that show how a property feels and connects.",
     cta: "Watch the film",
-    href: "/#work",
+    href: "/work#films",
     dark: false,
   },
 ];

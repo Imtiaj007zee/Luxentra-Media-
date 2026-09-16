@@ -295,7 +295,7 @@ export default function WorkPage() {
       </section>
 
       {/* Gallery */}
-      <section className="bg-white py-16 md:py-24">
+      <section id="films" className="bg-white py-16 md:py-24 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           {/* Tabs */}
           <div className="flex items-center gap-3 mb-8">
