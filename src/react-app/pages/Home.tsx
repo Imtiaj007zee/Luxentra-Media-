@@ -132,7 +132,7 @@ const IMPACT_METRICS = [
   },
   {
     id: "success-rate",
-    value: 90,
+    value: 84,
     decimals: 0,
     prefix: "",
     suffix: "%+",
@@ -145,7 +145,10 @@ const IMPACT_METRICS = [
 function useCountUp(target: number, decimals: number, start: boolean, duration = 1800) {
   const [val, setVal] = useState(0);
   useEffect(() => {
-    if (!start) return;
+    if (!start) {
+      setVal(0);
+      return;
+    }
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setVal(target);
       return;
@@ -267,10 +270,8 @@ function ImpactDashboard() {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
+        // Re-trigger every time the section scrolls into / out of view.
+        setInView(entry.isIntersecting);
       },
       { threshold: 0.2 }
     );
