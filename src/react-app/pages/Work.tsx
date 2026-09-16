@@ -438,9 +438,6 @@ export default function WorkPage() {
                           }
                         />
                         <span className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-90" />
-                        <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#c7ff00] text-black text-[11px] font-bold tracking-[0.08em]">
-                          NEW
-                        </span>
                         <span className="absolute bottom-0 left-0 right-0 p-5">
                           <span className="eyebrow text-[#c7ff00] block mb-1">{item.label}</span>
                           <span className="text-white text-[17px] font-bold tracking-tight block">
@@ -468,11 +465,6 @@ export default function WorkPage() {
                       className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
                     />
                     <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {item.isNew && (
-                      <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-[#c7ff00] text-black text-[11px] font-bold tracking-[0.08em]">
-                        NEW
-                      </span>
-                    )}
                     <span className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
                       <Maximize2 className="w-4 h-4" />
                     </span>
