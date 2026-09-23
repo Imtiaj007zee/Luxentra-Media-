@@ -306,20 +306,21 @@ function ImpactDashboard() {
           >
             Explore the work <ArrowUpRight className="w-4 h-4" />
           </Link>
-          <Link
-            to="/order?package=consultation"
-            className="inline-flex items-center gap-1 text-white/70 font-medium text-[16px] hover:text-[#c7ff00] transition-colors"
-          >
-            Not sure yet? Talk to us first <ArrowUpRight className="w-4 h-4" />
-          </Link>
         </div>
-        <div className="flex justify-center -mt-16 md:-mt-24 mb-20 md:mb-28">
+        <div className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6">
+          <p className="eyebrow text-white/50 mb-4">Start here</p>
+          <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
+            Not sure what you need?
+          </h2>
+          <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed mb-8 max-w-xl">
+            Answer 3 quick questions and we will point you to the right service.
+          </p>
           <button
             type="button"
             onClick={openServicePicker}
-            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors breathe-attention"
+            className="btn-lime breathe-attention gap-2"
           >
-            Find the right service for you <ArrowUpRight className="w-4 h-4" />
+            Find my service <ArrowUpRight className="w-4 h-4" />
           </button>
         </div>
 
