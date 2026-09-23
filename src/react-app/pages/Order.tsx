@@ -282,7 +282,7 @@ export default function OrderPage() {
                 {planLabel()}
                 {!isConsultation && addOnCount > 0 && <span className="text-white/40"> · {addOnCount} add-on{addOnCount > 1 ? "s" : ""}</span>}
               </span>
-              <span className="text-[17px] font-semibold shrink-0">{isConsultation ? "Free" : fmt(totalPrice)}</span>
+              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? "Free" : fmt(totalPrice)}</span>
             </div>
           )}
 
@@ -336,7 +336,7 @@ export default function OrderPage() {
                                 <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">{bundle.badge}</span>
                               )}
                             </h4>
-                            <span className="font-semibold shrink-0">{fmt(bundle.price)}</span>
+                            <span className="price-num font-semibold shrink-0">{fmt(bundle.price)}</span>
                           </div>
                           <p className="text-[13px] text-white/40 mt-0.5">{bundle.blurb}</p>
                         </div>
@@ -371,7 +371,7 @@ export default function OrderPage() {
                                 <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">{plan.badge}</span>
                               )}
                             </h4>
-                            <span className="font-semibold shrink-0">{fmt(plan.price)}<span className="text-white/45 text-[13px] font-normal">/mo</span></span>
+                            <span className="price-num font-semibold shrink-0">{fmt(plan.price)}<span className="text-white/45 text-[13px] font-normal">/mo</span></span>
                           </div>
                           <p className="text-[13px] text-white/40 mt-0.5">{plan.tagline}</p>
                         </div>
@@ -465,7 +465,7 @@ export default function OrderPage() {
                             <span className="w-8 text-center font-semibold">{reelQty}</span>
                             <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(addOn.price * reelQty)}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="price-num font-semibold text-white">{fmt(addOn.price * reelQty)}</span></span>
                         </div>
                       )}
                     </div>
@@ -492,7 +492,7 @@ export default function OrderPage() {
                         onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
                         className={`flex-1 py-2 px-3 rounded-md text-[15px] font-medium border-2 transition-colors ${selectedStagingTier === tier.id ? "bg-[#c7ff00] text-black border-[#c7ff00]" : "bg-transparent text-white border-white/25 hover:border-white/50"}`}
                       >
-                        {tier.label}<br /><span className="font-semibold">{fmt(tier.price)}</span>
+                        {tier.label}<br /><span className="price-num font-semibold">{fmt(tier.price)}</span>
                       </button>
                     ))}
                   </div>
@@ -522,13 +522,13 @@ export default function OrderPage() {
                 </h3>
                 <div className="space-y-2 text-[15px] mb-4">
                   {includeStandard && <div className="flex justify-between"><span className="text-white/60">Standard Package</span><span className="font-medium">{fmt(standardPackagePrice)}</span></div>}
-                  {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} Bundle</span><span className="font-medium">{fmt(selectedBundleData.price)}</span></div>}
-                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name} · Personal Branding</span><span className="font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
-                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="font-medium">{fmt(a.price)}</span></div>; })}
+                  {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} Bundle</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
+                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name} · Personal Branding</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
+                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.price)}</span></div>; })}
                   {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>
                 <div className="pt-4 border-t border-white/15">
-                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>{fmt(totalPrice)}</span></div>
+                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span className="price-num">{fmt(totalPrice)}</span></div>
                 </div>
                 <button type="button" onClick={() => goToLabel(0)} className="link-lime !text-[14px] mt-4">Change plan or add-ons</button>
               </div>

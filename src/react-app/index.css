@@ -86,7 +86,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -95,6 +95,11 @@
   /* Display titles use Syne */
   h1,
   h2 {
+    font-family: "Syne", "Helvetica Neue", Helvetica, Arial, ui-sans-serif, sans-serif;
+  }
+
+  /* Price numbers use Syne */
+  .price-num {
     font-family: "Syne", "Helvetica Neue", Helvetica, Arial, ui-sans-serif, sans-serif;
   }
 

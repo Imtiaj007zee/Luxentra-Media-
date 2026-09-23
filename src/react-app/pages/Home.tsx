@@ -616,7 +616,7 @@ export default function HomePage() {
                 <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${isActive ? "text-black/60" : "text-white/50"}`}>
                   Starting at
                 </p>
-                <p className="text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
+                <p className="price-num text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
                   ${p.price}
                 </p>
                 <p className={`text-[15px] leading-relaxed mb-8 ${isActive ? "text-black/70" : "text-white/60"}`}>
@@ -690,7 +690,7 @@ export default function HomePage() {
                 className="group bg-white rounded-md p-7 flex flex-col hover:shadow-lg transition-shadow"
               >
                 <span className="flex items-start justify-between mb-6">
-                  <span className="text-[26px] font-bold tracking-tight">{a.price}</span>
+                  <span className="price-num text-[26px] font-bold tracking-tight">{a.price}</span>
                   <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-[#a8cc00] transition-colors" />
                 </span>
                 <span className="text-[17px] font-bold tracking-tight">{a.name}</span>

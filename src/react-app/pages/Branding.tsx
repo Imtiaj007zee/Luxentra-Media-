@@ -272,7 +272,7 @@ export default function BrandingPage() {
                   </p>
 
                   <p className="mb-8">
-                    <span className="text-[44px] font-bold tracking-[-0.03em] text-white">
+                    <span className="price-num text-[44px] font-bold tracking-[-0.03em] text-white">
                       ${p.price.toLocaleString()}
                     </span>
                     <span className="text-white/45 text-[15px]"> /month</span>
@@ -325,7 +325,7 @@ export default function BrandingPage() {
               <div>
                 <p className="eyebrow text-[#c7ff00] mb-4">Brand content</p>
                 <p className="mb-2">
-                  <span className="text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
+                  <span className="price-num text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
                     ${BRAND_CONTENT.price.toLocaleString()}
                   </span>
                   <span className="text-white/45 text-[16px]"> /month</span>
