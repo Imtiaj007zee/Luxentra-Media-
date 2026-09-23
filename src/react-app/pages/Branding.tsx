@@ -202,7 +202,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── We handle everything ─────────────────────────── */}
-      <section className="py-20 md:py-28">
+      <section className="pt-20 md:pt-28 pb-10 md:pb-14">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05]">
@@ -230,7 +230,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Packages ─────────────────────────────────────── */}
-      <section id="packages" className="py-20 md:py-28 scroll-mt-16">
+      <section id="packages" className="pt-10 md:pt-14 pb-20 md:pb-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">Personal branding packages</p>

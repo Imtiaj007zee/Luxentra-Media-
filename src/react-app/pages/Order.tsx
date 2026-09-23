@@ -127,7 +127,7 @@ export default function OrderPage() {
               Build your package.
             </h1>
             <p className="text-[19px] text-white/60">
-              Start with our standard package and customize with add-ons.
+              Choose one plan, then customize it with add-ons.
             </p>
           </div>
 
@@ -161,6 +161,13 @@ export default function OrderPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Left: package builder */}
             <div>
+              {/* Step 1: pick exactly one plan */}
+              <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-[#c7ff00] mb-2">
+                Step 1 · Choose your plan
+              </p>
+              <p className="text-[14px] text-white/50 mb-6">
+                Pick one. Selecting a different plan replaces the one you had.
+              </p>
               {/* Standard package card */}
               <div
                 className={`rounded-md p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
@@ -235,7 +242,7 @@ export default function OrderPage() {
                         </div>
                         <button
                           type="button"
-                          aria-label={isSelected ? `Remove ${bundle.name}` : `Add ${bundle.name}`}
+                          aria-label={isSelected ? `Deselect ${bundle.name}` : `Select ${bundle.name}`}
                           className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
                         >
                           {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
@@ -291,7 +298,7 @@ export default function OrderPage() {
                         </div>
                         <button
                           type="button"
-                          aria-label={isSelected ? `Remove ${plan.name}` : `Add ${plan.name}`}
+                          aria-label={isSelected ? `Deselect ${plan.name}` : `Select ${plan.name}`}
                           className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
                         >
                           {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
@@ -337,7 +344,10 @@ export default function OrderPage() {
                 </div>
               </div>
 
-              {/* Add-ons */}
+              {/* Step 2: add-ons */}
+              <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-[#c7ff00] mb-2 mt-2">
+                Step 2 · Customize
+              </p>
               <h2 className="text-[24px] font-semibold tracking-tight mb-5">Optional add-ons</h2>
               <div className="space-y-3">
                 {ADD_ONS.map((addOn) => {
@@ -473,7 +483,7 @@ export default function OrderPage() {
                   )}
                 </div>
                 <div className="pt-4 border-t border-white/15">
-                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>${totalPrice}</span></div>
+                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>${totalPrice.toLocaleString()}</span></div>
                 </div>
               </div>
             </div>
@@ -543,7 +553,7 @@ export default function OrderPage() {
                   <Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." />
                 </div>
                 <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-[17px] rounded-full">
-                  {isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice}`}
+                  {isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice.toLocaleString()}`}
                 </Button>
               </form>
             </div>

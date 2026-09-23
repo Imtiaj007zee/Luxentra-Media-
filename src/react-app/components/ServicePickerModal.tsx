@@ -12,7 +12,9 @@ export function openServicePicker() {
 
 function hasSeen(): boolean {
   try {
-    return sessionStorage.getItem(SESSION_KEY) === "1";
+    // localStorage (not sessionStorage): the auto-popup shows at most once
+    // per visitor, not once per tab session.
+    return localStorage.getItem(SESSION_KEY) === "1";
   } catch {
     return false;
   }
@@ -20,7 +22,7 @@ function hasSeen(): boolean {
 
 function markSeen() {
   try {
-    sessionStorage.setItem(SESSION_KEY, "1");
+    localStorage.setItem(SESSION_KEY, "1");
   } catch {
     /* ignore */
   }
@@ -127,7 +129,7 @@ function OptionCard({
 export default function ServicePickerModal() {
   const [open, setOpen] = useState(false);
 
-  // Auto-popup: once per session, after the visitor scrolls ~50% past the hero.
+  // Auto-popup: once per visitor, after the visitor scrolls ~50% past the hero.
   // The hero button (openServicePicker) opens on demand and never counts
   // against the auto-popup budget.
   useEffect(() => {
@@ -145,7 +147,7 @@ export default function ServicePickerModal() {
       }
     };
     // Manual opens (hero button) never consume the auto-popup's
-    // once-per-session budget — the scroll trigger stays alive.
+    // once-per-visitor budget — the scroll trigger stays alive.
     const onManualOpen = () => {
       setOpen(true);
     };

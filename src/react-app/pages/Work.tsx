@@ -442,7 +442,7 @@ export default function WorkPage() {
                       </h3>
                     </div>
                     <span className="text-black/40 text-[14px] tabular-nums">
-                      {newPhotos.length} photos
+                      {newPhotos.length} of {PHOTOS.length} photos
                     </span>
                   </div>
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

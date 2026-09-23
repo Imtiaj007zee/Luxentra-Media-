@@ -64,7 +64,7 @@ export const PORTFOLIO: PortfolioItem[] = [
   // ——— Personal Branding ———
   {
     slug: "how-i-sale",
-    title: "How I Sale",
+    title: "How I Sell",
     category: "Personal Branding",
     src: "/work/how-i-sale.mp4",
     poster: "/work/posters/how-i-sale.jpg",
