@@ -92,6 +92,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Display titles use Syne */
+  h1,
+  h2 {
+    font-family: "Syne", "Helvetica Neue", Helvetica, Arial, ui-sans-serif, sans-serif;
+  }
+
   ::selection {
     background: #c7ff00;
     color: #000;
