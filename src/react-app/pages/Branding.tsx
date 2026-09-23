@@ -387,7 +387,7 @@ export default function BrandingPage() {
                 If not, you&apos;ll still leave with a clear next step.
               </p>
               <div className="mt-10">
-                <Link to="/consultation" className="btn-lime text-[16px] px-9 py-4">
+                <Link to="/order?package=consultation" className="btn-lime text-[16px] px-9 py-4">
                   Let&apos;s meet one-on-one <ArrowRight className="w-5 h-5 ml-1" />
                 </Link>
               </div>

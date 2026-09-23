@@ -4,8 +4,6 @@ import { Link, useLocation } from "react-router";
 const LINKS = [
   { label: "Branding", to: "/branding" },
   { label: "Work", to: "/work" },
-  { label: "Services", to: "/#services" },
-  { label: "Pricing", to: "/#pricing" },
   { label: "About", to: "/about" },
 ];
 
@@ -64,12 +62,6 @@ export default function SiteNav() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link
-              to="/consultation"
-              className="hidden md:inline-flex items-center rounded-full border border-[#c7ff00]/70 px-5 py-2 text-[13px] font-bold text-[#c7ff00] hover:bg-[#c7ff00] hover:text-black transition-colors"
-            >
-              Consultation
-            </Link>
             <Link to="/order" className="btn-lime-sm hidden md:inline-flex">
               Book a Shoot
             </Link>
@@ -112,13 +104,6 @@ export default function SiteNav() {
           <div className="flex flex-wrap items-center gap-4 mt-8">
             <Link to="/order" onClick={() => setOpen(false)} className="btn-lime self-start">
               Book a Shoot
-            </Link>
-            <Link
-              to="/consultation"
-              onClick={() => setOpen(false)}
-              className="inline-flex items-center rounded-full border border-[#c7ff00]/70 px-6 py-3 text-[15px] font-bold text-[#c7ff00] hover:bg-[#c7ff00] hover:text-black transition-colors self-start"
-            >
-              Consultation
             </Link>
           </div>
         </div>

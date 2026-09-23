@@ -306,9 +306,12 @@ function ImpactDashboard() {
           >
             Explore the work <ArrowUpRight className="w-4 h-4" />
           </Link>
-          <PackageButton to="/consultation" dark={false}>
-            Free Consultation
-          </PackageButton>
+          <Link
+            to="/order?package=consultation"
+            className="inline-flex items-center gap-1 text-white/70 font-medium text-[16px] hover:text-[#c7ff00] transition-colors"
+          >
+            Not sure yet? Talk to us first <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </div>
         <div className="flex justify-center -mt-16 md:-mt-24 mb-20 md:mb-28">
           <button
@@ -659,7 +662,7 @@ export default function HomePage() {
             Tell us about your property, and we&apos;ll create the right level of
             coverage for your listing.
           </p>
-          <Link to="/consultation" className="btn-dark">
+          <Link to="/order?package=consultation" className="btn-dark">
             Request a Consultation
           </Link>
         </div>

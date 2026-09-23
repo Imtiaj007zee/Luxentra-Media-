@@ -40,8 +40,8 @@ export default function SiteFooter() {
             <Link to="/about" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
               Our team
             </Link>
-            <Link to="/book" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
-              Contact
+            <Link to="/order" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
+              Book a shoot
             </Link>
             <Link to="/privacy" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
               Privacy

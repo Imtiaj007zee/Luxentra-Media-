@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket } from "lucide-react";
 import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById, SERVICE_TYPES } from "@/react-app/data/packages";
 import { Button } from "@/react-app/components/ui/button";
@@ -28,9 +28,29 @@ const VIRTUAL_STAGING_TIERS = [
 
 const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
 
+const EMPTY_SHOOT = { name: "", email: "", phone: "", borough: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" };
+const EMPTY_CONSULT = { name: "", email: "", phone: "", role: "", meeting_format: "", preferred_date: "", preferred_time: "", goals: "" };
+
+const fmt = (n: number) => `$${n.toLocaleString()}`;
+
+const cardClass = (selected: boolean) =>
+  `rounded-md p-4 border transition-colors cursor-pointer ${selected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`;
+
+function SelectButton({ selected, label }: { selected: boolean; label: string }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${selected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
+    >
+      {selected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
+    </button>
+  );
+}
+
 export default function OrderPage() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [step, setStep] = useState(0);
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
   const [selectedStagingTier, setSelectedStagingTier] = useState<string | null>(null);
   const [flyerQty, setFlyerQty] = useState(1);
@@ -38,20 +58,29 @@ export default function OrderPage() {
   const [includeStandard, setIncludeStandard] = useState(true);
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null);
   const [selectedBranding, setSelectedBranding] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", borough: "", borough_custom: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" });
+  const [isConsultation, setIsConsultation] = useState(false);
+  const [shootForm, setShootForm] = useState(EMPTY_SHOOT);
+  const [consultForm, setConsultForm] = useState(EMPTY_CONSULT);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  // Read ?package=<id> from the URL and pre-select the matching bundle or
-  // personal-branding plan. The id is only a lookup key — the price always
-  // comes from our package data, never from the URL. A single selected value
-  // means refresh can't duplicate it and picking another replaces the previous.
+  // Read ?package=<id> from the URL and pre-select the matching bundle,
+  // personal-branding plan, or consultation. The id is only a lookup key —
+  // the price always comes from our package data, never from the URL.
   const packageParam = searchParams.get("package");
   useEffect(() => {
+    if (packageParam === "consultation") {
+      setIsConsultation(true);
+      setIncludeStandard(false);
+      setSelectedBundle(null);
+      setSelectedBranding(null);
+      return;
+    }
     const bundle = getBundleById(packageParam);
     if (bundle) {
       setSelectedBundle(bundle.id);
       setSelectedBranding(null);
+      setIsConsultation(false);
       setIncludeStandard(false);
       return;
     }
@@ -59,15 +88,22 @@ export default function OrderPage() {
     if (plan) {
       setSelectedBranding(plan.id);
       setSelectedBundle(null);
+      setIsConsultation(false);
       setIncludeStandard(false);
     }
   }, [packageParam]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [step]);
 
   const selectedBundleData = getBundleById(selectedBundle);
   const bundlePrice = selectedBundleData?.price ?? 0;
 
   const selectedBrandingData = getBrandingPlanById(selectedBranding);
   const brandingPrice = selectedBrandingData?.price ?? 0;
+
+  const hasPlan = includeStandard || selectedBundle !== null || selectedBranding !== null || isConsultation;
 
   const toggleAddOn = (id: string) => {
     const newSet = new Set(selectedAddOns);
@@ -90,23 +126,79 @@ export default function OrderPage() {
   }, 0);
   const totalPrice = (includeStandard ? standardPackagePrice : 0) + bundlePrice + brandingPrice + addOnsTotal + stagingPrice;
 
-  const selectedAddOnNames = [
-    selectedBundleData ? `${selectedBundleData.name} Bundle` : null,
-    selectedBrandingData ? `${selectedBrandingData.name} Personal Branding ($${selectedBrandingData.price.toLocaleString()}/mo)` : null,
-    ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
-    selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
-  ].filter(Boolean).join(", ");
+  const planLabel = () => {
+    if (isConsultation) return "Free one-on-one consultation";
+    if (selectedBrandingData) return `${selectedBrandingData.name} · ${fmt(selectedBrandingData.price)}/mo`;
+    if (selectedBundleData) return `${selectedBundleData.name} bundle · ${fmt(selectedBundleData.price)}`;
+    if (includeStandard) return `Standard Listing Media Package · ${fmt(standardPackagePrice)}`;
+    return "No plan selected yet";
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const addOnCount = selectedAddOns.size + (selectedStagingTier ? 1 : 0);
+
+  const stepLabels = isConsultation ? ["Plan", "Details"] : ["Plan", "Add-ons", "Details"];
+  const labelIndex = isConsultation ? (step === 2 ? 1 : 0) : step;
+
+  const goToLabel = (i: number) => {
+    if (isConsultation) setStep(i === 0 ? 0 : 2);
+    else setStep(i);
+  };
+  const goNext = () => {
+    if (step === 0) setStep(isConsultation ? 2 : 1);
+    else if (step === 1) setStep(2);
+  };
+  const goBack = () => {
+    if (step === 2) setStep(isConsultation ? 0 : 1);
+    else if (step === 1) setStep(0);
+  };
+
+  const pickShootPlan = (fn: () => void) => {
+    setIsConsultation(false);
+    fn();
+  };
+
+  const resetAll = () => {
+    setSelectedAddOns(new Set());
+    setSelectedStagingTier(null);
+    setFlyerQty(1);
+    setReelQty(1);
+    setIncludeStandard(true);
+    setSelectedBundle(null);
+    setSelectedBranding(null);
+    setIsConsultation(false);
+    setShootForm(EMPTY_SHOOT);
+    setConsultForm(EMPTY_CONSULT);
+    setStep(0);
+  };
+
+  const handleShootSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    const selectedAddOnNames = [
+      ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
+      selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
+    ].filter(Boolean).join(", ");
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({ ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}/mo)` : "None", total_price: fmt(totalPrice), _subject: `New Order: ${fmt(totalPrice)} from ${shootForm.name}` }),
+      });
+      if (res.ok) { setSubmitStatus("success"); resetAll(); }
+      else setSubmitStatus("error");
+    } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
+  };
+
+  const handleConsultSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       const res = await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...formData, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} ($${selectedBundleData.price})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} ($${selectedBrandingData.price.toLocaleString()}/mo)` : "None", total_price: `$${totalPrice}`, _subject: `New Order: $${totalPrice} from ${formData.name}` }),
+        body: JSON.stringify({ ...consultForm, _subject: `New One-on-One Consultation Request from ${consultForm.name}` }),
       });
-      if (res.ok) { setSubmitStatus("success"); setFormData({ name: "", email: "", phone: "", borough: "", borough_custom: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" }); setSelectedAddOns(new Set()); setSelectedStagingTier(null); setReelQty(1); setIncludeStandard(true); setSelectedBundle(null); setSelectedBranding(null); }
+      if (res.ok) { setSubmitStatus("success"); resetAll(); }
       else setSubmitStatus("error");
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
@@ -116,18 +208,18 @@ export default function OrderPage() {
       <SiteNav />
 
       <section className="py-24 md:py-32">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6">
           <Link to="/" className="link-lime !text-[15px] mb-10">
             <ArrowLeft className="w-4 h-4" /> Back to home
           </Link>
 
-          <div className="text-center mb-14">
-            <p className="eyebrow text-white/40 mb-4">Order</p>
+          <div className="text-center mb-10">
+            <p className="eyebrow text-white/40 mb-4">Book</p>
             <h1 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
-              Build your package.
+              {isConsultation ? "Book your free consultation." : "Book a shoot."}
             </h1>
             <p className="text-[19px] text-white/60">
-              Choose one plan, then customize it with add-ons.
+              Three quick steps. No payment today, we confirm by email.
             </p>
           </div>
 
@@ -139,7 +231,7 @@ export default function OrderPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-green-900 mb-1">Thank you!</h3>
-                  <p className="text-[15px] text-green-700">Your order has been received. We&apos;ll reach out to finalize your booking!</p>
+                  <p className="text-[15px] text-green-700">Your request is in. We&apos;ll reach out within 24 hours to confirm.</p>
                 </div>
               </div>
             </div>
@@ -158,39 +250,60 @@ export default function OrderPage() {
             </div>
           )}
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Left: package builder */}
+          {/* Progress */}
+          <div className="flex items-center justify-center gap-2 md:gap-3 mb-8" aria-label="Booking progress">
+            {stepLabels.map((label, i) => {
+              const done = i < labelIndex;
+              const active = i === labelIndex;
+              return (
+                <div key={label} className="flex items-center gap-2 md:gap-3">
+                  {i > 0 && <div className={`w-8 md:w-16 h-[2px] rounded ${done || active ? "bg-[#c7ff00]" : "bg-white/15"}`} />}
+                  <button
+                    type="button"
+                    disabled={!done}
+                    onClick={() => goToLabel(i)}
+                    className={`flex items-center gap-2 ${done ? "cursor-pointer" : "cursor-default"}`}
+                    aria-current={active ? "step" : undefined}
+                  >
+                    <span className={`w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold ${done ? "bg-[#c7ff00] text-black" : active ? "border-2 border-[#c7ff00] text-[#c7ff00]" : "border-2 border-white/15 text-white/40"}`}>
+                      {done ? <Check className="w-4 h-4" /> : i + 1}
+                    </span>
+                    <span className={`text-[14px] font-medium ${active ? "text-white" : done ? "text-white/70" : "text-white/40"}`}>{label}</span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Live summary bar */}
+          {step < 2 && (
+            <div className="flex items-center justify-between gap-4 rounded-md border border-white/15 bg-white/[0.04] px-5 py-4 mb-10">
+              <span className="text-[15px] text-white/70 truncate">
+                {planLabel()}
+                {!isConsultation && addOnCount > 0 && <span className="text-white/40"> · {addOnCount} add-on{addOnCount > 1 ? "s" : ""}</span>}
+              </span>
+              <span className="text-[17px] font-semibold shrink-0">{isConsultation ? "Free" : fmt(totalPrice)}</span>
+            </div>
+          )}
+
+          {/* ── STEP 0: plan ── */}
+          {step === 0 && (
             <div>
-              {/* Step 1: pick exactly one plan */}
-              <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-[#c7ff00] mb-2">
-                Step 1 · Choose your plan
-              </p>
-              <p className="text-[14px] text-white/50 mb-6">
-                Pick one. Selecting a different plan replaces the one you had.
-              </p>
-              {/* Standard package card */}
-              <div
-                className={`rounded-md p-6 mb-8 cursor-pointer border transition-colors ${includeStandard ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
-                onClick={() => {
-                  const next = !includeStandard;
-                  setIncludeStandard(next);
-                  if (next) { setSelectedBundle(null); setSelectedBranding(null); }
-                }}
-              >
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Choose your plan</h2>
+              <p className="text-[15px] text-white/50 mb-8">Pick one. You can change it any time before you submit.</p>
+
+              {/* Standard package */}
+              <div className={`${cardClass(includeStandard)} mb-4`} onClick={() => pickShootPlan(() => { const next = !includeStandard; setIncludeStandard(next); if (next) { setSelectedBundle(null); setSelectedBranding(null); } })}>
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-md flex items-center justify-center shrink-0 ${includeStandard ? "bg-[#c7ff00]" : "bg-white/10"}`}>
                     <Camera className={`w-6 h-6 ${includeStandard ? "text-black" : "text-white/60"}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="text-[19px] font-semibold tracking-tight">
-                        Standard Listing Media Package
-                      </h3>
-                      <div className="text-right flex items-center gap-2 shrink-0">
-                        <span className="text-[19px] font-semibold">${standardPackagePrice}</span>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${includeStandard ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}>
-                          {includeStandard ? <Check className="w-3.5 h-3.5 text-black" /> : <Plus className="w-3.5 h-3.5 text-white/40" />}
-                        </div>
+                      <h3 className="text-[19px] font-semibold tracking-tight">Standard Listing Media Package</h3>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[19px] font-semibold">{fmt(standardPackagePrice)}</span>
+                        <SelectButton selected={includeStandard} label="Select standard package" />
                       </div>
                     </div>
                     <ul className="text-[15px] text-white/60 space-y-1.5">
@@ -205,54 +318,33 @@ export default function OrderPage() {
               </div>
 
               {/* Launch bundles */}
-              <h2 className="text-[24px] font-semibold tracking-tight mb-5">Launch bundles</h2>
-              <div className="space-y-3 mb-8">
+              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">Launch bundles</h3>
+              <div className="space-y-3 mb-4">
                 {LAUNCH_BUNDLES.map((bundle) => {
                   const isSelected = selectedBundle === bundle.id;
                   return (
-                    <div
-                      key={bundle.id}
-                      className={`rounded-md p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
-                    >
-                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => {
-                        if (isSelected) {
-                          setSelectedBundle(null);
-                        } else {
-                          setSelectedBundle(bundle.id);
-                          setSelectedBranding(null);
-                          setIncludeStandard(false);
-                        }
-                      }}>
+                    <div key={bundle.id} className={cardClass(isSelected)} onClick={() => pickShootPlan(() => { setSelectedBundle(isSelected ? null : bundle.id); if (!isSelected) { setSelectedBranding(null); setIncludeStandard(false); } })}>
+                      <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-white/10"}`}>
                           <Rocket className={`w-5 h-5 ${isSelected ? "text-black" : "text-white/60"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-semibold text-[17px]">
+                            <h4 className="font-semibold text-[17px]">
                               {bundle.name}
                               {bundle.badge && (
-                                <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">
-                                  {bundle.badge}
-                                </span>
+                                <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">{bundle.badge}</span>
                               )}
-                            </h3>
-                            <span className="font-semibold shrink-0">${bundle.price}</span>
+                            </h4>
+                            <span className="font-semibold shrink-0">{fmt(bundle.price)}</span>
                           </div>
                           <p className="text-[13px] text-white/40 mt-0.5">{bundle.blurb}</p>
                         </div>
-                        <button
-                          type="button"
-                          aria-label={isSelected ? `Deselect ${bundle.name}` : `Select ${bundle.name}`}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
-                        >
-                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
-                        </button>
+                        <SelectButton selected={isSelected} label={`Select ${bundle.name}`} />
                       </div>
                       {isSelected && (
                         <ul className="mt-3 pt-3 border-t border-white/10 text-[14px] text-white/60 space-y-1.5">
-                          {bundle.features.map((f) => (
-                            <li key={f}>• {f}</li>
-                          ))}
+                          {bundle.features.map((f) => <li key={f}>• {f}</li>)}
                         </ul>
                       )}
                     </div>
@@ -261,59 +353,36 @@ export default function OrderPage() {
               </div>
 
               {/* Personal branding plans */}
-              <h2 className="text-[24px] font-semibold tracking-tight mb-5">Personal branding plans</h2>
-              <div className="space-y-3 mb-8">
+              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">Personal branding plans</h3>
+              <div className="space-y-3 mb-4">
                 {BRANDING_PLANS.map((plan) => {
                   const isSelected = selectedBranding === plan.id;
                   return (
-                    <div
-                      key={plan.id}
-                      className={`rounded-md p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
-                    >
-                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => {
-                        if (isSelected) {
-                          setSelectedBranding(null);
-                        } else {
-                          setSelectedBranding(plan.id);
-                          setSelectedBundle(null);
-                          setIncludeStandard(false);
-                        }
-                      }}>
+                    <div key={plan.id} className={cardClass(isSelected)} onClick={() => pickShootPlan(() => { setSelectedBranding(isSelected ? null : plan.id); if (!isSelected) { setSelectedBundle(null); setIncludeStandard(false); } })}>
+                      <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-white/10"}`}>
                           <Video className={`w-5 h-5 ${isSelected ? "text-black" : "text-white/60"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-semibold text-[17px]">
+                            <h4 className="font-semibold text-[17px]">
                               {plan.name}
                               {plan.badge && (
-                                <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">
-                                  {plan.badge}
-                                </span>
+                                <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">{plan.badge}</span>
                               )}
-                            </h3>
-                            <span className="font-semibold shrink-0">${plan.price.toLocaleString()}<span className="text-white/45 text-[13px] font-normal">/mo</span></span>
+                            </h4>
+                            <span className="font-semibold shrink-0">{fmt(plan.price)}<span className="text-white/45 text-[13px] font-normal">/mo</span></span>
                           </div>
                           <p className="text-[13px] text-white/40 mt-0.5">{plan.tagline}</p>
                         </div>
-                        <button
-                          type="button"
-                          aria-label={isSelected ? `Deselect ${plan.name}` : `Select ${plan.name}`}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
-                        >
-                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
-                        </button>
+                        <SelectButton selected={isSelected} label={`Select ${plan.name}`} />
                       </div>
                       {isSelected && (
                         <div className="mt-3 pt-3 border-t border-white/10">
                           <ul className="text-[14px] text-white/60 space-y-1.5">
-                            {plan.features.map((f) => (
-                              <li key={f}>• {f}</li>
-                            ))}
+                            {plan.features.map((f) => <li key={f}>• {f}</li>)}
                           </ul>
-                          <p className="text-[12.5px] text-white/40 mt-3">
-                            3-month minimum commitment. Active clients get 15% off additional services during their agreement.
-                          </p>
+                          <p className="text-[12.5px] text-white/40 mt-3">3-month minimum commitment. Active clients get 15% off additional services during their agreement.</p>
                         </div>
                       )}
                     </div>
@@ -321,94 +390,82 @@ export default function OrderPage() {
                 })}
               </div>
 
-              {/* One-on-one consultation — opens the consultation booking page */}
+              {/* Consultation option */}
               <div
-                className="rounded-md p-4 border border-[#c7ff00]/50 bg-[#c7ff00]/[0.06] cursor-pointer hover:bg-[#c7ff00]/[0.12] transition-colors"
-                onClick={() => navigate("/consultation")}
-                role="link"
-                aria-label="Book a one-on-one consultation"
+                className={`rounded-md p-5 border transition-colors cursor-pointer mt-8 ${isConsultation ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#c7ff00]/40 hover:border-[#c7ff00]"}`}
+                onClick={() => { setIsConsultation(!isConsultation); if (!isConsultation) { setIncludeStandard(false); setSelectedBundle(null); setSelectedBranding(null); } }}
+                role="button"
+                aria-pressed={isConsultation}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
-                    <CalendarCheck className="w-5 h-5 text-black" />
+                  <div className="w-12 h-12 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
+                    <CalendarCheck className="w-6 h-6 text-black" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-[17px]">One-on-One Consultation</h3>
-                    <p className="text-[13px] text-white/40 mt-0.5">
-                      Not sure which plan fits? Book a consultation and we&apos;ll find the right direction together.
-                    </p>
+                    <h4 className="font-semibold text-[18px]">Not sure yet? Talk to us first.</h4>
+                    <p className="text-[14px] text-white/55 mt-1">Book a free one-on-one. We&apos;ll hear your story and find the right direction together, no prep needed.</p>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-[#c7ff00] flex items-center justify-center shrink-0">
-                    <ArrowRight className="w-4 h-4 text-black" />
-                  </div>
+                  <SelectButton selected={isConsultation} label="Select free consultation" />
                 </div>
               </div>
 
-              {/* Step 2: add-ons */}
-              <p className="text-[13px] font-semibold uppercase tracking-[0.16em] text-[#c7ff00] mb-2 mt-2">
-                Step 2 · Customize
-              </p>
-              <h2 className="text-[24px] font-semibold tracking-tight mb-5">Optional add-ons</h2>
+              <Button onClick={goNext} disabled={!hasPlan} className="w-full h-14 text-[17px] rounded-full mt-10">
+                Continue <ArrowRight className="w-5 h-5 ml-1" />
+              </Button>
+              {!hasPlan && <p className="text-center text-[14px] text-white/40 mt-3">Select a plan above to continue.</p>}
+            </div>
+          )}
+
+          {/* ── STEP 1: add-ons ── */}
+          {step === 1 && (
+            <div>
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Make it yours</h2>
+              <p className="text-[15px] text-white/50 mb-8">Add-ons are optional. Skip ahead whenever you&apos;re ready.</p>
+
               <div className="space-y-3">
                 {ADD_ONS.map((addOn) => {
                   const Icon = addOn.icon;
                   const isSelected = selectedAddOns.has(addOn.id);
-                  const displayPrice =
-                    addOn.id === "flyer"
-                      ? flyerQty === 1 ? 39 : flyerQty * 35
-                      : addOn.id === "reel"
-                        ? addOn.price * reelQty
-                        : addOn.price;
+                  const displayPrice = addOn.id === "flyer" ? (flyerQty === 1 ? 39 : flyerQty * 35) : addOn.id === "reel" ? addOn.price * reelQty : addOn.price;
                   return (
-                    <div
-                      key={addOn.id}
-                      className={`rounded-md p-4 border transition-colors ${isSelected ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-white/15 hover:border-white/40"}`}
-                    >
-                      <div className="flex items-center gap-4 cursor-pointer" onClick={() => toggleAddOn(addOn.id)}>
+                    <div key={addOn.id} className={cardClass(isSelected)} onClick={() => toggleAddOn(addOn.id)}>
+                      <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-md flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "bg-white/10"}`}>
                           <Icon className={`w-5 h-5 ${isSelected ? "text-black" : "text-white/60"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
                             <h3 className="font-semibold text-[17px]">{addOn.name}</h3>
-                            <span className="font-semibold shrink-0">${displayPrice}</span>
+                            <span className="font-semibold shrink-0">{fmt(displayPrice)}</span>
                           </div>
                           {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">$39 for 1 · $35 each for 2+</p>}
-                          {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">Concept, scripting, filming & editing</p>}
+                          {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">Concept, scripting, filming and editing</p>}
                         </div>
-                        <button
-                          type="button"
-                          aria-label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isSelected ? "bg-[#c7ff00]" : "border-2 border-white/15"}`}
-                        >
-                          {isSelected ? <Check className="w-4 h-4 text-black" /> : <Plus className="w-4 h-4 text-white/40" />}
-                        </button>
+                        <SelectButton selected={isSelected} label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`} />
                       </div>
                       {addOn.id === "flyer" && isSelected && (
-                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10">
+                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10" onClick={(e) => e.stopPropagation()}>
                           <span className="text-[15px] text-white/60 font-medium">Quantity:</span>
                           <div className="flex items-center gap-2">
                             <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
                             <span className="w-8 text-center font-semibold">{flyerQty}</span>
                             <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">${flyerQty === 1 ? 39 : flyerQty * 35}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(flyerQty === 1 ? 39 : flyerQty * 35)}</span></span>
                           {flyerQty > 1 && (
-                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">
-                              Save ${39 * flyerQty - flyerQty * 35} vs full price
-                            </span>
+                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">Save {fmt(39 * flyerQty - flyerQty * 35)} vs full price</span>
                           )}
                         </div>
                       )}
                       {addOn.id === "reel" && isSelected && (
-                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10">
+                        <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10" onClick={(e) => e.stopPropagation()}>
                           <span className="text-[15px] text-white/60 font-medium">Quantity:</span>
                           <div className="flex items-center gap-2">
                             <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
                             <span className="w-8 text-center font-semibold">{reelQty}</span>
                             <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">${addOn.price * reelQty}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(addOn.price * reelQty)}</span></span>
                         </div>
                       )}
                     </div>
@@ -425,9 +482,7 @@ export default function OrderPage() {
                       <h3 className="font-semibold text-[17px]">Virtual Staging</h3>
                       <p className="text-[15px] text-white/60">Photorealistic digital staging, delivered in 24hrs</p>
                     </div>
-                    {selectedStagingTier && (
-                      <span className="font-semibold shrink-0">${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price}</span>
-                    )}
+                    {selectedStagingTier && <span className="font-semibold shrink-0">{fmt(stagingPrice)}</span>}
                   </div>
                   <div className="flex gap-2 ml-14">
                     {VIRTUAL_STAGING_TIERS.map((tier) => (
@@ -435,79 +490,65 @@ export default function OrderPage() {
                         key={tier.id}
                         type="button"
                         onClick={() => setSelectedStagingTier(selectedStagingTier === tier.id ? null : tier.id)}
-                        className={`flex-1 py-2 px-3 rounded-md text-[15px] font-medium border-2 transition-colors ${
-                          selectedStagingTier === tier.id
-                            ? "bg-[#c7ff00] text-black border-[#c7ff00]"
-                            : "bg-transparent text-white border-white/25 hover:border-white/50"
-                        }`}
+                        className={`flex-1 py-2 px-3 rounded-md text-[15px] font-medium border-2 transition-colors ${selectedStagingTier === tier.id ? "bg-[#c7ff00] text-black border-[#c7ff00]" : "bg-transparent text-white border-white/25 hover:border-white/50"}`}
                       >
-                        {tier.label}
-                        <br />
-                        <span className="font-semibold">${tier.price}</span>
+                        {tier.label}<br /><span className="font-semibold">{fmt(tier.price)}</span>
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Order summary */}
-              <div className="mt-8 bg-white/10 rounded-md p-6">
-                <h3 className="text-[19px] font-semibold tracking-tight mb-4 flex items-center gap-2">
-                  <ShoppingCart className="w-5 h-5" /> Order summary
-                </h3>
-                <div className="space-y-2 text-[15px] mb-4">
-                  {includeStandard && (
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Standard Package</span>
-                      <span className="font-medium">${standardPackagePrice}</span>
-                    </div>
-                  )}
-                  {selectedBundleData && (
-                    <div className="flex justify-between">
-                      <span className="text-white/60">{selectedBundleData.name} Bundle</span>
-                      <span className="font-medium">${selectedBundleData.price}</span>
-                    </div>
-                  )}
-                  {selectedBrandingData && (
-                    <div className="flex justify-between">
-                      <span className="text-white/60">{selectedBrandingData.name} — Personal Branding</span>
-                      <span className="font-medium">${selectedBrandingData.price.toLocaleString()}/mo</span>
-                    </div>
-                  )}
-                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="font-medium">${a.price}</span></div>; })}
-                  {selectedStagingTier && (
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span>
-                      <span className="font-medium">${stagingPrice}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="pt-4 border-t border-white/15">
-                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>${totalPrice.toLocaleString()}</span></div>
-                </div>
+              <div className="flex gap-3 mt-10">
+                <Button onClick={goBack} variant="outline" className="h-14 px-8 text-[16px] rounded-full border-white/25 text-white hover:bg-white/10">
+                  <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                </Button>
+                <Button onClick={goNext} className="flex-1 h-14 text-[17px] rounded-full">
+                  Continue <ArrowRight className="w-5 h-5 ml-1" />
+                </Button>
               </div>
             </div>
+          )}
 
-            {/* Right: details form */}
+          {/* ── STEP 2: details ── */}
+          {step === 2 && !isConsultation && (
             <div>
-              <h2 className="text-[32px] font-semibold tracking-tight mb-4">Your details</h2>
-              <p className="text-[17px] text-white/60 mb-8">Fill out your information and we&apos;ll confirm within 24 hours.</p>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Your details</h2>
+              <p className="text-[15px] text-white/50 mb-8">Last step. We&apos;ll confirm everything by email within 24 hours.</p>
+
+              <div className="bg-white/[0.04] border border-white/15 rounded-md p-6 mb-10">
+                <h3 className="text-[17px] font-semibold tracking-tight mb-4 flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5" /> Your booking
+                </h3>
+                <div className="space-y-2 text-[15px] mb-4">
+                  {includeStandard && <div className="flex justify-between"><span className="text-white/60">Standard Package</span><span className="font-medium">{fmt(standardPackagePrice)}</span></div>}
+                  {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} Bundle</span><span className="font-medium">{fmt(selectedBundleData.price)}</span></div>}
+                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name} · Personal Branding</span><span className="font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
+                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="font-medium">{fmt(a.price)}</span></div>; })}
+                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
+                </div>
+                <div className="pt-4 border-t border-white/15">
+                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span>{fmt(totalPrice)}</span></div>
+                </div>
+                <button type="button" onClick={() => goToLabel(0)} className="link-lime !text-[14px] mt-4">Change plan or add-ons</button>
+              </div>
+
+              <form onSubmit={handleShootSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Name *</Label>
-                  <Input type="text" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" />
+                  <Input type="text" required value={shootForm.name} onChange={(e) => setShootForm({ ...shootForm, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Email *</Label>
-                  <Input type="email" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
+                  <Input type="email" required value={shootForm.email} onChange={(e) => setShootForm({ ...shootForm, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Phone <span className="text-white/40 font-normal">(optional)</span></Label>
-                  <Input type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
+                  <Input type="tel" value={shootForm.phone} onChange={(e) => setShootForm({ ...shootForm, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Borough *</Label>
-                  <Select value={formData.borough} onValueChange={(v) => setFormData({ ...formData, borough: v })} required>
+                  <Select value={shootForm.borough} onValueChange={(v) => setShootForm({ ...shootForm, borough: v })} required>
                     <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select borough" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Manhattan">Manhattan</SelectItem>
@@ -519,45 +560,127 @@ export default function OrderPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                {formData.borough === "other" && (
-                  <div className="space-y-2">
-                    <Label className="text-base font-medium">Specify Location *</Label>
-                    <Input type="text" placeholder="Enter your borough or area..." value={formData.borough_custom} onChange={(e) => setFormData({ ...formData, borough_custom: e.target.value })} className="h-12 text-base" />
-                  </div>
-                )}
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Service Type *</Label>
-                  <Select value={formData.service_type} onValueChange={(v) => setFormData({ ...formData, service_type: v })} required>
+                  <Select value={shootForm.service_type} onValueChange={(v) => setShootForm({ ...shootForm, service_type: v })} required>
                     <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select service type" /></SelectTrigger>
                     <SelectContent>
-                      {SERVICE_TYPES.map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
+                      {SERVICE_TYPES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-base font-medium">Preferred Shoot Date</Label>
-                  <Input type="date" value={formData.shoot_date} onChange={(e) => setFormData({ ...formData, shoot_date: e.target.value })} className="h-12 text-base" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-base font-medium">Preferred Shoot Time</Label>
-                  <Input type="time" value={formData.shoot_time} onChange={(e) => setFormData({ ...formData, shoot_time: e.target.value })} className="h-12 text-base" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Preferred Shoot Date</Label>
+                    <Input type="date" value={shootForm.shoot_date} onChange={(e) => setShootForm({ ...shootForm, shoot_date: e.target.value })} className="h-12 text-base" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Preferred Shoot Time</Label>
+                    <Input type="time" value={shootForm.shoot_time} onChange={(e) => setShootForm({ ...shootForm, shoot_time: e.target.value })} className="h-12 text-base" />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Property Address / Location</Label>
-                  <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={formData.shoot_location} onChange={(e) => setFormData({ ...formData, shoot_location: e.target.value })} className="h-12 text-base" />
+                  <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={shootForm.shoot_location} onChange={(e) => setShootForm({ ...shootForm, shoot_location: e.target.value })} className="h-12 text-base" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-base font-medium">Additional Details <span className="text-white/40 font-normal">(optional)</span></Label>
-                  <Textarea value={formData.request_details} onChange={(e) => setFormData({ ...formData, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Preferred shoot date, special requirements..." />
+                  <Textarea value={shootForm.request_details} onChange={(e) => setShootForm({ ...shootForm, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Special requirements, gate codes, anything we should know..." />
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full h-14 text-[17px] rounded-full">
-                  {isSubmitting ? "Submitting Order..." : `Submit Order — $${totalPrice.toLocaleString()}`}
-                </Button>
+                <div className="flex gap-3 pt-2">
+                  <Button type="button" onClick={goBack} variant="outline" className="h-14 px-8 text-[16px] rounded-full border-white/25 text-white hover:bg-white/10">
+                    <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting} className="flex-1 h-14 text-[17px] rounded-full">
+                    {isSubmitting ? "Sending..." : `Request booking · ${fmt(totalPrice)}`}
+                  </Button>
+                </div>
+                <p className="flex items-center justify-center gap-2 text-center text-[14px] text-white/45">
+                  <Check className="w-4 h-4 text-[#c7ff00] shrink-0" /> No payment today. We confirm every booking by email within 24 hours.
+                </p>
               </form>
             </div>
-          </div>
+          )}
+
+          {/* ── STEP 2: consultation details ── */}
+          {step === 2 && isConsultation && (
+            <div>
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Book your meeting</h2>
+              <p className="text-[15px] text-white/50 mb-8">Tell us a little about yourself and we&apos;ll set a time to talk.</p>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="rounded-md border border-[#c7ff00]/25 bg-white/[0.03] p-8 h-fit">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
+                      <CalendarCheck className="w-6 h-6 text-black" />
+                    </div>
+                    <h3 className="text-[22px] font-semibold tracking-tight">What to expect</h3>
+                  </div>
+                  <ul className="space-y-5 text-[15px] text-white/65 leading-relaxed">
+                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>We&apos;ll hear your story and understand your goals, no prep needed.</span></li>
+                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>Together we&apos;ll find the right direction for your personal brand.</span></li>
+                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>If we genuinely believe we can help, and it feels right for you, we&apos;ll build it together.</span></li>
+                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>If not, you&apos;ll still leave with greater clarity about your next step.</span></li>
+                  </ul>
+                </div>
+
+                <form onSubmit={handleConsultSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Name *</Label>
+                    <Input type="text" required value={consultForm.name} onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Email *</Label>
+                    <Input type="email" required value={consultForm.email} onChange={(e) => setConsultForm({ ...consultForm, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Phone <span className="text-white/40 font-normal">(optional)</span></Label>
+                    <Input type="tel" value={consultForm.phone} onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">What do you do? *</Label>
+                    <Input type="text" required value={consultForm.role} onChange={(e) => setConsultForm({ ...consultForm, role: e.target.value })} className="h-12 text-base" placeholder="Real estate agent, broker, business owner..." />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">Preferred meeting format</Label>
+                    <Select value={consultForm.meeting_format} onValueChange={(v) => setConsultForm({ ...consultForm, meeting_format: v })}>
+                      <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select format" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Video call">Video call</SelectItem>
+                        <SelectItem value="Phone call">Phone call</SelectItem>
+                        <SelectItem value="In person">In person</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label className="text-base font-medium">Preferred day</Label>
+                      <Input type="date" value={consultForm.preferred_date} onChange={(e) => setConsultForm({ ...consultForm, preferred_date: e.target.value })} className="h-12 text-base" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-base font-medium">Preferred time</Label>
+                      <Input type="time" value={consultForm.preferred_time} onChange={(e) => setConsultForm({ ...consultForm, preferred_time: e.target.value })} className="h-12 text-base" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-base font-medium">What would you like to talk about? <span className="text-white/40 font-normal">(optional)</span></Label>
+                    <Textarea value={consultForm.goals} onChange={(e) => setConsultForm({ ...consultForm, goals: e.target.value })} className="min-h-24 text-base" placeholder="Your goals, what's holding you back, what you'd like clarity on..." />
+                  </div>
+                  <div className="flex gap-3 pt-2">
+                    <Button type="button" onClick={goBack} variant="outline" className="h-14 px-8 text-[16px] rounded-full border-white/25 text-white hover:bg-white/10">
+                      <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                    </Button>
+                    <Button type="submit" disabled={isSubmitting} className="flex-1 h-14 text-[17px] rounded-full">
+                      {isSubmitting ? "Sending..." : "Request my one-on-one"}
+                    </Button>
+                  </div>
+                  <p className="flex items-center justify-center gap-2 text-center text-[14px] text-white/45">
+                    <Check className="w-4 h-4 text-[#c7ff00] shrink-0" /> Free to request. We reply within 24 hours to set a time.
+                  </p>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

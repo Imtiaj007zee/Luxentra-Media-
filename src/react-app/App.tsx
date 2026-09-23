@@ -1,12 +1,10 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router";
 import AboutPage from "./pages/About";
 import HomePage from "@/react-app/pages/Home";
-import BookPage from "@/react-app/pages/Book";
 import OrderPage from "@/react-app/pages/Order";
 import WorkPage from "@/react-app/pages/Work";
 import BrandingPage from "./pages/Branding";
-import ConsultationPage from "./pages/Consultation";
 import PrivacyPage from "./pages/Privacy";
 import NotFoundPage from "./pages/NotFound";
 import PageMeta from "@/react-app/components/PageMeta";
@@ -37,12 +35,12 @@ export default function App() {
       <ScrollToHash />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/book" element={<BookPage />} />
+        <Route path="/book" element={<Navigate to="/order" replace />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/order" element={<OrderPage />} />
         <Route path="/work" element={<WorkPage />} />
         <Route path="/branding" element={<BrandingPage />} />
-        <Route path="/consultation" element={<ConsultationPage />} />
+        <Route path="/consultation" element={<Navigate to="/order?package=consultation" replace />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

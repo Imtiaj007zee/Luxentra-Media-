@@ -29,16 +29,6 @@ const ROUTE_META: Record<string, { title: string; description: string }> = {
     description:
       "Book your real estate photography or film package with LuxEntra Media. Choose a package, add extras, and get a confirmation within 24 hours.",
   },
-  "/book": {
-    title: "Contact Us | LuxEntra Media",
-    description:
-      "Get in touch with LuxEntra Media for real estate photography, film, and personal branding in NYC and Long Island.",
-  },
-  "/consultation": {
-    title: "One-on-One Consultancy | LuxEntra Media",
-    description:
-      "Book a one-on-one consultancy with LuxEntra Media to plan your personal brand and content strategy.",
-  },
   "/privacy": {
     title: "Privacy Policy | LuxEntra Media",
     description:

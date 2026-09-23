@@ -57,7 +57,7 @@ const SECONDARY_OPTIONS = [
   {
     title: "I\u2019m Not Sure Yet",
     cta: "Get a Free Consultation",
-    href: "/consultation",
+    href: "/order?package=consultation",
   },
 ];
 
