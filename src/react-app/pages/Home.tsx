@@ -313,7 +313,7 @@ function ImpactDashboard() {
             Not sure what you need?
           </h2>
           <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed mb-8 max-w-xl">
-            Answer 3 quick questions and we will point you to the right service.
+            Tell us what brings you here and we will point you to the right service.
           </p>
           <button
             type="button"
