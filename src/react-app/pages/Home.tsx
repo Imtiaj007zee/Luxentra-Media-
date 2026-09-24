@@ -4,7 +4,7 @@ import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import FaqSection from "@/react-app/components/FaqSection";
-import Testimonials from "@/react-app/components/Testimonials";
+import ProofSection from "@/react-app/components/ProofSection";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
 
 const SERVICES = [
@@ -719,8 +719,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Testimonials ─────────────────────────────────── */}
-      <Testimonials />
+      {/* ── Proof ──────────────────────────────────────── */}
+      <ProofSection />
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       <FaqSection />
