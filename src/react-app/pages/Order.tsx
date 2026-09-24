@@ -26,7 +26,9 @@ const VIRTUAL_STAGING_TIERS = [
   { id: "staging_5", label: "5 Rooms", price: 149 },
 ];
 
-const FORMSPREE_URL = "https://formspree.io/f/meelbrbz";
+// Free order database: Google Apps Script web app appending rows to the
+// "LuxEntra Orders" Google Sheet. text/plain avoids a CORS preflight.
+const ORDERS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyAxPzsawzO8zYeFqyBD3RxcCWs-xUs5vTqte6_CQa9QJZJkd56MrVS3SANgNNO-RMg-w/exec";
 
 const EMPTY_SHOOT = { name: "", email: "", phone: "", borough: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" };
 const EMPTY_CONSULT = { name: "", email: "", phone: "", role: "", meeting_format: "", preferred_date: "", preferred_time: "", goals: "" };
@@ -179,10 +181,10 @@ export default function OrderPage() {
       selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
     ].filter(Boolean).join(", ");
     try {
-      const res = await fetch(FORMSPREE_URL, {
+      const res = await fetch(ORDERS_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}/mo)` : "None", total_price: fmt(totalPrice), _subject: `New Order: ${fmt(totalPrice)} from ${shootForm.name}` }),
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ form_type: "shoot", ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}/mo)` : "None", total_price: fmt(totalPrice), _subject: `New Order: ${fmt(totalPrice)} from ${shootForm.name}` }),
       });
       if (res.ok) { setSubmitStatus("success"); resetAll(); }
       else setSubmitStatus("error");
@@ -193,10 +195,10 @@ export default function OrderPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await fetch(FORMSPREE_URL, {
+      const res = await fetch(ORDERS_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...consultForm, _subject: `New One-on-One Consultation Request from ${consultForm.name}` }),
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ form_type: "consultation", ...consultForm, _subject: `New One-on-One Consultation Request from ${consultForm.name}` }),
       });
       if (res.ok) { setSubmitStatus("success"); resetAll(); }
       else setSubmitStatus("error");
