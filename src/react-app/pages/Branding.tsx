@@ -151,7 +151,7 @@ export default function BrandingPage() {
           </Reveal>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             {[
-              "Customers don't only compare services anymore — they compare the people behind them.",
+              "Customers don't only compare services anymore. They compare the people behind them.",
               "In the next two to three years, your personal brand will increasingly determine who gets discovered, trusted, and hired.",
             ].map((copy, i) => (
               <Reveal key={i} delay={i * 140}>
@@ -210,7 +210,7 @@ export default function BrandingPage() {
             </h2>
             <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-6">
               Strategy, scripting, filming, editing, posting, platform management, lead
-              funnels, and paid advertising — all connected to one goal:
+              funnels, and paid advertising, all connected to one goal:
             </p>
             <p className="text-[24px] md:text-[32px] font-bold tracking-tight mt-4">
               Turning attention into clients.
@@ -238,7 +238,7 @@ export default function BrandingPage() {
               Choose how far you want to take your brand.
             </h2>
             <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-6">
-              Each package is designed for a different stage of growth — from building a
+              Each package is designed for a different stage of growth, from building a
               consistent presence to generating leads and scaling revenue.
             </p>
           </Reveal>
@@ -372,7 +372,7 @@ export default function BrandingPage() {
                 Let&apos;s sit down <span className="text-[#c7ff00]">and talk.</span>
               </h2>
               <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-6">
-                You know your personal brand needs attention — but what to post, how to
+                You know your personal brand needs attention. But what to post, how to
                 position yourself, and what will actually bring you clients? That&apos;s
                 the hard part to figure out alone.
               </p>
@@ -383,7 +383,7 @@ export default function BrandingPage() {
               <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-4">
                 So let&apos;s meet one-on-one. We&apos;ll hear your story, understand your
                 goals, and find the right direction for you. If we genuinely believe we
-                can help — and it feels right for you — we&apos;ll build it together.
+                can help, and it feels right for you, we&apos;ll build it together.
                 If not, you&apos;ll still leave with a clear next step.
               </p>
               <div className="mt-10">

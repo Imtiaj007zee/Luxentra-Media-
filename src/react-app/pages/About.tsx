@@ -107,7 +107,7 @@ export default function AboutPage() {
             Meet the team.
           </h1>
           <p className="text-[19px] md:text-[21px] text-[#6e6e73] max-w-2xl mx-auto">
-            The creative minds behind LuxEntra Media — passionate about elevating every listing through cinematic storytelling.
+            The creative minds behind LuxEntra Media, passionate about elevating every listing through cinematic storytelling.
           </p>
         </div>
       </section>

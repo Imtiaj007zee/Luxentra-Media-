@@ -325,7 +325,7 @@ export default function WorkPage() {
             every frame.
           </h1>
           <p className="text-[18px] md:text-[21px] leading-snug text-white/70 max-w-2xl">
-            Property films, brand stories, and photography from recent LuxEntra shoots —
+            Property films, brand stories, and photography from recent LuxEntra shoots,
             including the pieces behind our best-performing content.
           </p>
         </div>
