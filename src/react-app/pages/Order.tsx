@@ -64,6 +64,7 @@ export default function OrderPage() {
   const [shootForm, setShootForm] = useState(EMPTY_SHOOT);
   const [consultForm, setConsultForm] = useState(EMPTY_CONSULT);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
   // Read ?package=<id> from the URL and pre-select the matching bundle,
@@ -128,6 +129,10 @@ export default function OrderPage() {
   }, 0);
   const totalPrice = (includeStandard ? standardPackagePrice : 0) + bundlePrice + brandingPrice + addOnsTotal + stagingPrice;
 
+  // First-order discount: WELCOME25 takes $25 off any paid booking.
+  const discountAmount = !isConsultation && discountCode.trim().toUpperCase() === "WELCOME25" ? 25 : 0;
+  const finalTotal = Math.max(0, totalPrice - discountAmount);
+
   const planLabel = () => {
     if (isConsultation) return "Free one-on-one consultation";
     if (selectedBrandingData) return `${selectedBrandingData.name} · ${fmt(selectedBrandingData.price)}/mo`;
@@ -170,6 +175,7 @@ export default function OrderPage() {
     setIsConsultation(false);
     setShootForm(EMPTY_SHOOT);
     setConsultForm(EMPTY_CONSULT);
+    setDiscountCode("");
     setStep(0);
   };
 
@@ -184,7 +190,7 @@ export default function OrderPage() {
       const res = await fetch(ORDERS_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({ form_type: "shoot", ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}/mo)` : "None", total_price: fmt(totalPrice), _subject: `New Order: ${fmt(totalPrice)} from ${shootForm.name}` }),
+        body: JSON.stringify({ form_type: "shoot", ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}/mo)` : "None", discount_code: discountAmount > 0 ? discountCode.trim().toUpperCase() : "None", total_price: fmt(finalTotal), _subject: `New Order: ${fmt(finalTotal)} from ${shootForm.name}` }),
       });
       if (res.ok) { setSubmitStatus("success"); resetAll(); }
       else setSubmitStatus("error");
@@ -284,7 +290,7 @@ export default function OrderPage() {
                 {planLabel()}
                 {!isConsultation && addOnCount > 0 && <span className="text-white/40"> · {addOnCount} add-on{addOnCount > 1 ? "s" : ""}</span>}
               </span>
-              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? "Free" : fmt(totalPrice)}</span>
+              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? "Free" : fmt(finalTotal)}</span>
             </div>
           )}
 
@@ -530,7 +536,10 @@ export default function OrderPage() {
                   {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>
                 <div className="pt-4 border-t border-white/15">
-                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span className="price-num">{fmt(totalPrice)}</span></div>
+                  {discountAmount > 0 && (
+                    <div className="flex justify-between text-[15px] mb-2"><span className="text-[#c7ff00]">First-order discount (WELCOME25)</span><span className="price-num font-medium text-[#c7ff00]">−{fmt(discountAmount)}</span></div>
+                  )}
+                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span className="price-num">{fmt(finalTotal)}</span></div>
                 </div>
                 <button type="button" onClick={() => goToLabel(0)} className="link-lime !text-[14px] mt-4">Change plan or add-ons</button>
               </div>
@@ -586,6 +595,16 @@ export default function OrderPage() {
                   <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={shootForm.shoot_location} onChange={(e) => setShootForm({ ...shootForm, shoot_location: e.target.value })} className="h-12 text-base" />
                 </div>
                 <div className="space-y-2">
+                  <Label className="text-base font-medium">Discount code <span className="text-white/40 font-normal">(optional)</span></Label>
+                  <Input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} className="h-12 text-base uppercase" placeholder="Have a code? Enter it here" />
+                  {discountCode.trim() !== "" && discountAmount === 0 && (
+                    <p className="text-[13px] text-white/40">That code didn&apos;t match. Codes are not case sensitive.</p>
+                  )}
+                  {discountAmount > 0 && (
+                    <p className="text-[13px] text-[#c7ff00]">WELCOME25 applied. $25 off your first order.</p>
+                  )}
+                </div>
+                <div className="space-y-2">
                   <Label className="text-base font-medium">Additional Details <span className="text-white/40 font-normal">(optional)</span></Label>
                   <Textarea value={shootForm.request_details} onChange={(e) => setShootForm({ ...shootForm, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Special requirements, gate codes, anything we should know..." />
                 </div>
@@ -594,7 +613,7 @@ export default function OrderPage() {
                     <ArrowLeft className="w-5 h-5 mr-1" /> Back
                   </Button>
                   <Button type="submit" disabled={isSubmitting} className="flex-1 h-14 text-[17px] rounded-full">
-                    {isSubmitting ? "Sending..." : `Request booking · ${fmt(totalPrice)}`}
+                    {isSubmitting ? "Sending..." : `Request booking · ${fmt(finalTotal)}`}
                   </Button>
                 </div>
                 <p className="flex items-center justify-center gap-2 text-center text-[14px] text-white/45">
