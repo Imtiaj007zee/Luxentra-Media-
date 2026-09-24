@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
+import FaqSection from "@/react-app/components/FaqSection";
+import Testimonials from "@/react-app/components/Testimonials";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
 
 const SERVICES = [
@@ -700,8 +702,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── From shoot to listing ────────────────────────── */}
-      <section className="bg-white py-20 md:py-28">
+      {/* ── From shoot to listing ────────────────────────── */}      <section className="bg-white py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
             Easy from the start.
@@ -717,6 +718,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Testimonials ─────────────────────────────────── */}
+      <Testimonials />
+
+      {/* ── FAQ ──────────────────────────────────────────── */}
+      <FaqSection />
 
       {/* ── CTA ──────────────────────────────────────────── */}
       <section id="about" className="bg-[#0b0b0b] text-white py-24 md:py-32 scroll-mt-16">
