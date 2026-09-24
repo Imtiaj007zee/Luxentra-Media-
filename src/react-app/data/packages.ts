@@ -15,7 +15,7 @@ export const LAUNCH_BUNDLES: LaunchBundle[] = [
     id: "market-launch",
     name: "Market Launch",
     price: 399,
-    blurb: "Enter the market looking polished, professional, and ready to compete.",
+    blurb: "Everything you need to list with confidence.",
     features: [
       "Premium interior and exterior photography",
       "Aerial drone photography",
@@ -28,7 +28,7 @@ export const LAUNCH_BUNDLES: LaunchBundle[] = [
     id: "listing-premiere",
     name: "Listing Premiere",
     price: 699,
-    blurb: "Create the kind of listing buyers stop scrolling to experience.",
+    blurb: "Photos plus a cinematic film buyers will remember.",
     features: [
       "Everything included in Market Launch",
       "Cinematic property film",
@@ -43,7 +43,7 @@ export const LAUNCH_BUNDLES: LaunchBundle[] = [
     price: 899,
     badge: "Most chosen",
     featured: true,
-    blurb: "Showcase the property while building the trusted name behind it.",
+    blurb: "Sell the home and build your name at the same time.",
     features: [
       "Everything included in Listing Premiere",
       "Complete A-to-Z creative production",

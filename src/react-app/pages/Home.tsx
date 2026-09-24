@@ -106,7 +106,7 @@ const IMPACT_METRICS = [
     suffix: "+",
     ring: 100,
     label: "Properties Covered",
-    desc: "More than 25 properties professionally captured and marketed and counting.",
+    desc: "Homes we've shot and marketed so far.",
   },
   {
     id: "value-covered",
@@ -116,7 +116,7 @@ const IMPACT_METRICS = [
     suffix: "M+",
     ring: 100,
     label: "Property Value Covered",
-    desc: "Total property value represented through our professional real estate media campaigns.",
+    desc: "Combined value of the homes we've covered.",
   },
   {
     id: "success-rate",
@@ -126,7 +126,7 @@ const IMPACT_METRICS = [
     suffix: "%+",
     ring: 100,
     label: "Marketing Success Rate",
-    desc: "Percentage of campaigns that successfully achieved their intended marketing goals.",
+    desc: "Clients who got the result they wanted.",
   },
 ];
 
@@ -294,7 +294,7 @@ function ImpactDashboard() {
         </h1>
         <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center">
           Photography, films and personal branding.
-          <br className="hidden md:block" /> Thoughtfully made for real estate.
+          <br className="hidden md:block" /> Made for real estate.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32">
           <PackageButton to="/order" dark={false}>
@@ -335,8 +335,7 @@ function ImpactDashboard() {
               Our Real Estate Impact
             </h2>
             <p className="text-[17px] md:text-[20px] text-white/60 leading-relaxed mb-16 max-w-2xl mx-auto text-center">
-              Creating powerful property stories that increase visibility, build trust, and
-              support successful real estate outcomes.
+              We shoot homes so they get seen, get remembered, and get sold.
             </p>
           </div>
 
@@ -352,9 +351,8 @@ function ImpactDashboard() {
             }`}
             style={{ transitionDelay: inView ? "420ms" : "0ms" }}
           >
-            &ldquo;We don&rsquo;t just create content &mdash; we create{" "}
-            <span className="text-[#c7ff00]">market exposure</span> that helps properties
-            stand out.&rdquo;
+            &ldquo;We make listings people actually{" "}
+            <span className="text-[#c7ff00]">stop and look at</span>.&rdquo;
           </p>
         </div>
       </div>
@@ -582,8 +580,7 @@ export default function HomePage() {
             Launch it.
           </h2>
           <p className="text-[17px] md:text-[19px] text-white/60 leading-relaxed mb-14 max-w-2xl">
-            Three levels of visual marketing designed to capture buyers&apos;
-            attention, impress sellers, and make your name more memorable.
+            Three packages. Pick the level of coverage your listing needs.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
