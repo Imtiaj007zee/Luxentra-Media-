@@ -5,6 +5,7 @@ import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import FaqSection from "@/react-app/components/FaqSection";
 import ProofSection from "@/react-app/components/ProofSection";
+import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
 
 const SERVICES = [
@@ -431,6 +432,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-black pt-16">
       <SiteNav />
       <ServicePickerModal />
+      <LeadCapturePopup />
 
       <ImpactDashboard />
 
