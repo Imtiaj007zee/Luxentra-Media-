@@ -11,7 +11,7 @@ import {
 // Free order database + site settings backend: Google Apps Script web app.
 // text/plain avoids a CORS preflight.
 export const ORDERS_ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbwz11hRMrInyVjGKXjbNMSRUoTlojQH_YZO85xZdrEJHmk30u-a-7GziCNk_Bpvmf-ecA/exec";
+  "https://script.google.com/macros/s/AKfycbynyupNugdxjc7EAAUK1e9c9JS79VccnuwHc8ar81Q6-v_ug8EOhbDgNZXeqhFyRcM46A/exec";
 
 export type SiteSettings = {
   stat_properties: number;
