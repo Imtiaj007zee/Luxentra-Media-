@@ -29,7 +29,7 @@ const TEAM: Member[] = [
     highlights: [
       "6+ Years of Photography & Cinematography Experience",
       "Commercial, Corporate & Real Estate Productions",
-      "25+ Weddings & Large-Scale Events Covered",
+      "27+ Real Estate Properties Covered",
       "Professional Headshots & Personal Branding",
       "Institutional, Celebrity & High-Profile Event Experience",
     ],
