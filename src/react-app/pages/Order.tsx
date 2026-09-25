@@ -361,7 +361,7 @@ export default function OrderPage() {
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <h3 className="text-[19px] font-semibold tracking-tight">{standard?.name ?? t("order.plan_standard_name")}</h3>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[19px] font-semibold">{fmt(standardPackagePrice)}</span>
+                        <span className="price-num text-[19px] font-semibold">{fmt(standardPackagePrice)}</span>
                         <SelectButton selected={includeStandard} label={t("order.select_plan")} />
                       </div>
                     </div>
@@ -511,7 +511,7 @@ export default function OrderPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
                             <h3 className="font-semibold text-[17px]">{addOn.name}</h3>
-                            <span className="font-semibold shrink-0">{fmt(displayPrice)}</span>
+                            <span className="price-num font-semibold shrink-0">{fmt(displayPrice)}</span>
                           </div>
                           {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">{t("order.flyer_note")}</p>}
                           {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">{t("order.reel_note")}</p>}
@@ -526,7 +526,7 @@ export default function OrderPage() {
                             <span className="w-8 text-center font-semibold">{flyerQty}</span>
                             <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT)}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="price-num font-semibold text-white">{fmt(flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT)}</span></span>
                           {flyerQty > 1 && (
                             <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">{t("order.save_badge", { n: fmt(flyerUnit * flyerQty - flyerQty * FLYER_BULK_UNIT) })}</span>
                           )}
@@ -557,7 +557,7 @@ export default function OrderPage() {
                       <h3 className="font-semibold text-[17px]">{t("order.staging_name")}</h3>
                       <p className="text-[15px] text-white/60">{t("order.staging_desc")}</p>
                     </div>
-                    {selectedStagingTier && <span className="font-semibold shrink-0">{fmt(stagingPrice)}</span>}
+                    {selectedStagingTier && <span className="price-num font-semibold shrink-0">{fmt(stagingPrice)}</span>}
                   </div>
                   <div className="flex gap-2 ml-14">
                     {stagingTiers.map((tier) => (
@@ -596,11 +596,11 @@ export default function OrderPage() {
                   <ShoppingCart className="w-5 h-5" /> {t("order.booking_title")}
                 </h3>
                 <div className="space-y-2 text-[15px] mb-4">
-                  {includeStandard && <div className="flex justify-between"><span className="text-white/60">{t("order.row_standard")}</span><span className="font-medium">{fmt(standardPackagePrice)}</span></div>}
+                  {includeStandard && <div className="flex justify-between"><span className="text-white/60">{t("order.row_standard")}</span><span className="price-num font-medium">{fmt(standardPackagePrice)}</span></div>}
                   {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} {t("order.row_bundle_suffix")}</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
                   {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name}{t("order.row_plan_suffix")}</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
                   {Array.from(selectedAddOns).map((id) => { const a = addOns.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.priceNum)}</span></div>; })}
-                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">{t("order.staging_name")} ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
+                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">{t("order.staging_name")} ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="price-num font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>
                 <div className="pt-4 border-t border-white/15">
                   {discountAmount > 0 && (
