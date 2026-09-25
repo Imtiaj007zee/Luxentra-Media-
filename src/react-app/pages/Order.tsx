@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Rocket, Tag, Plus, ShoppingCart, Layers, FileText, Plane, Box } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Calendar, Clock, Camera, Video, Rocket, Tag, Plus, ShoppingCart, Layers, FileText, Plane, Box } from "lucide-react";
 import { SERVICE_TYPES } from "@/react-app/data/packages";
 import { ORDERS_ENDPOINT } from "@/react-app/lib/siteSettings";
 import {
@@ -645,11 +645,17 @@ export default function OrderPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2 min-w-0">
                     <Label className="text-base font-medium">{t("order.label_date")}</Label>
-                    <Input type="date" value={shootForm.shoot_date} onChange={(e) => setShootForm({ ...shootForm, shoot_date: e.target.value })} className="h-12 text-base w-full min-w-0" />
+                    <div className="relative">
+                      <Input type="date" value={shootForm.shoot_date} onChange={(e) => setShootForm({ ...shootForm, shoot_date: e.target.value })} className="h-12 text-base w-full min-w-0 pr-12" />
+                      <Calendar className="hidden [@supports(-webkit-touch-callout:none)]:block w-5 h-5 text-white/40 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
                   </div>
                   <div className="space-y-2 min-w-0">
                     <Label className="text-base font-medium">{t("order.label_time")}</Label>
-                    <Input type="time" value={shootForm.shoot_time} onChange={(e) => setShootForm({ ...shootForm, shoot_time: e.target.value })} className="h-12 text-base w-full min-w-0" />
+                    <div className="relative">
+                      <Input type="time" value={shootForm.shoot_time} onChange={(e) => setShootForm({ ...shootForm, shoot_time: e.target.value })} className="h-12 text-base w-full min-w-0 pr-12" />
+                      <Clock className="hidden [@supports(-webkit-touch-callout:none)]:block w-5 h-5 text-white/40 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -744,11 +750,17 @@ export default function OrderPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2 min-w-0">
                       <Label className="text-base font-medium">{t("order.label_day")}</Label>
-                      <Input type="date" value={consultForm.preferred_date} onChange={(e) => setConsultForm({ ...consultForm, preferred_date: e.target.value })} className="h-12 text-base w-full min-w-0" />
+                      <div className="relative">
+                        <Input type="date" value={consultForm.preferred_date} onChange={(e) => setConsultForm({ ...consultForm, preferred_date: e.target.value })} className="h-12 text-base w-full min-w-0 pr-12" />
+                        <Calendar className="hidden [@supports(-webkit-touch-callout:none)]:block w-5 h-5 text-white/40 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
                     </div>
                     <div className="space-y-2 min-w-0">
                       <Label className="text-base font-medium">{t("order.label_time2")}</Label>
-                      <Input type="time" value={consultForm.preferred_time} onChange={(e) => setConsultForm({ ...consultForm, preferred_time: e.target.value })} className="h-12 text-base w-full min-w-0" />
+                      <div className="relative">
+                        <Input type="time" value={consultForm.preferred_time} onChange={(e) => setConsultForm({ ...consultForm, preferred_time: e.target.value })} className="h-12 text-base w-full min-w-0 pr-12" />
+                        <Clock className="hidden [@supports(-webkit-touch-callout:none)]:block w-5 h-5 text-white/40 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-2">

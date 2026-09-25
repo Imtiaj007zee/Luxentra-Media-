@@ -278,6 +278,16 @@
     color-scheme: dark;
   }
 
+  /* ── iOS Safari renders native date/time controls taller than text inputs.
+        Flatten them so every field matches; the native picker still opens on tap. ── */
+  @supports (-webkit-touch-callout: none) {
+    .dark input[type="date"],
+    .dark input[type="time"] {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+
   /* ── Legacy classes (kept for Book / Special / About pages) ── */
   .apple-eyebrow {
     @apply text-xs font-semibold uppercase tracking-[0.2em] text-[#6e6e73];
