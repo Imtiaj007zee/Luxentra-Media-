@@ -456,12 +456,10 @@ export default function OrderPage() {
               )}
 
               {showConsultCard ? (
-              /* Consultation big card */
-              <div
-                className={`rounded-md p-5 border transition-colors cursor-pointer mt-8 ${isConsultation ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#c7ff00]/40 hover:border-[#c7ff00]"}`}
-                onClick={() => { setIsConsultation(!isConsultation); if (!isConsultation) { setIncludeStandard(false); setSelectedBundle(null); setSelectedBranding(null); } }}
-                role="button"
-                aria-pressed={isConsultation}
+              /* Consultation big card → consultation booking */
+              <Link
+                to="/order?package=consultation"
+                className="block rounded-md p-5 border transition-colors mt-8 border-[#c7ff00]/40 hover:border-[#c7ff00]"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
@@ -471,20 +469,18 @@ export default function OrderPage() {
                     <h4 className="font-semibold text-[18px]">{t("order.consult_card_title")}</h4>
                     <p className="text-[14px] text-white/55 mt-1">{t("order.consult_card_copy")}</p>
                   </div>
-                  <SelectButton selected={isConsultation} label={t("order.consult_card_title")} />
+                  <ArrowRight className="w-5 h-5 text-[#c7ff00] shrink-0" />
                 </div>
-              </div>
+              </Link>
               ) : (
-              /* Consultation quiet link */
+              /* Consultation quiet link → consultation booking */
               <p className="text-center text-[14px] mt-8">
-                <button
-                  type="button"
-                  aria-pressed={isConsultation}
-                  onClick={() => { setIsConsultation(!isConsultation); if (!isConsultation) { setIncludeStandard(false); setSelectedBundle(null); setSelectedBranding(null); } }}
-                  className={`underline underline-offset-4 decoration-[#c7ff00]/60 hover:decoration-[#c7ff00] transition-colors ${isConsultation ? "text-[#c7ff00] font-semibold" : "text-white/55 hover:text-white"}`}
+                <Link
+                  to="/order?package=consultation"
+                  className="underline underline-offset-4 decoration-[#c7ff00]/60 hover:decoration-[#c7ff00] transition-colors text-white/55 hover:text-white"
                 >
                   {t("order.plan_consult_link")}
-                </button>
+                </Link>
               </p>
               )}
 
