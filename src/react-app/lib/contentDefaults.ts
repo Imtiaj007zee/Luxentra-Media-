@@ -184,7 +184,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "order.discount_ph", group: "Booking page", label: "Discount placeholder", value: "Enter your code here" },
   { key: "order.discount_invalid", group: "Booking page", label: "Discount invalid", value: "That code didn't match. Codes are not case sensitive." },
   { key: "order.discount_valid", group: "Booking page", label: "Discount applied", value: "{{code}} applied. ${{amount}} off your booking." },
-  { key: "order.submit", group: "Booking page", label: "Submit button", value: "Request booking · ${{total}}" },
+  { key: "order.submit", group: "Booking page", label: "Submit button", value: "Request booking · {{total}}" },
   { key: "order.sending", group: "Booking page", label: "Submitting…", value: "Sending..." },
   { key: "order.reassurance", group: "Booking page", label: "Reassurance line", value: "No payment today. We confirm every booking by email within {{delivery_time}}." },
   { key: "order.consult_title", group: "Booking page", label: "Consult title", value: "Book your meeting" },
