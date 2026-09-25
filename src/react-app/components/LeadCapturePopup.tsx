@@ -30,6 +30,7 @@ export default function LeadCapturePopup() {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
   const [sending, setSending] = useState(false);
+  const [missing, setMissing] = useState<string[]>([]);
   const [form, setForm] = useState({ name: "", email: "", phone: "", brokerage: "" });
 
   // Auto-popup: once per visitor, 12 seconds after the homepage loads.
@@ -44,12 +45,28 @@ export default function LeadCapturePopup() {
     setOpen(false);
   };
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((f) => ({ ...f, [k]: e.target.value }));
+    setMissing((m) => m.filter((x) => x !== k));
+  };
+
+  const fieldClass = (k: keyof typeof form) =>
+    `${inputClass} ${missing.includes(k) ? "!border-red-400" : ""}`;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name.trim() || !form.email.trim()) return;
+    // Every field is required: no stars, just tell them what to fill in.
+    const empty: string[] = [];
+    if (!form.name.trim()) empty.push("name");
+    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()))
+      empty.push("email");
+    if (!form.phone.trim()) empty.push("phone");
+    if (!form.brokerage.trim()) empty.push("brokerage");
+    if (empty.length > 0) {
+      setMissing(empty);
+      return;
+    }
+    setMissing([]);
     setSending(true);
     try {
       await fetch(ENDPOINT, {
@@ -105,26 +122,37 @@ export default function LeadCapturePopup() {
             <p className="text-[15px] text-white/60 leading-relaxed mb-7">
               Drop your details and we will send your code. New clients only.
             </p>
-            <form onSubmit={submit} className="space-y-3">
+            <form onSubmit={submit} noValidate className="space-y-3">
+              {missing.length > 0 && (
+                <div className="rounded-md border border-red-400/50 bg-red-400/10 px-4 py-3 text-[14px] text-white/85">
+                  Please fill in{" "}
+                  <span className="font-semibold text-white">
+                    {missing
+                      .map((m) =>
+                        m === "name" ? "your name" : m === "email" ? "a valid email" : m
+                      )
+                      .join(", ")}
+                  </span>{" "}
+                  to claim your $25.
+                </div>
+              )}
               <input
-                className={inputClass}
-                placeholder="Your name *"
+                className={fieldClass("name")}
+                placeholder="Your name"
                 value={form.name}
                 onChange={set("name")}
-                required
                 autoComplete="name"
               />
               <input
-                className={inputClass}
-                placeholder="Email *"
+                className={fieldClass("email")}
+                placeholder="Email"
                 type="email"
                 value={form.email}
                 onChange={set("email")}
-                required
                 autoComplete="email"
               />
               <input
-                className={inputClass}
+                className={fieldClass("phone")}
                 placeholder="Phone"
                 type="tel"
                 value={form.phone}
@@ -132,7 +160,7 @@ export default function LeadCapturePopup() {
                 autoComplete="tel"
               />
               <input
-                className={inputClass}
+                className={fieldClass("brokerage")}
                 placeholder="Brokerage"
                 value={form.brokerage}
                 onChange={set("brokerage")}
