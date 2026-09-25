@@ -130,8 +130,16 @@ export default function OrderPage() {
   }, 0);
   const totalPrice = (includeStandard ? standardPackagePrice : 0) + bundlePrice + brandingPrice + addOnsTotal + stagingPrice;
 
-  // First-order discount: WELCOME25 takes $25 off any paid booking.
-  const discountAmount = !isConsultation && discountCode.trim().toUpperCase() === "WELCOME25" ? 25 : 0;
+  // Discount codes: WELCOME25 is the public realtor offer. The rest are
+  // private codes for favorite realtors, never advertised on the site.
+  const DISCOUNT_CODES: Record<string, number> = {
+    WELCOME25: 25,
+    LUX50: 50,
+    ENTRA99: 99,
+    LUX75: 75,
+  };
+  const enteredCode = discountCode.trim().toUpperCase();
+  const discountAmount = !isConsultation ? DISCOUNT_CODES[enteredCode] ?? 0 : 0;
   const finalTotal = Math.max(0, totalPrice - discountAmount);
 
   const planLabel = () => {
@@ -538,7 +546,7 @@ export default function OrderPage() {
                 </div>
                 <div className="pt-4 border-t border-white/15">
                   {discountAmount > 0 && (
-                    <div className="flex justify-between text-[15px] mb-2"><span className="text-[#c7ff00]">First-order discount (WELCOME25)</span><span className="price-num font-medium text-[#c7ff00]">−{fmt(discountAmount)}</span></div>
+                    <div className="flex justify-between text-[15px] mb-2"><span className="text-[#c7ff00]">Discount ({enteredCode})</span><span className="price-num font-medium text-[#c7ff00]">−{fmt(discountAmount)}</span></div>
                   )}
                   <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span className="price-num">{fmt(finalTotal)}</span></div>
                 </div>
@@ -599,7 +607,7 @@ export default function OrderPage() {
                   <Label className="text-base font-medium flex items-center gap-2">
                     <Tag className="w-4 h-4 text-[#c7ff00]" /> Have a discount code?
                   </Label>
-                  <p className="text-[13px] text-white/45 mt-1 mb-3">Realtors, take $25 off your first booking with code WELCOME25.</p>
+                  <p className="text-[13px] text-white/45 mt-1 mb-3">Have a discount code? Enter it below and we will take it off your total.</p>
                   <Input
                     type="text"
                     value={discountCode}
@@ -611,7 +619,7 @@ export default function OrderPage() {
                     <p className="text-[13px] text-white/40 mt-2">That code didn&apos;t match. Codes are not case sensitive.</p>
                   )}
                   {discountAmount > 0 && (
-                    <p className="text-[13px] text-[#c7ff00] mt-2">WELCOME25 applied. $25 off your first booking.</p>
+                    <p className="text-[13px] text-[#c7ff00] mt-2">{enteredCode} applied. {fmt(discountAmount)} off your booking.</p>
                   )}
                 </div>
                 <div className="space-y-2">
