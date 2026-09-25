@@ -265,21 +265,32 @@ export default function ContentAdmin({
             ))}
           </div>
           <div className="rounded-md border border-white/10 bg-white/[0.03] divide-y divide-white/10">
-            {wordsForGroup.map((entry) => (
+            {wordsForGroup.map((entry) => {
+              const val = draft.copy[entry.key] ?? entry.value;
+              const setVal = (v: string) => {
+                setDraft((d) => (d ? { ...d, copy: { ...d.copy, [entry.key]: v } } : d));
+                setSaveMsg(null);
+              };
+              return (
               <div key={entry.key} className="px-4 py-3">
-                <p className="text-[13px] font-medium text-white/80 mb-1">{entry.label}</p>
+                <div className="flex items-center justify-between gap-3 mb-1">
+                  <p className="text-[13px] font-medium text-white/80">{entry.label}</p>
+                  {entry.kind === "toggle" && (
+                    <VisibleToggle on={val === "on"} onChange={() => setVal(val === "on" ? "off" : "on")} />
+                  )}
+                </div>
+                {entry.hint && <p className="text-[12px] text-white/40 mb-2">{entry.hint}</p>}
+                {entry.kind !== "toggle" && (
                 <textarea
-                  value={draft.copy[entry.key] ?? entry.value}
-                  rows={Math.min(4, Math.max(1, Math.ceil((draft.copy[entry.key] ?? entry.value).length / 70)))}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    setDraft((d) => (d ? { ...d, copy: { ...d.copy, [entry.key]: v } } : d));
-                    setSaveMsg(null);
-                  }}
+                  value={val}
+                  rows={Math.min(4, Math.max(1, Math.ceil(val.length / 70)))}
+                  onChange={(e) => setVal(e.target.value)}
                   className={areaClass}
                 />
+                )}
               </div>
-            ))}
+              );
+            })}
           </div>
           <p className="text-[12px] text-white/35 mt-3">
             {"{{tokens}} like {{price_standard}} or {{stat_properties}} are filled in automatically."}

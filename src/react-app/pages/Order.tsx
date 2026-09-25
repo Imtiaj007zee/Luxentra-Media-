@@ -128,6 +128,7 @@ export default function OrderPage() {
   const brandingPrice = selectedBrandingData?.price ?? 0;
 
   const hasPlan = includeStandard || selectedBundle !== null || selectedBranding !== null || isConsultation;
+  const showConsultCard = t("order.consult_card_visible") === "on";
 
   const toggleAddOn = (id: string) => {
     const newSet = new Set(selectedAddOns);
@@ -454,7 +455,27 @@ export default function OrderPage() {
               </>
               )}
 
-              {/* Consultation quiet link */}
+              {showConsultCard ? (
+              /* Consultation big card */
+              <div
+                className={`rounded-md p-5 border transition-colors cursor-pointer mt-8 ${isConsultation ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#c7ff00]/40 hover:border-[#c7ff00]"}`}
+                onClick={() => { setIsConsultation(!isConsultation); if (!isConsultation) { setIncludeStandard(false); setSelectedBundle(null); setSelectedBranding(null); } }}
+                role="button"
+                aria-pressed={isConsultation}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
+                    <CalendarCheck className="w-6 h-6 text-black" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-[18px]">{t("order.consult_card_title")}</h4>
+                    <p className="text-[14px] text-white/55 mt-1">{t("order.consult_card_copy")}</p>
+                  </div>
+                  <SelectButton selected={isConsultation} label={t("order.consult_card_title")} />
+                </div>
+              </div>
+              ) : (
+              /* Consultation quiet link */
               <p className="text-center text-[14px] mt-8">
                 <button
                   type="button"
@@ -465,6 +486,7 @@ export default function OrderPage() {
                   {t("order.plan_consult_link")}
                 </button>
               </p>
+              )}
 
               <Button onClick={goNext} disabled={!hasPlan} className="w-full h-14 text-[17px] rounded-full mt-10">
                 {t("order.continue")} <ArrowRight className="w-5 h-5 ml-1" />

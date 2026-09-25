@@ -6,7 +6,7 @@ import { PHOTOS, NEW_SHOWCASE_ORDER } from "../data/photos";
 // These are the fallbacks the site uses when the Google Sheet tab is empty.
 // Copy is NEVER reworded here: defaults match the live site verbatim.
 
-export type CopyEntry = { key: string; group: string; label: string; value: string };
+export type CopyEntry = { key: string; group: string; label: string; value: string; kind?: "text" | "toggle"; hint?: string };
 
 export const DEFAULT_COPY: CopyEntry[] = [
   // ── Navigation ──
@@ -142,6 +142,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "order.plan_tab_listing", group: "Booking page", label: "Plan tab: listing", value: "For a listing" },
   { key: "order.plan_tab_brand", group: "Booking page", label: "Plan tab: brand", value: "For my brand" },
   { key: "order.plan_consult_link", group: "Booking page", label: "Consult quiet link", value: "Not sure yet? Talk to us first →" },
+  { key: "order.consult_card_visible", group: "Booking page", label: "Consultation big card", hint: "When hidden, a quiet text link is shown instead.", value: "off", kind: "toggle" },
   { key: "order.plan_footnote", group: "Booking page", label: "Plan footnote", value: "{{min_commitment}}. Active clients get {{addon_discount}} during their agreement." },
   { key: "order.consult_card_title", group: "Booking page", label: "Consult card title", value: "Not sure yet? Talk to us first." },
   { key: "order.consult_card_copy", group: "Booking page", label: "Consult card copy", value: "Book a free one-on-one. We'll hear your story and find the right direction together, no prep needed." },
