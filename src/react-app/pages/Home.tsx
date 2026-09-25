@@ -557,7 +557,7 @@ export default function HomePage() {
             <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
               {t("home.pkg_copy")}
             </p>
-            <p className="text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
+            <p className="price-num text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
               ${standardPrice}
             </p>
             <p className="text-[15px] text-black/50 mb-10">{t("home.pkg_per")}</p>
