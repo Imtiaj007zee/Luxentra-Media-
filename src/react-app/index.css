@@ -272,6 +272,12 @@
     }
   }
 
+  /* ── Dark form pages (e.g. /order): keep native date/time pickers dark ── */
+  .dark input[type="date"],
+  .dark input[type="time"] {
+    color-scheme: dark;
+  }
+
   /* ── Legacy classes (kept for Book / Special / About pages) ── */
   .apple-eyebrow {
     @apply text-xs font-semibold uppercase tracking-[0.2em] text-[#6e6e73];

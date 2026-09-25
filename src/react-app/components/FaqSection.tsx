@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: "Do you shoot video too?",
-    a: "Yes. Our launch bundles pair photography with a cinematic listing film, starting at $399. We also shoot personal branding reels for agents building their name.",
+    a: "Yes, starting with Listing Premiere at $699, which includes a professionally edited cinematic property film. Market Launch at $399 is photography only. Agent Authority at $899 includes two films, the cinematic property film plus a personal branding video. We also shoot standalone personal branding reels for agents building their name.",
   },
   {
     q: "How do the personal branding plans work?",

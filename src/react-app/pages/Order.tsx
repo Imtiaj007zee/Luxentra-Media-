@@ -77,6 +77,7 @@ export default function OrderPage() {
       setIncludeStandard(false);
       setSelectedBundle(null);
       setSelectedBranding(null);
+      setStep(2);
       return;
     }
     const bundle = getBundleById(packageParam);
@@ -212,7 +213,7 @@ export default function OrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0b0b] text-white pt-16">
+    <div className="dark min-h-screen bg-[#0b0b0b] text-white pt-16">
       <SiteNav />
 
       <section className="py-24 md:py-32">
