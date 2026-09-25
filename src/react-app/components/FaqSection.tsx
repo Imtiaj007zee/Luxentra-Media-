@@ -1,47 +1,36 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { Plus, ArrowRight } from "lucide-react";
-
-const FAQS = [
-  {
-    q: "How fast do I get my photos?",
-    a: "Within 24 hours of the shoot. Every package includes 24-hour delivery, and your files land in a private branded gallery, ready for the MLS.",
-  },
-  {
-    q: "How do I book a shoot?",
-    a: "Pick a package on the booking page and tell us about the property. It takes three quick steps and there is no payment today. We confirm every booking by email within 24 hours.",
-  },
-  {
-    q: "Where do you shoot?",
-    a: "All across New York City and Long Island. If your listing is in the five boroughs or out on the island, we come to you.",
-  },
-  {
-    q: "What is included in the $175 standard package?",
-    a: "25 to 45 MLS-ready photos, one twilight photo, 24-hour delivery, a private branded gallery, and free revisions.",
-  },
-  {
-    q: "Do you shoot video too?",
-    a: "Yes, starting with Listing Premiere at $699, which includes a professionally edited cinematic property film. Market Launch at $399 is photography only. Agent Authority at $899 includes two films, the cinematic property film plus a personal branding video. We also shoot standalone personal branding reels for agents building their name.",
-  },
-  {
-    q: "How do the personal branding plans work?",
-    a: "They are monthly and done for you. Essential is $5,999 a month, Growth is $7,999, and Premium is $10,999 with a money-back guarantee. Plans start with a 3-month minimum.",
-  },
-];
+import { useT } from "@/react-app/lib/siteContent";
 
 export default function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
+  const t = useT();
+
+  const faqs = useMemo(
+    () =>
+      t("faq.items")
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const [q, a] = line.split("===");
+          return { q: (q ?? "").trim(), a: (a ?? "").trim() };
+        })
+        .filter((f) => f.q && f.a),
+    [t]
+  );
 
   return (
     <section className="bg-white py-20 md:py-28">
       <div className="max-w-[900px] mx-auto px-6">
-        <p className="eyebrow text-black/40 mb-4">Questions</p>
+        <p className="eyebrow text-black/40 mb-4">{t("faq.eyebrow")}</p>
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
-          Questions, answered.
+          {t("faq.h2")}
         </h2>
 
         <div className="border-t border-black/10">
-          {FAQS.map((f, i) => {
+          {faqs.map((f, i) => {
             const isOpen = open === i;
             return (
               <div key={f.q} className="border-b border-black/10">
@@ -81,14 +70,12 @@ export default function FaqSection() {
           })}
         </div>
 
-        <p className="mt-10 text-[16px] text-black/60">
-          Still not sure? We will point you to the right service.
-        </p>
+        <p className="mt-10 text-[16px] text-black/60">{t("faq.outro")}</p>
         <Link
           to="/order?package=consultation"
           className="btn-lime mt-5 inline-flex items-center gap-2"
         >
-          Book a free one-on-one <ArrowRight className="w-4 h-4" />
+          {t("faq.cta")} <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     </section>

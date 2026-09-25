@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Rocket, Tag, Plus, ShoppingCart, Layers } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Rocket, Tag, Plus, ShoppingCart, Layers, FileText, Plane, Box } from "lucide-react";
 import { SERVICE_TYPES } from "@/react-app/data/packages";
-import { useCatalog, ORDERS_ENDPOINT } from "@/react-app/lib/siteSettings";
+import { ORDERS_ENDPOINT } from "@/react-app/lib/siteSettings";
+import {
+  useDiscounts,
+  useLiveCatalog,
+  useT,
+  useTerms,
+} from "@/react-app/lib/siteContent";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -11,8 +17,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
-// Add-ons, staging tiers, bundles, plans, and prices come from the live
-// catalog (Site Settings, editable at /backstage).
+// Add-ons, staging tiers, bundles, plans, prices, discounts and all copy
+// come from the content system (editable at /backstage).
+
+const ADDON_ICONS: Record<string, typeof Box> = {
+  flyer: FileText,
+  drone: Plane,
+  "3d_tour": Box,
+  video: Video,
+  reel: Video,
+};
 
 const EMPTY_SHOOT = { name: "", email: "", phone: "", borough: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" };
 const EMPTY_CONSULT = { name: "", email: "", phone: "", role: "", meeting_format: "", preferred_date: "", preferred_time: "", goals: "" };
@@ -35,6 +49,8 @@ function SelectButton({ selected, label }: { selected: boolean; label: string })
 }
 
 export default function OrderPage() {
+  const t = useT();
+  const terms = useTerms();
   const [searchParams] = useSearchParams();
   const [step, setStep] = useState(0);
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(new Set());
@@ -51,18 +67,21 @@ export default function OrderPage() {
   const [discountCode, setDiscountCode] = useState("");
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
-  // Live catalog: prices update from Site Settings (/backstage).
+  // Live catalog: prices, add-ons, plans and discounts update from
+  // the content system (/backstage).
   const {
     addOns,
     stagingTiers,
     bundles,
     brandingPlans,
     standardPrice: standardPackagePrice,
+    standard,
     getBundleById,
     getBrandingPlanById,
-  } = useCatalog();
-  const flyerUnit = addOns.find((a) => a.id === "flyer")?.price ?? 39;
-  const FLYER_BULK_UNIT = 35;
+  } = useLiveCatalog();
+  const discounts = useDiscounts();
+  const flyerUnit = addOns.find((a) => a.id === "flyer")?.priceNum ?? 39;
+  const FLYER_BULK_UNIT = Number(terms.flyer_bulk_price) || 35;
 
   // Read ?package=<id> from the URL and pre-select the matching bundle,
   // personal-branding plan, or consultation. The id is only a lookup key —
@@ -92,6 +111,7 @@ export default function OrderPage() {
       setIsConsultation(false);
       setIncludeStandard(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packageParam]);
 
   useEffect(() => {
@@ -120,34 +140,33 @@ export default function OrderPage() {
     const addon = addOns.find((a) => a.id === id);
     if (!addon) return sum;
     if (id === "flyer") return sum + (flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT);
-    if (id === "reel") return sum + (addon.price * reelQty);
-    return sum + addon.price;
+    if (id === "reel") return sum + (addon.priceNum * reelQty);
+    return sum + addon.priceNum;
   }, 0);
   const totalPrice = (includeStandard ? standardPackagePrice : 0) + bundlePrice + brandingPrice + addOnsTotal + stagingPrice;
 
-  // Discount codes: WELCOME25 is the public realtor offer. The rest are
-  // private codes for favorite realtors, never advertised on the site.
-  const DISCOUNT_CODES: Record<string, number> = {
-    WELCOME25: 25,
-    LUX50: 50,
-    ENTRA99: 99,
-    LUX75: 75,
-  };
+  // Discount codes come from the content system (Discount Codes tab,
+  // editable at /backstage). Only active codes apply.
+  const DISCOUNT_CODES: Record<string, number> = Object.fromEntries(
+    discounts.filter((d) => d.active).map((d) => [d.code.toUpperCase(), d.amount])
+  );
   const enteredCode = discountCode.trim().toUpperCase();
   const discountAmount = !isConsultation ? DISCOUNT_CODES[enteredCode] ?? 0 : 0;
   const finalTotal = Math.max(0, totalPrice - discountAmount);
 
   const planLabel = () => {
-    if (isConsultation) return "Free one-on-one consultation";
+    if (isConsultation) return t("order.summary_consult");
     if (selectedBrandingData) return `${selectedBrandingData.name} · ${fmt(selectedBrandingData.price)}/mo`;
-    if (selectedBundleData) return `${selectedBundleData.name} bundle · ${fmt(selectedBundleData.price)}`;
-    if (includeStandard) return `Standard Listing Media Package · ${fmt(standardPackagePrice)}`;
-    return "No plan selected yet";
+    if (selectedBundleData) return `${selectedBundleData.name} ${t("order.row_bundle_suffix").toLowerCase()} · ${fmt(selectedBundleData.price)}`;
+    if (includeStandard) return `${standard?.name ?? t("order.plan_standard_name")} · ${fmt(standardPackagePrice)}`;
+    return t("order.summary_no_plan");
   };
 
   const addOnCount = selectedAddOns.size + (selectedStagingTier ? 1 : 0);
 
-  const stepLabels = isConsultation ? ["Plan", "Details"] : ["Plan", "Add-ons", "Details"];
+  const stepLabels = isConsultation
+    ? [t("order.step_plan"), t("order.step_details")]
+    : [t("order.step_plan"), t("order.step_addons"), t("order.step_details")];
   const labelIndex = isConsultation ? (step === 2 ? 1 : 0) : step;
 
   const goToLabel = (i: number) => {
@@ -215,6 +234,11 @@ export default function OrderPage() {
     } catch { setSubmitStatus("error"); } finally { setIsSubmitting(false); }
   };
 
+  const boroughs = t("order.boroughs").split("\n").map((b) => b.trim()).filter(Boolean);
+  const formatOptions = t("order.format_options").split("\n").map((b) => b.trim()).filter(Boolean);
+  const standardFeatures = t("order.plan_standard_features").split("\n").map((b) => b.trim()).filter(Boolean);
+  const expectBullets = t("order.expect_bullets").split("\n").map((b) => b.trim()).filter(Boolean);
+
   return (
     <div className="dark min-h-screen bg-[#0b0b0b] text-white pt-16">
       <SiteNav />
@@ -222,16 +246,16 @@ export default function OrderPage() {
       <section className="py-24 md:py-32">
         <div className="max-w-4xl mx-auto px-6">
           <Link to="/" className="link-lime !text-[15px] mb-10">
-            <ArrowLeft className="w-4 h-4" /> Back to home
+            <ArrowLeft className="w-4 h-4" /> {t("order.back")}
           </Link>
 
           <div className="text-center mb-10">
-            <p className="eyebrow text-white/40 mb-4">Book</p>
+            <p className="eyebrow text-white/40 mb-4">{t("order.eyebrow")}</p>
             <h1 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
-              {isConsultation ? "Book your free consultation." : "Book a shoot."}
+              {isConsultation ? t("order.h1_consult") : t("order.h1_shoot")}
             </h1>
             <p className="text-[19px] text-white/60">
-              Three quick steps. No payment today, we confirm by email.
+              {t("order.sub")}
             </p>
           </div>
 
@@ -242,8 +266,8 @@ export default function OrderPage() {
                   <Check className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-green-900 mb-1">Thank you!</h3>
-                  <p className="text-[15px] text-green-700">Your request is in. We&apos;ll reach out within 24 hours to confirm.</p>
+                  <h3 className="font-semibold text-green-900 mb-1">{t("order.success_title")}</h3>
+                  <p className="text-[15px] text-green-700">{t("order.success_copy")}</p>
                 </div>
               </div>
             </div>
@@ -255,8 +279,8 @@ export default function OrderPage() {
                   <AlertCircle className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-red-900 mb-1">Submission error</h3>
-                  <p className="text-[15px] text-red-700">Please try again or contact luxentra.media@gmail.com</p>
+                  <h3 className="font-semibold text-red-900 mb-1">{t("order.error_title")}</h3>
+                  <p className="text-[15px] text-red-700">{t("order.error_copy")}</p>
                 </div>
               </div>
             </div>
@@ -292,17 +316,17 @@ export default function OrderPage() {
             <div className="flex items-center justify-between gap-4 rounded-md border border-white/15 bg-white/[0.04] px-5 py-4 mb-10">
               <span className="text-[15px] text-white/70 truncate">
                 {planLabel()}
-                {!isConsultation && addOnCount > 0 && <span className="text-white/40"> · {addOnCount} add-on{addOnCount > 1 ? "s" : ""}</span>}
+                {!isConsultation && addOnCount > 0 && <span className="text-white/40"> · {t("order.summary_addons", { n: addOnCount })}</span>}
               </span>
-              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? "Free" : fmt(finalTotal)}</span>
+              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? t("order.summary_free") : fmt(finalTotal)}</span>
             </div>
           )}
 
           {/* ── STEP 0: plan ── */}
           {step === 0 && (
             <div>
-              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Choose your plan</h2>
-              <p className="text-[15px] text-white/50 mb-8">Pick one. You can change it any time before you submit.</p>
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">{t("order.plan_title")}</h2>
+              <p className="text-[15px] text-white/50 mb-8">{t("order.plan_sub")}</p>
 
               {/* Standard package */}
               <div className={`${cardClass(includeStandard)} mb-4`} onClick={() => pickShootPlan(() => { const next = !includeStandard; setIncludeStandard(next); if (next) { setSelectedBundle(null); setSelectedBranding(null); } })}>
@@ -312,25 +336,23 @@ export default function OrderPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <h3 className="text-[19px] font-semibold tracking-tight">Standard Listing Media Package</h3>
+                      <h3 className="text-[19px] font-semibold tracking-tight">{standard?.name ?? t("order.plan_standard_name")}</h3>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className="text-[19px] font-semibold">{fmt(standardPackagePrice)}</span>
-                        <SelectButton selected={includeStandard} label="Select standard package" />
+                        <SelectButton selected={includeStandard} label={t("order.select_plan")} />
                       </div>
                     </div>
                     <ul className="text-[15px] text-white/60 space-y-1.5">
-                      <li>• 25–45 MLS-ready photos</li>
-                      <li>• 1 twilight photo</li>
-                      <li>• 24-hour delivery</li>
-                      <li>• Private branded gallery</li>
-                      <li>• Free revisions</li>
+                      {standardFeatures.map((f) => (
+                        <li key={f}>• {f}</li>
+                      ))}
                     </ul>
                   </div>
                 </div>
               </div>
 
               {/* Launch bundles */}
-              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">Launch bundles</h3>
+              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">{t("order.plan_bundles_title")}</h3>
               <div className="space-y-3 mb-4">
                 {bundles.map((bundle) => {
                   const isSelected = selectedBundle === bundle.id;
@@ -365,7 +387,7 @@ export default function OrderPage() {
               </div>
 
               {/* Personal branding plans */}
-              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">Personal branding plans</h3>
+              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">{t("order.plan_branding_title")}</h3>
               <div className="space-y-3 mb-4">
                 {brandingPlans.map((plan) => {
                   const isSelected = selectedBranding === plan.id;
@@ -394,7 +416,7 @@ export default function OrderPage() {
                           <ul className="text-[14px] text-white/60 space-y-1.5">
                             {plan.features.map((f) => <li key={f}>• {f}</li>)}
                           </ul>
-                          <p className="text-[12.5px] text-white/40 mt-3">3-month minimum commitment. Active clients get 15% off additional services during their agreement.</p>
+                          <p className="text-[12.5px] text-white/40 mt-3">{t("order.plan_footnote")}</p>
                         </div>
                       )}
                     </div>
@@ -414,31 +436,31 @@ export default function OrderPage() {
                     <CalendarCheck className="w-6 h-6 text-black" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-[18px]">Not sure yet? Talk to us first.</h4>
-                    <p className="text-[14px] text-white/55 mt-1">Book a free one-on-one. We&apos;ll hear your story and find the right direction together, no prep needed.</p>
+                    <h4 className="font-semibold text-[18px]">{t("order.consult_card_title")}</h4>
+                    <p className="text-[14px] text-white/55 mt-1">{t("order.consult_card_copy")}</p>
                   </div>
-                  <SelectButton selected={isConsultation} label="Select free consultation" />
+                  <SelectButton selected={isConsultation} label={t("order.consult_card_title")} />
                 </div>
               </div>
 
               <Button onClick={goNext} disabled={!hasPlan} className="w-full h-14 text-[17px] rounded-full mt-10">
-                Continue <ArrowRight className="w-5 h-5 ml-1" />
+                {t("order.continue")} <ArrowRight className="w-5 h-5 ml-1" />
               </Button>
-              {!hasPlan && <p className="text-center text-[14px] text-white/40 mt-3">Select a plan above to continue.</p>}
+              {!hasPlan && <p className="text-center text-[14px] text-white/40 mt-3">{t("order.select_plan")}</p>}
             </div>
           )}
 
           {/* ── STEP 1: add-ons ── */}
           {step === 1 && (
             <div>
-              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Make it yours</h2>
-              <p className="text-[15px] text-white/50 mb-8">Add-ons are optional. Skip ahead whenever you&apos;re ready.</p>
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">{t("order.addons_title")}</h2>
+              <p className="text-[15px] text-white/50 mb-8">{t("order.addons_sub")}</p>
 
               <div className="space-y-3">
                 {addOns.map((addOn) => {
-                  const Icon = addOn.icon;
+                  const Icon = ADDON_ICONS[addOn.id] ?? Box;
                   const isSelected = selectedAddOns.has(addOn.id);
-                  const displayPrice = addOn.id === "flyer" ? (flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT) : addOn.id === "reel" ? addOn.price * reelQty : addOn.price;
+                  const displayPrice = addOn.id === "flyer" ? (flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT) : addOn.id === "reel" ? addOn.priceNum * reelQty : addOn.priceNum;
                   return (
                     <div key={addOn.id} className={cardClass(isSelected)} onClick={() => toggleAddOn(addOn.id)}>
                       <div className="flex items-center gap-4">
@@ -450,14 +472,14 @@ export default function OrderPage() {
                             <h3 className="font-semibold text-[17px]">{addOn.name}</h3>
                             <span className="font-semibold shrink-0">{fmt(displayPrice)}</span>
                           </div>
-                          {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">{fmt(flyerUnit)} for 1 · {fmt(FLYER_BULK_UNIT)} each for 2+</p>}
-                          {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">Concept, scripting, filming and editing</p>}
+                          {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">{t("order.flyer_note")}</p>}
+                          {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">{t("order.reel_note")}</p>}
                         </div>
                         <SelectButton selected={isSelected} label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`} />
                       </div>
                       {addOn.id === "flyer" && isSelected && (
                         <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10" onClick={(e) => e.stopPropagation()}>
-                          <span className="text-[15px] text-white/60 font-medium">Quantity:</span>
+                          <span className="text-[15px] text-white/60 font-medium">{t("order.qty")}</span>
                           <div className="flex items-center gap-2">
                             <button type="button" onClick={() => setFlyerQty(Math.max(1, flyerQty - 1))} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
                             <span className="w-8 text-center font-semibold">{flyerQty}</span>
@@ -465,19 +487,19 @@ export default function OrderPage() {
                           </div>
                           <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT)}</span></span>
                           {flyerQty > 1 && (
-                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">Save {fmt(flyerUnit * flyerQty - flyerQty * FLYER_BULK_UNIT)} vs full price</span>
+                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">{t("order.save_badge", { n: fmt(flyerUnit * flyerQty - flyerQty * FLYER_BULK_UNIT) })}</span>
                           )}
                         </div>
                       )}
                       {addOn.id === "reel" && isSelected && (
                         <div className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10" onClick={(e) => e.stopPropagation()}>
-                          <span className="text-[15px] text-white/60 font-medium">Quantity:</span>
+                          <span className="text-[15px] text-white/60 font-medium">{t("order.qty")}</span>
                           <div className="flex items-center gap-2">
                             <button type="button" onClick={() => setReelQty(Math.max(1, reelQty - 1))} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">−</button>
                             <span className="w-8 text-center font-semibold">{reelQty}</span>
                             <button type="button" onClick={() => setReelQty(reelQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-white/60">= <span className="price-num font-semibold text-white">{fmt(addOn.price * reelQty)}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="price-num font-semibold text-white">{fmt(addOn.priceNum * reelQty)}</span></span>
                         </div>
                       )}
                     </div>
@@ -491,8 +513,8 @@ export default function OrderPage() {
                       <Layers className={`w-5 h-5 ${selectedStagingTier ? "text-black" : "text-white/60"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[17px]">Virtual Staging</h3>
-                      <p className="text-[15px] text-white/60">Photorealistic digital staging, delivered in 24hrs</p>
+                      <h3 className="font-semibold text-[17px]">{t("order.staging_name")}</h3>
+                      <p className="text-[15px] text-white/60">{t("order.staging_desc")}</p>
                     </div>
                     {selectedStagingTier && <span className="font-semibold shrink-0">{fmt(stagingPrice)}</span>}
                   </div>
@@ -513,10 +535,10 @@ export default function OrderPage() {
 
               <div className="flex gap-3 mt-10">
                 <Button onClick={goBack} variant="outline" className="h-14 px-8 text-[16px] rounded-full border-white/25 text-white hover:bg-white/10">
-                  <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                  <ArrowLeft className="w-5 h-5 mr-1" /> {t("order.back_btn")}
                 </Button>
                 <Button onClick={goNext} className="flex-1 h-14 text-[17px] rounded-full">
-                  Continue <ArrowRight className="w-5 h-5 ml-1" />
+                  {t("order.continue")} <ArrowRight className="w-5 h-5 ml-1" />
                 </Button>
               </div>
             </div>
@@ -525,60 +547,55 @@ export default function OrderPage() {
           {/* ── STEP 2: details ── */}
           {step === 2 && !isConsultation && (
             <div>
-              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Your details</h2>
-              <p className="text-[15px] text-white/50 mb-8">Last step. We&apos;ll confirm everything by email within 24 hours.</p>
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">{t("order.details_title")}</h2>
+              <p className="text-[15px] text-white/50 mb-8">{t("order.details_sub")}</p>
 
               <div className="bg-white/[0.04] border border-white/15 rounded-md p-6 mb-10">
                 <h3 className="text-[17px] font-semibold tracking-tight mb-4 flex items-center gap-2">
-                  <ShoppingCart className="w-5 h-5" /> Your booking
+                  <ShoppingCart className="w-5 h-5" /> {t("order.booking_title")}
                 </h3>
                 <div className="space-y-2 text-[15px] mb-4">
-                  {includeStandard && <div className="flex justify-between"><span className="text-white/60">Standard Package</span><span className="font-medium">{fmt(standardPackagePrice)}</span></div>}
-                  {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} Bundle</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
-                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name} · Personal Branding</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
-                  {Array.from(selectedAddOns).map((id) => { const a = addOns.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.price)}</span></div>; })}
-                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">Virtual Staging ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
+                  {includeStandard && <div className="flex justify-between"><span className="text-white/60">{t("order.row_standard")}</span><span className="font-medium">{fmt(standardPackagePrice)}</span></div>}
+                  {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} {t("order.row_bundle_suffix")}</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
+                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name}{t("order.row_plan_suffix")}</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
+                  {Array.from(selectedAddOns).map((id) => { const a = addOns.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.priceNum)}</span></div>; })}
+                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">{t("order.staging_name")} ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>
                 <div className="pt-4 border-t border-white/15">
                   {discountAmount > 0 && (
-                    <div className="flex justify-between text-[15px] mb-2"><span className="text-[#c7ff00]">Discount ({enteredCode})</span><span className="price-num font-medium text-[#c7ff00]">−{fmt(discountAmount)}</span></div>
+                    <div className="flex justify-between text-[15px] mb-2"><span className="text-[#c7ff00]">{t("order.row_discount", { code: enteredCode })}</span><span className="price-num font-medium text-[#c7ff00]">−{fmt(discountAmount)}</span></div>
                   )}
-                  <div className="flex justify-between text-[21px] font-semibold"><span>Total</span><span className="price-num">{fmt(finalTotal)}</span></div>
+                  <div className="flex justify-between text-[21px] font-semibold"><span>{t("order.row_total")}</span><span className="price-num">{fmt(finalTotal)}</span></div>
                 </div>
-                <button type="button" onClick={() => goToLabel(0)} className="link-lime !text-[14px] mt-4">Change plan or add-ons</button>
+                <button type="button" onClick={() => goToLabel(0)} className="link-lime !text-[14px] mt-4">{t("order.change")}</button>
               </div>
 
               <form onSubmit={handleShootSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Name *</Label>
-                  <Input type="text" required value={shootForm.name} onChange={(e) => setShootForm({ ...shootForm, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" />
+                  <Label className="text-base font-medium">{t("order.label_name")}</Label>
+                  <Input type="text" required value={shootForm.name} onChange={(e) => setShootForm({ ...shootForm, name: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_name")} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Email *</Label>
-                  <Input type="email" required value={shootForm.email} onChange={(e) => setShootForm({ ...shootForm, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
+                  <Label className="text-base font-medium">{t("order.label_email")}</Label>
+                  <Input type="email" required value={shootForm.email} onChange={(e) => setShootForm({ ...shootForm, email: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_email")} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Phone <span className="text-white/40 font-normal">(optional)</span></Label>
-                  <Input type="tel" value={shootForm.phone} onChange={(e) => setShootForm({ ...shootForm, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
+                  <Label className="text-base font-medium">{t("order.label_phone")}</Label>
+                  <Input type="tel" value={shootForm.phone} onChange={(e) => setShootForm({ ...shootForm, phone: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_phone")} />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Borough *</Label>
+                  <Label className="text-base font-medium">{t("order.label_borough")}</Label>
                   <Select value={shootForm.borough} onValueChange={(v) => setShootForm({ ...shootForm, borough: v })} required>
-                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select borough" /></SelectTrigger>
+                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder={t("order.ph_borough")} /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Manhattan">Manhattan</SelectItem>
-                      <SelectItem value="Brooklyn">Brooklyn</SelectItem>
-                      <SelectItem value="Queens">Queens</SelectItem>
-                      <SelectItem value="Bronx">Bronx</SelectItem>
-                      <SelectItem value="Staten Island">Staten Island</SelectItem>
-                      <SelectItem value="Long Island">Long Island</SelectItem>
+                      {boroughs.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Service Type *</Label>
+                  <Label className="text-base font-medium">{t("order.label_service")}</Label>
                   <Select value={shootForm.service_type} onValueChange={(v) => setShootForm({ ...shootForm, service_type: v })} required>
-                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select service type" /></SelectTrigger>
+                    <SelectTrigger className="h-12 text-base"><SelectValue placeholder={t("order.ph_service")} /></SelectTrigger>
                     <SelectContent>
                       {SERVICE_TYPES.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
@@ -586,51 +603,51 @@ export default function OrderPage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Preferred Shoot Date</Label>
+                    <Label className="text-base font-medium">{t("order.label_date")}</Label>
                     <Input type="date" value={shootForm.shoot_date} onChange={(e) => setShootForm({ ...shootForm, shoot_date: e.target.value })} className="h-12 text-base" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Preferred Shoot Time</Label>
+                    <Label className="text-base font-medium">{t("order.label_time")}</Label>
                     <Input type="time" value={shootForm.shoot_time} onChange={(e) => setShootForm({ ...shootForm, shoot_time: e.target.value })} className="h-12 text-base" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Property Address / Location</Label>
-                  <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={shootForm.shoot_location} onChange={(e) => setShootForm({ ...shootForm, shoot_location: e.target.value })} className="h-12 text-base" />
+                  <Label className="text-base font-medium">{t("order.label_address")}</Label>
+                  <Input type="text" placeholder={t("order.ph_address")} value={shootForm.shoot_location} onChange={(e) => setShootForm({ ...shootForm, shoot_location: e.target.value })} className="h-12 text-base" />
                 </div>
                 <div className="rounded-md border border-[#c7ff00]/40 bg-[#c7ff00]/[0.06] p-5">
                   <Label className="text-base font-medium flex items-center gap-2">
-                    <Tag className="w-4 h-4 text-[#c7ff00]" /> Have a discount code?
+                    <Tag className="w-4 h-4 text-[#c7ff00]" /> {t("order.discount_title")}
                   </Label>
-                  <p className="text-[13px] text-white/45 mt-1 mb-3">Have a discount code? Enter it below and we will take it off your total.</p>
+                  <p className="text-[13px] text-white/45 mt-1 mb-3">{t("order.discount_copy")}</p>
                   <Input
                     type="text"
                     value={discountCode}
                     onChange={(e) => setDiscountCode(e.target.value)}
                     className="h-12 text-base uppercase text-white placeholder:normal-case placeholder:text-white/35 bg-white/10 border-white/20"
-                    placeholder="Enter your code here"
+                    placeholder={t("order.discount_ph")}
                   />
                   {discountCode.trim() !== "" && discountAmount === 0 && (
-                    <p className="text-[13px] text-white/40 mt-2">That code didn&apos;t match. Codes are not case sensitive.</p>
+                    <p className="text-[13px] text-white/40 mt-2">{t("order.discount_invalid")}</p>
                   )}
                   {discountAmount > 0 && (
-                    <p className="text-[13px] text-[#c7ff00] mt-2">{enteredCode} applied. {fmt(discountAmount)} off your booking.</p>
+                    <p className="text-[13px] text-[#c7ff00] mt-2">{t("order.discount_valid", { code: enteredCode, amount: fmt(discountAmount) })}</p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-base font-medium">Additional Details <span className="text-white/40 font-normal">(optional)</span></Label>
-                  <Textarea value={shootForm.request_details} onChange={(e) => setShootForm({ ...shootForm, request_details: e.target.value })} className="min-h-24 text-base" placeholder="Special requirements, gate codes, anything we should know..." />
+                  <Label className="text-base font-medium">{t("order.label_details")}</Label>
+                  <Textarea value={shootForm.request_details} onChange={(e) => setShootForm({ ...shootForm, request_details: e.target.value })} className="min-h-24 text-base" placeholder={t("order.ph_details")} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <Button type="button" onClick={goBack} variant="outline" className="h-14 px-8 text-[16px] rounded-full border-white/25 text-white hover:bg-white/10">
-                    <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                    <ArrowLeft className="w-5 h-5 mr-1" /> {t("order.back_btn")}
                   </Button>
                   <Button type="submit" disabled={isSubmitting} className="flex-1 h-14 text-[17px] rounded-full">
-                    {isSubmitting ? "Sending..." : `Request booking · ${fmt(finalTotal)}`}
+                    {isSubmitting ? t("order.sending") : t("order.submit", { total: fmt(finalTotal) })}
                   </Button>
                 </div>
                 <p className="flex items-center justify-center gap-2 text-center text-[14px] text-white/45">
-                  <Check className="w-4 h-4 text-[#c7ff00] shrink-0" /> No payment today. We confirm every booking by email within 24 hours.
+                  <Check className="w-4 h-4 text-[#c7ff00] shrink-0" /> {t("order.reassurance")}
                 </p>
               </form>
             </div>
@@ -639,8 +656,8 @@ export default function OrderPage() {
           {/* ── STEP 2: consultation details ── */}
           {step === 2 && isConsultation && (
             <div>
-              <h2 className="text-[28px] font-semibold tracking-tight mb-2">Book your meeting</h2>
-              <p className="text-[15px] text-white/50 mb-8">Tell us a little about yourself and we&apos;ll set a time to talk.</p>
+              <h2 className="text-[28px] font-semibold tracking-tight mb-2">{t("order.consult_title")}</h2>
+              <p className="text-[15px] text-white/50 mb-8">{t("order.consult_sub")}</p>
 
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="rounded-md border border-[#c7ff00]/25 bg-white/[0.03] p-8 h-fit">
@@ -648,68 +665,65 @@ export default function OrderPage() {
                     <div className="w-12 h-12 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
                       <CalendarCheck className="w-6 h-6 text-black" />
                     </div>
-                    <h3 className="text-[22px] font-semibold tracking-tight">What to expect</h3>
+                    <h3 className="text-[22px] font-semibold tracking-tight">{t("order.expect_title")}</h3>
                   </div>
                   <ul className="space-y-5 text-[15px] text-white/65 leading-relaxed">
-                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>We&apos;ll hear your story and understand your goals, no prep needed.</span></li>
-                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>Together we&apos;ll find the right direction for your personal brand.</span></li>
-                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>If we genuinely believe we can help, and it feels right for you, we&apos;ll build it together.</span></li>
-                    <li className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>If not, you&apos;ll still leave with greater clarity about your next step.</span></li>
+                    {expectBullets.map((b) => (
+                      <li key={b} className="flex items-start gap-3"><Check className="w-5 h-5 mt-0.5 shrink-0 text-[#c7ff00]" /><span>{b}</span></li>
+                    ))}
                   </ul>
                 </div>
 
                 <form onSubmit={handleConsultSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Name *</Label>
-                    <Input type="text" required value={consultForm.name} onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })} className="h-12 text-base" placeholder="John Doe" />
+                    <Label className="text-base font-medium">{t("order.label_name")}</Label>
+                    <Input type="text" required value={consultForm.name} onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_name")} />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Email *</Label>
-                    <Input type="email" required value={consultForm.email} onChange={(e) => setConsultForm({ ...consultForm, email: e.target.value })} className="h-12 text-base" placeholder="john@example.com" />
+                    <Label className="text-base font-medium">{t("order.label_email")}</Label>
+                    <Input type="email" required value={consultForm.email} onChange={(e) => setConsultForm({ ...consultForm, email: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_email")} />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Phone <span className="text-white/40 font-normal">(optional)</span></Label>
-                    <Input type="tel" value={consultForm.phone} onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })} className="h-12 text-base" placeholder="+1 (555) 123-4567" />
+                    <Label className="text-base font-medium">{t("order.label_phone")}</Label>
+                    <Input type="tel" value={consultForm.phone} onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_phone")} />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">What do you do? *</Label>
-                    <Input type="text" required value={consultForm.role} onChange={(e) => setConsultForm({ ...consultForm, role: e.target.value })} className="h-12 text-base" placeholder="Real estate agent, broker, business owner..." />
+                    <Label className="text-base font-medium">{t("order.label_role")}</Label>
+                    <Input type="text" required value={consultForm.role} onChange={(e) => setConsultForm({ ...consultForm, role: e.target.value })} className="h-12 text-base" placeholder={t("order.ph_role")} />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">Preferred meeting format</Label>
+                    <Label className="text-base font-medium">{t("order.label_format")}</Label>
                     <Select value={consultForm.meeting_format} onValueChange={(v) => setConsultForm({ ...consultForm, meeting_format: v })}>
-                      <SelectTrigger className="h-12 text-base"><SelectValue placeholder="Select format" /></SelectTrigger>
+                      <SelectTrigger className="h-12 text-base"><SelectValue placeholder={t("order.ph_format")} /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Video call">Video call</SelectItem>
-                        <SelectItem value="Phone call">Phone call</SelectItem>
-                        <SelectItem value="In person">In person</SelectItem>
+                        {formatOptions.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-base font-medium">Preferred day</Label>
+                      <Label className="text-base font-medium">{t("order.label_day")}</Label>
                       <Input type="date" value={consultForm.preferred_date} onChange={(e) => setConsultForm({ ...consultForm, preferred_date: e.target.value })} className="h-12 text-base" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-base font-medium">Preferred time</Label>
+                      <Label className="text-base font-medium">{t("order.label_time2")}</Label>
                       <Input type="time" value={consultForm.preferred_time} onChange={(e) => setConsultForm({ ...consultForm, preferred_time: e.target.value })} className="h-12 text-base" />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-base font-medium">What would you like to talk about? <span className="text-white/40 font-normal">(optional)</span></Label>
-                    <Textarea value={consultForm.goals} onChange={(e) => setConsultForm({ ...consultForm, goals: e.target.value })} className="min-h-24 text-base" placeholder="Your goals, what's holding you back, what you'd like clarity on..." />
+                    <Label className="text-base font-medium">{t("order.label_goals")}</Label>
+                    <Textarea value={consultForm.goals} onChange={(e) => setConsultForm({ ...consultForm, goals: e.target.value })} className="min-h-24 text-base" placeholder={t("order.ph_goals")} />
                   </div>
                   <div className="flex gap-3 pt-2">
                     <Button type="button" onClick={goBack} variant="outline" className="h-14 px-8 text-[16px] rounded-full border-white/25 text-white hover:bg-white/10">
-                      <ArrowLeft className="w-5 h-5 mr-1" /> Back
+                      <ArrowLeft className="w-5 h-5 mr-1" /> {t("order.back_btn")}
                     </Button>
                     <Button type="submit" disabled={isSubmitting} className="flex-1 h-14 text-[17px] rounded-full">
-                      {isSubmitting ? "Sending..." : "Request my one-on-one"}
+                      {isSubmitting ? t("order.sending") : t("order.consult_submit")}
                     </Button>
                   </div>
                   <p className="flex items-center justify-center gap-2 text-center text-[14px] text-white/45">
-                    <Check className="w-4 h-4 text-[#c7ff00] shrink-0" /> Free to request. We reply within 24 hours to set a time.
+                    <Check className="w-4 h-4 text-[#c7ff00] shrink-0" /> {t("order.consult_reassurance")}
                   </p>
                 </form>
               </div>

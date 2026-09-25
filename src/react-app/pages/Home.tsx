@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
@@ -7,94 +7,79 @@ import FaqSection from "@/react-app/components/FaqSection";
 import ProofSection from "@/react-app/components/ProofSection";
 import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
+import {
+  useAddOns,
+  useLiveCatalog,
+  useT,
+  useTerms,
+} from "@/react-app/lib/siteContent";
 
-const SERVICES = [
-  {
-    n: "01",
-    label: "PHOTOGRAPHY",
-    title: "Make the first look count.",
-    copy: "Interior and exterior photography and twilight imagery. Ready for your listing.",
-    cta: "Explore photography",
-    href: "/work?tab=photos",
-    dark: false,
-  },
-  {
-    n: "02",
-    label: "PERSONAL BRANDING",
-    title: "Be the name everyone remembers.",
-    copy: "Your next client will meet your content before they meet you. We turn your expertise and personality into trust, qualified leads, and revenue.",
-    cta: "Build my brand",
-    href: "/branding",
-    dark: true,
-  },
-  {
-    n: "03",
-    label: "FILM",
-    title: "Give the space a story.",
-    copy: "Walkthrough films and aerial perspectives that show how a property feels and connects.",
-    cta: "Watch the film",
-    href: "/work#films",
-    dark: false,
-  },
-];
-
-const PACKAGE_FEATURES = [
-  "25–45 MLS-ready photos",
-  "1 twilight photo",
-  "24-hour delivery",
-  "Private branded gallery",
-  "Light, color & exposure revisions",
-];
-
-import { useSiteSettings, useCatalog, type SiteSettings } from "@/react-app/lib/siteSettings";
-
-function getAddOns(s: SiteSettings) {
-  return [
-    { name: "Custom Listing Flyer", price: `$${s.price_addon_flyer}`, note: `$${s.price_addon_flyer} for one` },
-    { name: "Virtual Staging", price: `From $${s.price_staging_1}`, note: `From $${s.price_staging_1}` },
-    { name: "Drone Photos & Video", price: `$${s.price_addon_drone}`, note: `$${s.price_addon_drone}` },
-    { name: "3D Virtual Tour", price: `$${s.price_addon_3d_tour}`, note: `$${s.price_addon_3d_tour}` },
-    { name: "Walkthrough/Cinematic Video", price: `$${s.price_addon_video}`, note: `$${s.price_addon_video}` },
-    { name: "Creative Personal Branding Reel", price: `$${s.price_addon_reel}`, note: `$${s.price_addon_reel}` },
-  ];
+function useServices(t: ReturnType<typeof useT>) {
+  return useMemo(
+    () => [
+      {
+        n: "01",
+        label: t("home.svc1_label"),
+        title: t("home.svc1_title"),
+        copy: t("home.svc1_copy"),
+        cta: t("home.svc1_cta"),
+        href: "/work?tab=photos",
+        dark: false,
+      },
+      {
+        n: "02",
+        label: t("home.svc2_label"),
+        title: t("home.svc2_title"),
+        copy: t("home.svc2_copy"),
+        cta: t("home.svc2_cta"),
+        href: "/branding",
+        dark: true,
+      },
+      {
+        n: "03",
+        label: t("home.svc3_label"),
+        title: t("home.svc3_title"),
+        copy: t("home.svc3_copy"),
+        cta: t("home.svc3_cta"),
+        href: "/work#films",
+        dark: false,
+      },
+    ],
+    [t]
+  );
 }
 
-const STEPS = [
-  {
-    n: "01",
-    title: "Tell us about the property.",
-    copy: "Choose your media and preferred shoot date. We'll get back to you within 24 hours to confirm the details.",
-  },
-  {
-    n: "02",
-    title: "We take care of the shoot.",
-    copy: "Our team captures the space and prepares the photography, films and extras you selected.",
-  },
-  {
-    n: "03",
-    title: "Your media. Ready to share.",
-    copy: "Download your files through a private branded gallery, with formats ready for your listing.",
-  },
-];
+function useSteps(t: ReturnType<typeof useT>) {
+  return useMemo(
+    () => [
+      { n: "01", title: t("home.step1_title"), copy: t("home.step1_copy") },
+      { n: "02", title: t("home.step2_title"), copy: t("home.step2_copy") },
+      { n: "03", title: t("home.step3_title"), copy: t("home.step3_copy") },
+    ],
+    [t]
+  );
+}
 
 function FeaturedTwilight() {
+  const t = useT();
+  const terms = useTerms();
   return (
     <Link
       to="/work?tab=photos&filter=twilight"
       className="relative block w-full rounded-md overflow-hidden bg-[#1a1a1a] text-left group"
-      aria-label="View twilight photography"
+      aria-label={t("home.featured_aria")}
     >
       <img
-        src="/work/photos/new-twilight-4.jpg"
-        alt="Twilight exterior of a featured property"
+        src={terms.featured_photo || "/work/photos/new-twilight-4.jpg"}
+        alt={t("home.featured_alt")}
         loading="lazy"
         className="w-full aspect-video object-cover group-hover:scale-[1.02] transition-transform duration-500"
       />
       <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <span className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="eyebrow text-[#c7ff00] block mb-1">Twilight</span>
+        <span className="eyebrow text-[#c7ff00] block mb-1">{t("home.featured_eyebrow")}</span>
         <span className="text-white text-[17px] font-bold tracking-tight block">
-          View twilight photos
+          {t("home.featured_label")}
         </span>
       </span>
     </Link>
@@ -102,41 +87,46 @@ function FeaturedTwilight() {
 }
 
 // ── Real Estate Impact Dashboard ─────────────────────────────
-// Live values come from Site Settings (editable at /backstage).
+// Live values come from Numbers & Terms (editable at /backstage).
 
-function getImpactMetrics(s: SiteSettings) {
-  return [
-    {
-      id: "properties-covered",
-      value: s.stat_properties,
-      decimals: 0,
-      prefix: "",
-      suffix: "+",
-      ring: 100,
-      label: "Properties Covered",
-      desc: "Homes we've shot and marketed so far.",
-    },
-    {
-      id: "value-covered",
-      value: s.stat_value_m,
-      decimals: 1,
-      prefix: "$",
-      suffix: "M+",
-      ring: 100,
-      label: "Property Value Covered",
-      desc: "Combined value of the homes we've covered.",
-    },
-    {
-      id: "success-rate",
-      value: s.stat_success_rate,
-      decimals: 0,
-      prefix: "",
-      suffix: "%+",
-      ring: 100,
-      label: "Marketing Success Rate",
-      desc: "Clients who got the result they wanted.",
-    },
-  ];
+function useImpactMetrics() {
+  const terms = useTerms();
+  const t = useT();
+  return useMemo(
+    () => [
+      {
+        id: "properties-covered",
+        value: Number(terms.stat_properties) || 0,
+        decimals: 0,
+        prefix: "",
+        suffix: "+",
+        ring: 100,
+        label: t("home.metric1_label"),
+        desc: t("home.metric1_desc"),
+      },
+      {
+        id: "value-covered",
+        value: Number(terms.stat_value_m) || 0,
+        decimals: 1,
+        prefix: "$",
+        suffix: "M+",
+        ring: 100,
+        label: t("home.metric2_label"),
+        desc: t("home.metric2_desc"),
+      },
+      {
+        id: "success-rate",
+        value: Number(terms.stat_success_rate) || 0,
+        decimals: 0,
+        prefix: "",
+        suffix: "%+",
+        ring: 100,
+        label: t("home.metric3_label"),
+        desc: t("home.metric3_desc"),
+      },
+    ],
+    [terms, t]
+  );
 }
 
 function useCountUp(target: number, decimals: number, start: boolean, duration = 1800) {
@@ -231,7 +221,7 @@ function ImpactCard({
   index,
   started,
 }: {
-  metric: ReturnType<typeof getImpactMetrics>[number];
+  metric: ReturnType<typeof useImpactMetrics>[number];
   index: number;
   started: boolean;
 }) {
@@ -259,8 +249,8 @@ function ImpactCard({
 }
 
 function ImpactDashboard() {
-  const { settings } = useSiteSettings();
-  const metrics = getImpactMetrics(settings);
+  const t = useT();
+  const metrics = useImpactMetrics();
   const dashboardRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -297,41 +287,41 @@ function ImpactDashboard() {
       </div>
 
       <div className="relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28">
-        <p className="eyebrow text-white/50 mb-6 text-center">LuxEntra Media · New York</p>
+        <p className="eyebrow text-white/50 mb-6 text-center">{t("home.eyebrow")}</p>
         <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6 text-center">
-          Every listing.
+          {t("home.hero_h1a")}
           <br />
-          A lasting impression.
+          {t("home.hero_h1b")}
         </h1>
         <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center">
-          Photography, films and personal branding.
-          <br className="hidden md:block" /> Made for real estate.
+          {t("home.hero_sub1")}
+          <br className="hidden md:block" /> {t("home.hero_sub2")}
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32">
           <PackageButton to="/order" dark={false}>
-            Book a Shoot
+            {t("home.cta_book")}
           </PackageButton>
           <Link
             to="/work"
             className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
           >
-            Explore the work <ArrowUpRight className="w-4 h-4" />
+            {t("home.cta_work")} <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
         <div className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6">
-          <p className="eyebrow text-white/50 mb-4">Start here</p>
+          <p className="eyebrow text-white/50 mb-4">{t("home.picker_eyebrow")}</p>
           <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
-            Not sure what you need?
+            {t("home.picker_h2")}
           </h2>
           <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed mb-8 max-w-xl">
-            Tell us what brings you here and we will point you to the right service.
+            {t("home.picker_copy")}
           </p>
           <button
             type="button"
             onClick={openServicePicker}
             className="btn-lime breathe-attention gap-2"
           >
-            Find my service <ArrowUpRight className="w-4 h-4" />
+            {t("home.picker_button")} <ArrowUpRight className="w-4 h-4" />
           </button>
         </div>
 
@@ -341,12 +331,12 @@ function ImpactDashboard() {
               inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
-            <p className="eyebrow text-[#c7ff00] mb-6 text-center">Performance</p>
+            <p className="eyebrow text-[#c7ff00] mb-6 text-center">{t("home.impact_eyebrow")}</p>
             <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.05] mb-6 text-center">
-              Our Real Estate Impact
+              {t("home.impact_h2")}
             </h2>
             <p className="text-[17px] md:text-[20px] text-white/60 leading-relaxed mb-16 max-w-2xl mx-auto text-center">
-              We shoot homes so they get seen, get remembered, and get sold.
+              {t("home.impact_intro")}
             </p>
           </div>
 
@@ -362,8 +352,9 @@ function ImpactDashboard() {
             }`}
             style={{ transitionDelay: inView ? "420ms" : "0ms" }}
           >
-            &ldquo;We make listings people actually{" "}
-            <span className="text-[#c7ff00]">stop and look at</span>.&rdquo;
+            &ldquo;{t("home.quote_1")}{" "}
+            <span className="text-[#c7ff00]">{t("home.quote_2")}</span>
+            {t("home.quote_3")}&rdquo;
           </p>
         </div>
       </div>
@@ -431,12 +422,24 @@ function PackageButton({ to, dark, children }: { to: string; dark?: boolean; chi
 }
 
 export default function HomePage() {
-  const { settings } = useSiteSettings();
-  const { bundles } = useCatalog();
-  const addOns = getAddOns(settings);
+  const t = useT();
+  const terms = useTerms();
+  const { bundles, standardPrice } = useLiveCatalog();
+  const addOns = useAddOns();
+  const SERVICES = useServices(t);
+  const STEPS = useSteps(t);
+  const pkgFeatures = useMemo(
+    () =>
+      t("home.pkg_features")
+        .split("\n")
+        .map((f) => f.trim())
+        .filter(Boolean),
+    [t]
+  );
+
   // Hovered / focused / tapped package card. Defaults to the featured
   // ("Most chosen") package; resets when the cursor leaves the section.
-  const defaultPackage = bundles.find((b) => b.featured)?.id ?? bundles[0].id;
+  const defaultPackage = bundles.find((b) => b.featured)?.id ?? bundles[0]?.id;
   const [activePackage, setActivePackage] = useState(defaultPackage);
 
   return (
@@ -451,12 +454,12 @@ export default function HomePage() {
       <section id="work" className="bg-white py-20 md:py-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-            Step inside.
+            {t("home.stepinside_h2")}
           </h2>
           <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12 max-w-2xl">
-            A closer look at our featured property.
+            {t("home.stepinside_copy1")}
             <br />
-            From the first approach to the smallest detail.
+            {t("home.stepinside_copy2")}
           </p>
 
           <div className="grid lg:grid-cols-3 gap-5">
@@ -467,28 +470,28 @@ export default function HomePage() {
               <Link
                 to="/work?tab=photos&filter=interior"
                 className="group relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px] block"
-                aria-label="View interior photography"
+                aria-label={t("home.stills_aria")}
               >
-                <img src="/stills/still-1.jpg" alt="Room to explore" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                <img src={terms.still_1 || "/stills/still-1.jpg"} alt={t("home.still1_alt")} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                 <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
-                  Room to explore.
+                  {t("home.still1_caption")}
                 </figcaption>
               </Link>
               <Link
                 to="/work?tab=photos&filter=interior"
                 className="group relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px] block"
-                aria-label="View interior photography"
+                aria-label={t("home.stills_aria")}
               >
-                <img src="/stills/still-2.jpg" alt="Details worth seeing" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
+                <img src={terms.still_2 || "/stills/still-2.jpg"} alt={t("home.still2_alt")} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
                 <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
-                  Details worth seeing.
+                  {t("home.still2_caption")}
                 </figcaption>
               </Link>
             </div>
           </div>
-          <p className="text-[13px] text-black/40 mt-5">Stills from the featured property.</p>
+          <p className="text-[13px] text-black/40 mt-5">{t("home.stepinside_note")}</p>
           <Link to="/work" className="link-dark text-[16px] mt-6 inline-flex">
-            View all work <ArrowUpRight className="w-4 h-4" />
+            {t("home.stepinside_link")} <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
@@ -497,9 +500,9 @@ export default function HomePage() {
       <section id="services" className="bg-[#f4f4f4] py-20 md:py-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
-            One creative team.
+            {t("home.services_h2a")}
             <br />
-            Every angle covered.
+            {t("home.services_h2b")}
           </h2>
           <div className="grid md:grid-cols-3 gap-5">
             {SERVICES.map((s) => (
@@ -546,27 +549,26 @@ export default function HomePage() {
         <div className="max-w-[1200px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           <div>
             <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-6">
-              Your next listing.
+              {t("home.pkg_h2a")}
               <br />
-              Ready to launch.
+              {t("home.pkg_h2b")}
             </h2>
             <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
-              The Standard Listing Media Package brings your listing media together
-              in one straightforward booking.
+              {t("home.pkg_copy")}
             </p>
             <p className="text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
-              $175
+              ${standardPrice}
             </p>
-            <p className="text-[15px] text-black/50 mb-10">per package</p>
+            <p className="text-[15px] text-black/50 mb-10">{t("home.pkg_per")}</p>
             <Link to="/order" className="btn-dark">
-              Build your package
+              {t("home.pkg_cta")}
             </Link>
           </div>
 
           <div className="bg-[#f4f4f4] rounded-md p-8 md:p-10">
-            <h3 className="text-[24px] font-bold tracking-tight mb-8">All the essentials. Included.</h3>
+            <h3 className="text-[24px] font-bold tracking-tight mb-8">{t("home.pkg_card_title")}</h3>
             <ul className="space-y-4 mb-8">
-              {PACKAGE_FEATURES.map((f) => (
+              {pkgFeatures.map((f) => (
                 <li key={f} className="flex items-start gap-3 text-[16px]">
                   <span className="mt-0.5 w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
                     <Check className="w-3 h-3 text-[#c7ff00]" strokeWidth={3} />
@@ -576,7 +578,7 @@ export default function HomePage() {
               ))}
             </ul>
             <p className="text-[13px] text-black/50 leading-relaxed">
-              High-resolution and MLS-optimized files. Full usage rights for listing purposes.
+              {t("home.pkg_fineprint")}
             </p>
           </div>
         </div>
@@ -588,14 +590,14 @@ export default function HomePage() {
         onMouseLeave={() => setActivePackage(defaultPackage)}
       >
         <div className="max-w-[1200px] mx-auto px-6">
-          <p className="apple-eyebrow !text-[#c7ff00] mb-4">Launch packages</p>
+          <p className="apple-eyebrow !text-[#c7ff00] mb-4">{t("home.bundles_eyebrow")}</p>
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-            Don&apos;t just list it.
+            {t("home.bundles_h2a")}
             <br />
-            Launch it.
+            {t("home.bundles_h2b")}
           </h2>
           <p className="text-[17px] md:text-[19px] text-white/60 leading-relaxed mb-14 max-w-2xl">
-            Three packages. Pick the level of coverage your listing needs.
+            {t("home.bundles_intro")}
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -627,7 +629,7 @@ export default function HomePage() {
                   {p.name}
                 </h3>
                 <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${isActive ? "text-black/60" : "text-white/50"}`}>
-                  Starting at
+                  {t("home.bundle_starting")}
                 </p>
                 <p className="price-num text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
                   ${p.price}
@@ -653,7 +655,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <PackageButton to={`/order?package=${p.id}`} dark={isActive}>
-                  Choose This Package
+                  {t("home.bundle_cta")}
                 </PackageButton>
               </div>
               );
@@ -666,17 +668,20 @@ export default function HomePage() {
       <section className="bg-white py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <h2 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] leading-tight mb-5">
-            Need something more custom?
+            {t("home.custom_h2")}
           </h2>
           <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-2xl mx-auto">
-            Enhance any package with a 3D tour, floor plan, twilight imagery,
-            additional social edits, or expedited delivery.
-            <br />
-            Tell us about your property, and we&apos;ll create the right level of
-            coverage for your listing.
+            {t("home.custom_copy")
+              .split("\n")
+              .map((l, i, arr) => (
+                <span key={i}>
+                  {l}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
           </p>
           <Link to="/order?package=consultation" className="btn-dark">
-            Request a Consultation
+            {t("home.custom_cta")}
           </Link>
         </div>
       </section>
@@ -685,20 +690,25 @@ export default function HomePage() {
       <section className="bg-[#f4f4f4] py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-            A little more.
+            {t("home.addons_h2a")}
             <br />
-            A different perspective.
+            {t("home.addons_h2b")}
           </h2>
           <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12">
-            Choose the extras your listing needs.
-            <br />
-            See your total before sending a request.
+            {t("home.addons_copy")
+              .split("\n")
+              .map((l, i, arr) => (
+                <span key={i}>
+                  {l}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
           </p>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
             {addOns.map((a) => (
               <Link
-                key={a.name}
+                key={a.id}
                 to="/order"
                 className="group bg-white rounded-md p-7 flex flex-col hover:shadow-lg transition-shadow"
               >
@@ -715,10 +725,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── From shoot to listing ────────────────────────── */}      <section className="bg-white py-20 md:py-28">
+      {/* ── From shoot to listing ────────────────────────── */}
+      <section className="bg-white py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
-            Easy from the start.
+            {t("home.steps_h2")}
           </h2>
           <div className="grid md:grid-cols-3 gap-10">
             {STEPS.map((s) => (
@@ -743,14 +754,14 @@ export default function HomePage() {
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img src="/brand/symbol-lime.png" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">
-            Let&apos;s make your next listing stand out.
+            {t("home.final_h2")}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link to="/order" className="btn-lime">
-              Book a Shoot
+              {t("home.final_cta1")}
             </Link>
             <Link to="/about" className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors">
-              Meet the team <ArrowUpRight className="w-4 h-4" />
+              {t("home.final_cta2")} <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
         </div>

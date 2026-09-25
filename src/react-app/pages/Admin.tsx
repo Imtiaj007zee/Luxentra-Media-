@@ -9,6 +9,7 @@ import {
   type SiteSettings,
   type LoginEntry,
 } from "@/react-app/lib/siteSettings";
+import ContentAdmin from "@/react-app/components/ContentAdmin";
 
 // Hidden control panel. Not linked anywhere on the public site.
 // The password is checked server-side in the Apps Script web app.
@@ -214,7 +215,7 @@ export default function AdminPage() {
           </div>
           <h1 className="text-[28px] font-bold tracking-tight mb-2">Admin login</h1>
           <p className="text-[14px] text-white/50 mb-6">
-            This panel controls the numbers and prices on the live site. Authorized access only.
+            This panel controls the words, numbers, and prices on the live site. Authorized access only.
           </p>
           <form onSubmit={login}>
             <input
@@ -313,6 +314,8 @@ export default function AdminPage() {
         <button onClick={save} disabled={saving} className="btn-lime w-full h-12 mt-6 disabled:opacity-40 inline-flex items-center justify-center gap-2">
           <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save all changes"}
         </button>
+
+        <ContentAdmin username={username} password={password} />
 
         <section className="mt-12">
           <h2 className="text-[19px] font-bold tracking-tight mb-1 inline-flex items-center gap-2">

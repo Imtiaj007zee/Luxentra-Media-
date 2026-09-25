@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { X, ArrowRight } from "lucide-react";
 import { ORDERS_ENDPOINT as ENDPOINT } from "@/react-app/lib/siteSettings";
+import { usePublicDiscount, useT } from "@/react-app/lib/siteContent";
 
 const SEEN_KEY = "luxentra_lead_seen_v1";
-const DISCOUNT_CODE = "WELCOME25";
 
 function hasSeen(): boolean {
   try {
@@ -31,12 +31,16 @@ export default function LeadCapturePopup() {
   const [sending, setSending] = useState(false);
   const [missing, setMissing] = useState<string[]>([]);
   const [form, setForm] = useState({ name: "", email: "", phone: "", brokerage: "" });
+  const t = useT();
+  const publicDiscount = usePublicDiscount();
+  const discountCode = publicDiscount?.code ?? "WELCOME25";
+  const discountAmount = publicDiscount?.amount ?? 25;
 
   // Auto-popup: once per visitor, 12 seconds after the homepage loads.
   useEffect(() => {
     if (hasSeen()) return;
-    const t = window.setTimeout(() => setOpen(true), 12000);
-    return () => window.clearTimeout(t);
+    const tmr = window.setTimeout(() => setOpen(true), 12000);
+    return () => window.clearTimeout(tmr);
   }, []);
 
   const close = () => {
@@ -77,7 +81,7 @@ export default function LeadCapturePopup() {
           email: form.email.trim(),
           phone: form.phone.trim(),
           brokerage: form.brokerage.trim(),
-          discount_code: DISCOUNT_CODE,
+          discount_code: discountCode,
         }),
       });
     } catch {
@@ -91,12 +95,15 @@ export default function LeadCapturePopup() {
 
   if (!open) return null;
 
+  const missingLabel = (m: string) =>
+    m === "name" ? t("popup.missing_name") : m === "email" ? t("popup.missing_email") : m;
+
   return (
     <div
       className="fixed inset-0 z-[90] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-label="Get $25 off your first order"
+      aria-label={t("popup.aria_label")}
     >
       <button
         aria-label="Close"
@@ -114,37 +121,31 @@ export default function LeadCapturePopup() {
 
         {!done ? (
           <>
-            <p className="eyebrow text-[#c7ff00] mb-4">First order perk</p>
+            <p className="eyebrow text-[#c7ff00] mb-4">{t("popup.eyebrow")}</p>
             <h3 className="text-[32px] md:text-[38px] font-bold tracking-[-0.03em] leading-[1.05] mb-3">
-              Realtors, take $25 off your first booking.
+              {t("popup.title", { amount: discountAmount })}
             </h3>
-            <p className="text-[15px] text-white/60 leading-relaxed mb-7">
-              Drop your details and we will send your code. New clients only.
-            </p>
+            <p className="text-[15px] text-white/60 leading-relaxed mb-7">{t("popup.copy")}</p>
             <form onSubmit={submit} noValidate className="space-y-3">
               {missing.length > 0 && (
                 <div className="rounded-md border border-red-400/50 bg-red-400/10 px-4 py-3 text-[14px] text-white/85">
-                  Please fill in{" "}
+                  {t("popup.validation_prefix")}{" "}
                   <span className="font-semibold text-white">
-                    {missing
-                      .map((m) =>
-                        m === "name" ? "your name" : m === "email" ? "a valid email" : m
-                      )
-                      .join(", ")}
+                    {missing.map(missingLabel).join(", ")}
                   </span>{" "}
-                  to claim your $25.
+                  {t("popup.validation_suffix", { amount: discountAmount })}
                 </div>
               )}
               <input
                 className={fieldClass("name")}
-                placeholder="Your name"
+                placeholder={t("popup.ph_name")}
                 value={form.name}
                 onChange={set("name")}
                 autoComplete="name"
               />
               <input
                 className={fieldClass("email")}
-                placeholder="Email"
+                placeholder={t("popup.ph_email")}
                 type="email"
                 value={form.email}
                 onChange={set("email")}
@@ -152,7 +153,7 @@ export default function LeadCapturePopup() {
               />
               <input
                 className={fieldClass("phone")}
-                placeholder="Phone"
+                placeholder={t("popup.ph_phone")}
                 type="tel"
                 value={form.phone}
                 onChange={set("phone")}
@@ -160,7 +161,7 @@ export default function LeadCapturePopup() {
               />
               <input
                 className={fieldClass("brokerage")}
-                placeholder="Brokerage"
+                placeholder={t("popup.ph_brokerage")}
                 value={form.brokerage}
                 onChange={set("brokerage")}
                 autoComplete="organization"
@@ -170,30 +171,30 @@ export default function LeadCapturePopup() {
                 disabled={sending}
                 className="btn-lime w-full !mt-5 disabled:opacity-60"
               >
-                {sending ? "Claiming..." : "Claim my $25"}
+                {sending ? t("popup.sending") : t("popup.cta", { amount: discountAmount })}
               </button>
             </form>
             <button
               onClick={close}
               className="mt-4 w-full text-center text-[13px] text-white/40 hover:text-white/70 transition-colors"
             >
-              No thanks
+              {t("popup.skip")}
             </button>
           </>
         ) : (
           <div className="text-center py-4">
-            <p className="eyebrow text-[#c7ff00] mb-4">You are in</p>
+            <p className="eyebrow text-[#c7ff00] mb-4">{t("popup.success_eyebrow")}</p>
             <h3 className="text-[32px] font-bold tracking-[-0.03em] leading-[1.05] mb-3">
-              Your code is ready.
+              {t("popup.success_title")}
             </h3>
             <p className="price-num text-[44px] font-bold tracking-tight text-[#c7ff00] mb-5">
-              {DISCOUNT_CODE}
+              {discountCode}
             </p>
             <p className="text-[15px] text-white/60 leading-relaxed mb-8">
-              Mention this code when you book and $25 comes off your first order.
+              {t("popup.success_copy", { amount: discountAmount })}
             </p>
             <Link to="/order" onClick={close} className="btn-lime inline-flex items-center gap-2">
-              Book a shoot <ArrowRight className="w-4 h-4" />
+              {t("popup.success_cta")} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         )}

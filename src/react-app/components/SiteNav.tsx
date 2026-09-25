@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-
-const LINKS = [
-  { label: "Branding", to: "/branding" },
-  { label: "Work", to: "/work" },
-  { label: "About", to: "/about" },
-];
+import { useT } from "@/react-app/lib/siteContent";
 
 /**
  * LuxEntra global navigation: solid black sticky bar, lime brand lockup,
@@ -15,6 +10,13 @@ export default function SiteNav() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const t = useT();
+
+  const LINKS = [
+    { label: t("nav.link_branding"), to: "/branding" },
+    { label: t("nav.link_work"), to: "/work" },
+    { label: t("nav.link_about"), to: "/about" },
+  ];
 
   const renderLink = (
     l: { label: string; to: string },
@@ -44,10 +46,10 @@ export default function SiteNav() {
               // so bring the user back to the very top explicitly.
               if (isHome) window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            aria-label="LuxEntra Media home"
+            aria-label={t("nav.home_aria")}
             className="flex items-center gap-3 shrink-0"
           >
-            <img src="/brand/symbol-lime.png" alt="LuxEntra Media" className="h-9 w-9 object-contain" />
+            <img src="/brand/symbol-lime.png" alt={t("nav.brand_alt")} className="h-9 w-9 object-contain" />
             <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
           </Link>
 
@@ -63,13 +65,13 @@ export default function SiteNav() {
 
           <div className="flex items-center gap-4">
             <Link to="/order" className="btn-lime-sm hidden md:inline-flex">
-              Book a Shoot
+              {t("nav.cta_book")}
             </Link>
             {/* Mobile hamburger */}
             <button
               className="md:hidden flex flex-col justify-center gap-[7px] w-8 h-8"
               onClick={() => setOpen(!open)}
-              aria-label="Menu"
+              aria-label={t("nav.menu_aria")}
             >
               <span
                 className="block h-[2px] w-6 bg-white transition-all duration-300"
@@ -103,7 +105,7 @@ export default function SiteNav() {
           )}
           <div className="flex flex-wrap items-center gap-4 mt-8">
             <Link to="/order" onClick={() => setOpen(false)} className="btn-lime self-start">
-              Book a Shoot
+              {t("nav.cta_book")}
             </Link>
           </div>
         </div>

@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/NotFound";
 import AdminPage from "./pages/Admin";
 import PageMeta from "@/react-app/components/PageMeta";
 import { SiteSettingsProvider } from "@/react-app/lib/siteSettings";
+import { ContentProvider } from "@/react-app/lib/siteContent";
 
 /** Scrolls to an in-page anchor (e.g. /#package) after navigation. */
 function ScrollToHash() {
@@ -33,6 +34,7 @@ function ScrollToHash() {
 export default function App() {
   return (
     <SiteSettingsProvider>
+    <ContentProvider>
     <Router>
       <PageMeta />
       <ScrollToHash />
@@ -50,6 +52,7 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
+    </ContentProvider>
     </SiteSettingsProvider>
   );
 }

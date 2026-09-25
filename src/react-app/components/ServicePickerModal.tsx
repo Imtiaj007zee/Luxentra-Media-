@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, X } from "lucide-react";
+import { useT } from "@/react-app/lib/siteContent";
 
 const SESSION_KEY = "luxentra_service_picker_seen_v2";
 const OPEN_EVENT = "luxentra:open-service-picker";
@@ -27,39 +28,6 @@ function markSeen() {
     /* ignore */
   }
 }
-
-const PRIMARY_OPTIONS = [
-  {
-    title: "I Want to Market a Property",
-    cta: "Explore Listing Packages",
-    // Stays on the homepage: scrolls to the listing packages section.
-    action: () => {
-      window.setTimeout(() => {
-        document
-          .getElementById("pricing")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 80);
-    },
-  },
-  {
-    title: "I Want to Build My Personal Brand",
-    cta: "Explore Personal Branding Packages",
-    href: "/branding",
-  },
-];
-
-const SECONDARY_OPTIONS = [
-  {
-    title: "I Want to Explore Your Work",
-    cta: "Explore Our Work",
-    href: "/work",
-  },
-  {
-    title: "I\u2019m Not Sure Yet",
-    cta: "Get a Free Consultation",
-    href: "/order?package=consultation",
-  },
-];
 
 function OptionCard({
   title,
@@ -128,6 +96,40 @@ function OptionCard({
 
 export default function ServicePickerModal() {
   const [open, setOpen] = useState(false);
+  const t = useT();
+
+  const PRIMARY_OPTIONS = [
+    {
+      title: t("picker.card1_title"),
+      cta: t("picker.card1_cta"),
+      // Stays on the homepage: scrolls to the listing packages section.
+      action: () => {
+        window.setTimeout(() => {
+          document
+            .getElementById("pricing")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      },
+    },
+    {
+      title: t("picker.card2_title"),
+      cta: t("picker.card2_cta"),
+      href: "/branding",
+    },
+  ];
+
+  const SECONDARY_OPTIONS = [
+    {
+      title: t("picker.card3_title"),
+      cta: t("picker.card3_cta"),
+      href: "/work",
+    },
+    {
+      title: t("picker.card4_title"),
+      cta: t("picker.card4_cta"),
+      href: "/order?package=consultation",
+    },
+  ];
 
   // Auto-popup: once per visitor, after the visitor scrolls ~50% past the hero.
   // The hero button (openServicePicker) opens on demand and never counts
@@ -195,12 +197,12 @@ export default function ServicePickerModal() {
         {/* Sticky header keeps the close button visible while cards scroll */}
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 bg-white/95 px-6 pb-4 pt-6 backdrop-blur sm:px-10 sm:pt-8">
           <div>
-            <p className="eyebrow mb-2 text-black/40">Welcome to LuxEntra Media</p>
+            <p className="eyebrow mb-2 text-black/40">{t("picker.eyebrow")}</p>
             <h2 className="text-[28px] font-bold leading-tight tracking-tight sm:text-[36px]">
-              How can we help you today?
+              {t("picker.title")}
             </h2>
             <p className="mt-2 text-[15px] leading-relaxed text-black/60 sm:text-[16px]">
-              Choose an option, and we&rsquo;ll guide you to the right place.
+              {t("picker.sub")}
             </p>
           </div>
           <button
@@ -236,7 +238,7 @@ export default function ServicePickerModal() {
               onClick={close}
               className="text-[15px] font-medium text-black/60 underline underline-offset-4 transition-colors hover:text-black"
             >
-              Continue Exploring
+              {t("picker.dismiss")}
             </button>
           </div>
         </div>

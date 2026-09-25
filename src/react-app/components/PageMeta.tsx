@@ -1,53 +1,26 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router";
+import { useT, useTerms } from "@/react-app/lib/siteContent";
 
-const SITE_URL = "https://luxentra-media.vercel.app";
-
-const ROUTE_META: Record<string, { title: string; description: string }> = {
-  "/": {
-    title: "LuxEntra Media | Real Estate Photography & Film in NYC",
-    description:
-      "LuxEntra Media creates cinematic listing films, photography, and personal branding content for real estate professionals in New York City and Long Island.",
-  },
-  "/work": {
-    title: "Our Work | LuxEntra Media",
-    description:
-      "Browse LuxEntra Media's portfolio of listing films, brand films, and real estate photography across NYC and Long Island.",
-  },
-  "/branding": {
-    title: "Personal Branding for Agents | LuxEntra Media",
-    description:
-      "Monthly personal branding plans for real estate agents: cinematic content that turns your expertise into trust, leads, and revenue.",
-  },
-  "/about": {
-    title: "Meet the Team | LuxEntra Media",
-    description:
-      "Meet the LuxEntra Media team: photographers, filmmakers, and editors crafting standout real estate marketing in New York.",
-  },
-  "/order": {
-    title: "Book a Shoot | LuxEntra Media",
-    description:
-      "Book your real estate photography or film package with LuxEntra Media. Choose a package, add extras, and get a confirmation within 24 hours.",
-  },
-  "/privacy": {
-    title: "Privacy Policy | LuxEntra Media",
-    description:
-      "How LuxEntra Media collects, uses, and protects your information when you book a shoot or contact us.",
-  },
-};
-
-const FALLBACK_META = {
-  title: "LuxEntra Media",
-  description: "Designed for real estate professionals.",
+const ROUTE_KEYS: Record<string, { title: string; description: string }> = {
+  "/": { title: "seo.home_title", description: "seo.home_desc" },
+  "/work": { title: "seo.work_title", description: "seo.work_desc" },
+  "/branding": { title: "seo.branding_title", description: "seo.branding_desc" },
+  "/about": { title: "seo.about_title", description: "seo.about_desc" },
+  "/order": { title: "seo.order_title", description: "seo.order_desc" },
+  "/privacy": { title: "seo.privacy_title", description: "seo.privacy_desc" },
 };
 
 /** Keeps <title>, meta description, and canonical URL in sync with the route. */
 export default function PageMeta() {
   const { pathname } = useLocation();
+  const t = useT();
+  const terms = useTerms();
+  const siteUrl = (terms.site_url || "https://www.luxentramedia.com").replace(/\/$/, "");
 
   useEffect(() => {
-    const meta = ROUTE_META[pathname] ?? FALLBACK_META;
-    document.title = meta.title;
+    const keys = ROUTE_KEYS[pathname] ?? { title: "seo.fallback_title", description: "seo.fallback_desc" };
+    document.title = t(keys.title);
 
     let desc = document.querySelector<HTMLMetaElement>('meta[name="description"]');
     if (!desc) {
@@ -55,7 +28,7 @@ export default function PageMeta() {
       desc.name = "description";
       document.head.appendChild(desc);
     }
-    desc.content = meta.description;
+    desc.content = t(keys.description);
 
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {
@@ -63,8 +36,8 @@ export default function PageMeta() {
       canonical.rel = "canonical";
       document.head.appendChild(canonical);
     }
-    canonical.href = `${SITE_URL}${pathname}`;
-  }, [pathname]);
+    canonical.href = `${siteUrl}${pathname}`;
+  }, [pathname, t, siteUrl]);
 
   return null;
 }

@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, ArrowUpRight, Check, MoveRight } from "lucide-react";
-import { useCatalog } from "@/react-app/lib/siteSettings";
+import { useLiveCatalog, useT } from "@/react-app/lib/siteContent";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
@@ -51,31 +51,34 @@ function Reveal({
   );
 }
 
-/* ── Page data ─────────────────────────────────────────────── */
-
-const SHIFTS = [
-  { from: "Company-first", to: "People-first" },
-  { from: "Random posts", to: "Strategic influence" },
-  { from: "Views and followers", to: "Leads and sales" },
-];
-
-const HANDLED = [
-  "Strategy",
-  "Scripting",
-  "Filming",
-  "Editing",
-  "Posting",
-  "Platform management",
-  "Lead funnels",
-  "Paid advertising",
-];
-
-// Package data lives in the shared catalog; prices update live from
-// Site Settings (editable at /backstage).
+/* ── Branding packages (editable at /backstage) ─────────────── */
 export default function BrandingPage() {
-  const { brandingPlans, getBrandingPlanById } = useCatalog();
+  const t = useT();
+  const { brandingPlans, getBrandingPlanById } = useLiveCatalog();
   const PACKAGES = brandingPlans.filter((p) => p.id !== "brand-content");
   const BRAND_CONTENT = getBrandingPlanById("brand-content")!;
+
+  const SHIFTS = useMemo(
+    () =>
+      t("branding.shifts")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean)
+        .map((l) => {
+          const [from, to] = l.split("|").map((s) => s.trim());
+          return { from: from ?? "", to: to ?? "" };
+        }),
+    [t]
+  );
+  const HANDLED = useMemo(
+    () =>
+      t("branding.handled")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+    [t]
+  );
+
   return (
     <div className="bg-[#0b0b0b] text-white min-h-screen relative">
       <SiteNav />
@@ -108,32 +111,33 @@ export default function BrandingPage() {
         />
         <div className="relative max-w-[1200px] mx-auto px-6">
           <Reveal>
-            <p className="eyebrow text-[#c7ff00] mb-6">Personal Branding · Fully Managed</p>
+            <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.hero_eyebrow")}</p>
           </Reveal>
           <Reveal delay={120}>
             <h1 className="text-[48px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] max-w-4xl">
-              Be the name <span className="text-[#c7ff00]">everyone</span> remembers.
+              {t("branding.h1a")}{" "}
+              <span className="text-[#c7ff00]">{t("branding.h1b")}</span>{" "}
+              {t("branding.h1c")}
             </h1>
           </Reveal>
           <Reveal delay={240}>
             <p className="text-[18px] md:text-[21px] text-white/60 leading-relaxed max-w-2xl mt-8">
-              Your next client will meet your content before they meet you. We turn your
-              expertise and personality into trust, qualified leads, and revenue.
+              {t("branding.hero_sub")}
             </p>
           </Reveal>
           <Reveal delay={360}>
             <div className="flex flex-wrap items-center gap-4 mt-10">
               <Link to="/work#films-personal-branding" className="btn-lime">
-                Watch Our Brand Films <ArrowUpRight className="w-4 h-4 ml-1" />
+                {t("branding.hero_films")} <ArrowUpRight className="w-4 h-4 ml-1" />
               </Link>
               <a
                 href="#shift"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3 text-[15px] font-bold text-white hover:border-[#c7ff00] hover:text-[#c7ff00] transition-colors"
               >
-                See the shift
+                {t("branding.hero_shift")}
               </a>
               <a href="#packages" className="btn-lime">
-                Choose your package <ArrowRight className="w-4 h-4 ml-1" />
+                {t("branding.hero_packages")} <ArrowRight className="w-4 h-4 ml-1" />
               </a>
             </div>
           </Reveal>
@@ -144,16 +148,13 @@ export default function BrandingPage() {
       <section className="py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
-            <p className="eyebrow text-[#c7ff00] mb-6">Why personal brand wins</p>
+            <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.why_eyebrow")}</p>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05] max-w-3xl">
-              The market is becoming people-first.
+              {t("branding.why_h2")}
             </h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            {[
-              "Customers don't only compare services anymore. They compare the people behind them.",
-              "In the next two to three years, your personal brand will increasingly determine who gets discovered, trusted, and hired.",
-            ].map((copy, i) => (
+            {[t("branding.why_p1"), t("branding.why_p2")].map((copy, i) => (
               <Reveal key={i} delay={i * 140}>
                 <p className="text-[17px] text-white/60 leading-relaxed border-l-2 border-[#c7ff00]/40 pl-6">
                   {copy}
@@ -162,7 +163,7 @@ export default function BrandingPage() {
             ))}
             <Reveal delay={280}>
               <p className="text-[24px] md:text-[28px] font-bold tracking-tight leading-tight text-white border-l-2 border-[#c7ff00] pl-6">
-                If they don't see you, they'll see your competitor.
+                {t("branding.why_pull")}
               </p>
             </Reveal>
           </div>
@@ -173,9 +174,9 @@ export default function BrandingPage() {
       <section id="shift" className="py-20 md:py-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
-            <p className="eyebrow text-[#c7ff00] mb-6">The shift</p>
+            <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.shift_eyebrow")}</p>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
-              Attention has new rules.
+              {t("branding.shift_h2")}
             </h2>
           </Reveal>
           <div className="space-y-4">
@@ -189,7 +190,7 @@ export default function BrandingPage() {
                     <MoveRight className="w-5 h-5 text-black" />
                   </span>
                   <span className="sm:hidden text-[#c7ff00] text-[14px] font-bold uppercase tracking-[0.2em]">
-                    becomes
+                    {t("branding.becomes")}
                   </span>
                   <span className="text-[24px] md:text-[34px] font-bold tracking-tight text-[#c7ff00] flex-1 sm:text-right">
                     {s.to}
@@ -206,14 +207,13 @@ export default function BrandingPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05]">
-              We handle <span className="text-[#c7ff00]">everything.</span>
+              {t("branding.handle_h2a")} <span className="text-[#c7ff00]">{t("branding.handle_h2b")}</span>
             </h2>
             <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-6">
-              Strategy, scripting, filming, editing, posting, platform management, lead
-              funnels, and paid advertising, all connected to one goal:
+              {t("branding.handle_copy")}
             </p>
             <p className="text-[24px] md:text-[32px] font-bold tracking-tight mt-4">
-              Turning attention into clients.
+              {t("branding.handle_goal")}
             </p>
           </Reveal>
           <div className="flex flex-wrap gap-3 mt-10">
@@ -233,13 +233,12 @@ export default function BrandingPage() {
       <section id="packages" className="pt-10 md:pt-14 pb-20 md:pb-28 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
-            <p className="eyebrow text-[#c7ff00] mb-6">Personal branding packages</p>
+            <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.pkg_eyebrow")}</p>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05] max-w-3xl">
-              Choose how far you want to take your brand.
+              {t("branding.pkg_h2")}
             </h2>
             <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-6">
-              Each package is designed for a different stage of growth, from building a
-              consistent presence to generating leads and scaling revenue.
+              {t("branding.pkg_copy")}
             </p>
           </Reveal>
 
@@ -259,8 +258,7 @@ export default function BrandingPage() {
                         {p.badge}
                       </span>
                       <p className="text-[13px] text-white/50 mt-2 leading-snug">
-                        50% money-back if the agreed-upon performance benchmark is not
-                        achieved, subject to the campaign terms.
+                        {t("branding.moneyback_note")}
                       </p>
                     </div>
                   )}
@@ -296,11 +294,10 @@ export default function BrandingPage() {
                           : "inline-flex w-full items-center justify-center rounded-full border border-white/25 px-7 py-3 text-[15px] font-bold text-white hover:border-[#c7ff00] hover:text-[#c7ff00] transition-colors"
                       }
                     >
-                      Choose {p.name} <ArrowUpRight className="w-4 h-4 ml-1" />
+                      {t("branding.choose")} {p.name} <ArrowUpRight className="w-4 h-4 ml-1" />
                     </Link>
                     <p className="text-[12.5px] text-white/40 leading-snug text-center mt-4">
-                      3-month minimum commitment. Active clients get 15% off
-                      additional services during their agreement.
+                      {t("branding.pkg_note")}
                     </p>
                   </div>
                 </div>
@@ -310,51 +307,50 @@ export default function BrandingPage() {
 
           <Reveal delay={200}>
             <p className="text-[14px] text-white/40 leading-relaxed max-w-3xl mt-10">
-              Paid-ad management is included with Growth and Premium. The monthly platform
-              advertising budget will be clearly defined in the client's service agreement.
+              {t("branding.ads_note")}
             </p>
           </Reveal>
         </div>
       </section>
 
       {/* ── Brand Content ────────────────────────────────── */}
-      <section className="py-20 md:py-28">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <Reveal>
-            <div className="rounded-md bg-white/[0.03] border border-white/10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center hover:border-[#c7ff00]/40 transition-colors">
-              <div>
-                <p className="eyebrow text-[#c7ff00] mb-4">Brand content</p>
-                <p className="mb-2">
-                  <span className="price-num text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
-                    ${BRAND_CONTENT.price.toLocaleString()}
-                  </span>
-                  <span className="text-white/45 text-[16px]"> /month</span>
-                </p>
-                <p className="text-[16px] text-white/60 leading-relaxed max-w-md">
-                  Already have your brand but need professional content? We'll handle the
-                  production and deliver videos ready to post.
-                </p>
-                <Link to={`/order?package=${BRAND_CONTENT.id}`} className="btn-lime mt-8">
-                  Choose Brand Content <ArrowUpRight className="w-4 h-4 ml-1" />
-                </Link>
+      {BRAND_CONTENT && (
+        <section className="py-20 md:py-28">
+          <div className="max-w-[1200px] mx-auto px-6">
+            <Reveal>
+              <div className="rounded-md bg-white/[0.03] border border-white/10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center hover:border-[#c7ff00]/40 transition-colors">
+                <div>
+                  <p className="eyebrow text-[#c7ff00] mb-4">{t("branding.bc_eyebrow")}</p>
+                  <p className="mb-2">
+                    <span className="price-num text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
+                      ${BRAND_CONTENT.price.toLocaleString()}
+                    </span>
+                    <span className="text-white/45 text-[16px]"> /month</span>
+                  </p>
+                  <p className="text-[16px] text-white/60 leading-relaxed max-w-md">
+                    {t("branding.bc_copy")}
+                  </p>
+                  <Link to={`/order?package=${BRAND_CONTENT.id}`} className="btn-lime mt-8">
+                    {t("branding.choose")} {BRAND_CONTENT.name}{" "}
+                    <ArrowUpRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </div>
+                <div>
+                  <ul className="space-y-3.5">
+                    {BRAND_CONTENT.features.map((f) => (
+                      <li key={f} className="flex items-start gap-3 text-[15px] text-white/75 leading-snug">
+                        <Check className="w-5 h-5 shrink-0 text-[#c7ff00]" />
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-[13.5px] text-white/40 mt-6">{t("branding.bc_note")}</p>
+                </div>
               </div>
-              <div>
-                <ul className="space-y-3.5">
-                  {BRAND_CONTENT.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-[15px] text-white/75 leading-snug">
-                      <Check className="w-5 h-5 shrink-0 text-[#c7ff00]" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="text-[13.5px] text-white/40 mt-6">
-                  Content production only. Social media management is not included.
-                </p>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* ── Not sure where to start ──────────────────────── */}
       <section className="py-20 md:py-28">
@@ -367,28 +363,23 @@ export default function BrandingPage() {
                   "radial-gradient(ellipse 80% 90% at 50% 0%, rgba(199,255,0,0.08), transparent 70%), rgba(255,255,255,0.03)",
               }}
             >
-              <p className="eyebrow text-[#c7ff00] mb-6">Not sure where to start?</p>
+              <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.start_eyebrow")}</p>
               <h2 className="text-[32px] md:text-[52px] font-bold tracking-[-0.03em] leading-[1.08]">
-                Let&apos;s sit down <span className="text-[#c7ff00]">and talk.</span>
+                {t("branding.start_h2a")}{" "}
+                <span className="text-[#c7ff00]">{t("branding.start_h2b")}</span>
               </h2>
               <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-6">
-                You know your personal brand needs attention. But what to post, how to
-                position yourself, and what will actually bring you clients? That&apos;s
-                the hard part to figure out alone.
+                {t("branding.start_p1")}
               </p>
               <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-4">
-                Every month your value stays unclear online, the right people scroll
-                right past you.
+                {t("branding.start_p2")}
               </p>
               <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed max-w-2xl mx-auto mt-4">
-                So let&apos;s meet one-on-one. We&apos;ll hear your story, understand your
-                goals, and find the right direction for you. If we genuinely believe we
-                can help, and it feels right for you, we&apos;ll build it together.
-                If not, you&apos;ll still leave with a clear next step.
+                {t("branding.start_p3")}
               </p>
               <div className="mt-10">
                 <Link to="/order?package=consultation" className="btn-lime text-[16px] px-9 py-4">
-                  Let&apos;s meet one-on-one <ArrowRight className="w-5 h-5 ml-1" />
+                  {t("branding.start_cta")} <ArrowRight className="w-5 h-5 ml-1" />
                 </Link>
               </div>
             </div>
@@ -409,13 +400,13 @@ export default function BrandingPage() {
         <div className="relative max-w-[1200px] mx-auto px-6 text-center">
           <Reveal>
             <h2 className="text-[40px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05]">
-              Your competitors are posting.
+              {t("branding.final_h2a")}
               <br />
-              <span className="text-[#c7ff00]">Are you being remembered?</span>
+              <span className="text-[#c7ff00]">{t("branding.final_h2b")}</span>
             </h2>
             <div className="mt-10">
               <Link to="/order" className="btn-lime text-[17px] px-10 py-4">
-                Build my brand <ArrowRight className="w-5 h-5 ml-1" />
+                {t("branding.final_cta")} <ArrowRight className="w-5 h-5 ml-1" />
               </Link>
             </div>
           </Reveal>

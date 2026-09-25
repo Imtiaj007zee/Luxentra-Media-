@@ -3,20 +3,28 @@ import { Link, useSearchParams } from "react-router";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Maximize2, Play, X } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
-import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
-import { PHOTOS, PHOTO_FILTERS, NEW_SHOWCASE_ORDER, type PhotoFilter, type PhotoItem } from "@/react-app/data/photos";
+import {
+  useFilms,
+  usePhotos,
+  useShowcasePhotos,
+  useT,
+  type Film,
+  type Photo,
+} from "@/react-app/lib/siteContent";
 
-const FILM_GROUPS = ["Listing Films", "Personal Branding", "Brand Story"];
+const KNOWN_FILTERS = ["twilight", "aerial", "exterior", "interior", "staging"] as const;
 
 function Lightbox({
   item,
   index,
+  total,
   onClose,
   onPrev,
   onNext,
 }: {
-  item: PortfolioItem;
+  item: Film;
   index: number;
+  total: number;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
@@ -60,7 +68,7 @@ function Lightbox({
         </div>
         <div className="flex items-center gap-4">
           <span className="text-white/40 text-[14px] tabular-nums">
-            {index + 1} / {PORTFOLIO.length}
+            {index + 1} / {total}
           </span>
           <button
             onClick={onClose}
@@ -137,7 +145,7 @@ function PhotoLightbox({
   onPrev,
   onNext,
 }: {
-  item: PhotoItem;
+  item: Photo;
   index: number;
   total: number;
   onClose: () => void;
@@ -246,57 +254,79 @@ export default function WorkPage() {
     searchParams.get("tab") === "photos" ? "photos" : "films"
   );
   const [active, setActive] = useState<number | null>(null);
-  const [photoFilter, setPhotoFilter] = useState<PhotoFilter>(() => {
+  const [activePhoto, setActivePhoto] = useState<number | null>(null);
+  const t = useT();
+  const films = useFilms();
+  const photos = usePhotos();
+  const showcase = useShowcasePhotos();
+
+  const FILTERS = useMemo(
+    () => [
+      { id: "all", label: t("work.filter_all") },
+      { id: "twilight", label: t("work.filter_twilight") },
+      { id: "aerial", label: t("work.filter_aerial") },
+      { id: "exterior", label: t("work.filter_exterior") },
+      { id: "interior", label: t("work.filter_interior") },
+      { id: "staging", label: t("work.filter_staging") },
+    ],
+    [t]
+  );
+
+  const [photoFilter, setPhotoFilter] = useState<string>(() => {
     const f = searchParams.get("filter");
     return searchParams.get("tab") === "photos" &&
       f &&
-      PHOTO_FILTERS.some((x) => x.id === f)
-      ? (f as PhotoFilter)
+      (f === "all" || (KNOWN_FILTERS as readonly string[]).includes(f))
+      ? f
       : "all";
   });
-  const [activePhoto, setActivePhoto] = useState<number | null>(null);
 
   // Deep links like /work?tab=photos&filter=twilight (from the homepage)
   useEffect(() => {
-    const t = searchParams.get("tab");
+    const tb = searchParams.get("tab");
     const f = searchParams.get("filter");
-    if (t === "photos" || t === "films") setTab(t);
-    if (t === "photos") {
+    if (tb === "photos" || tb === "films") setTab(tb);
+    if (tb === "photos") {
       setPhotoFilter(
-        f && PHOTO_FILTERS.some((x) => x.id === f) ? (f as PhotoFilter) : "all"
+        f && (f === "all" || (KNOWN_FILTERS as readonly string[]).includes(f)) ? f : "all"
       );
       setActivePhoto(null);
       document.getElementById("films")?.scrollIntoView({ behavior: "smooth" });
     }
   }, [searchParams]);
 
+  const filmGroups = useMemo(
+    () =>
+      t("work.film_groups")
+        .split("\n")
+        .map((g) => g.trim())
+        .filter(Boolean),
+    [t]
+  );
+
   const close = useCallback(() => setActive(null), []);
   const prev = useCallback(
-    () => setActive((i) => (i === null ? i : (i - 1 + PORTFOLIO.length) % PORTFOLIO.length)),
-    []
+    () => setActive((i) => (i === null ? i : (i - 1 + films.length) % films.length)),
+    [films.length]
   );
   const next = useCallback(
-    () => setActive((i) => (i === null ? i : (i + 1) % PORTFOLIO.length)),
-    []
+    () => setActive((i) => (i === null ? i : (i + 1) % films.length)),
+    [films.length]
   );
 
   const filteredPhotos = useMemo(
-    () => (photoFilter === "all" ? PHOTOS : PHOTOS.filter((p) => p.filter === photoFilter)),
-    [photoFilter]
+    () => (photoFilter === "all" ? photos : photos.filter((p) => p.filter === photoFilter)),
+    [photoFilter, photos]
   );
 
-  const newPhotos = useMemo(
-    () =>
-      NEW_SHOWCASE_ORDER.map((slug) => PHOTOS.find((p) => p.slug === slug)).filter(
-        (p): p is PhotoItem => Boolean(p)
-      ),
-    []
+  const openShowcasePhoto = useCallback(
+    (item: Photo) => {
+      setPhotoFilter("all");
+      const idx = photos.findIndex((p) => p.slug === item.slug);
+      setActivePhoto(idx >= 0 ? idx : null);
+    },
+    [photos]
   );
-
-  const openShowcasePhoto = useCallback((item: PhotoItem) => {
-    setPhotoFilter("all");
-    setActivePhoto(PHOTOS.findIndex((p) => p.slug === item.slug));
-  }, []);
 
   const closePhoto = useCallback(() => setActivePhoto(null), []);
   const prevPhoto = useCallback(
@@ -318,15 +348,14 @@ export default function WorkPage() {
       {/* Hero */}
       <section className="bg-[#0b0b0b] text-white">
         <div className="max-w-[1200px] mx-auto px-6 pt-20 md:pt-28 pb-16 md:pb-20">
-          <p className="eyebrow text-white/50 mb-6">Selected work</p>
+          <p className="eyebrow text-white/50 mb-6">{t("work.hero_eyebrow")}</p>
           <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6">
-            Proof in
+            {t("work.h1a")}
             <br />
-            every frame.
+            {t("work.h1b")}
           </h1>
           <p className="text-[18px] md:text-[21px] leading-snug text-white/70 max-w-2xl">
-            Property films, brand stories, and photography from recent LuxEntra shoots,
-            including the pieces behind our best-performing content.
+            {t("work.intro")}
           </p>
         </div>
       </section>
@@ -336,32 +365,34 @@ export default function WorkPage() {
         <div className="max-w-[1200px] mx-auto px-6">
           {/* Tabs */}
           <div className="flex items-center gap-3 mb-8">
-            {(["films", "photos"] as const).map((t) => (
+            {(["films", "photos"] as const).map((tb) => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
+                key={tb}
+                onClick={() => setTab(tb)}
                 className={`px-6 py-2.5 rounded-full text-[15px] font-semibold transition-colors ${
-                  tab === t
+                  tab === tb
                     ? "bg-black text-white"
                     : "bg-black/5 text-black/60 hover:bg-black/10"
                 }`}
               >
-                {t === "films" ? `Films (${PORTFOLIO.length})` : `Photos (${PHOTOS.length})`}
+                {tb === "films"
+                  ? `${t("work.tab_films")} (${films.length})`
+                  : `${t("work.tab_photos")} (${photos.length})`}
               </button>
             ))}
           </div>
 
           {tab === "films" ? (
             <>
-              {FILM_GROUPS.map((group) => {
-                const items = PORTFOLIO.map((item, i) => ({ ...item, index: i })).filter(
-                  (x) => x.category === group
-                );
+              {filmGroups.map((group) => {
+                const items = films
+                  .map((item, i) => ({ ...item, index: i }))
+                  .filter((x) => x.category === group);
                 if (items.length === 0) return null;
                 return (
                   <div
                     key={group}
-                    id={group === "Personal Branding" ? "films-personal-branding" : undefined}
+                    id={`films-${group.toLowerCase().replace(/\s+/g, "-")}`}
                     className="mb-14 last:mb-0 scroll-mt-24"
                   >
                     <div className="flex items-baseline justify-between mb-6">
@@ -410,8 +441,9 @@ export default function WorkPage() {
             <>
               {/* Photo filters */}
               <div className="flex flex-wrap items-center gap-2.5 mb-8">
-                {PHOTO_FILTERS.map((f) => {
-                  const count = f.id === "all" ? PHOTOS.length : PHOTOS.filter((p) => p.filter === f.id).length;
+                {FILTERS.map((f) => {
+                  const count =
+                    f.id === "all" ? photos.length : photos.filter((p) => p.filter === f.id).length;
                   return (
                     <button
                       key={f.id}
@@ -432,21 +464,21 @@ export default function WorkPage() {
               </div>
 
               {/* New additions showcase */}
-              {photoFilter === "all" && newPhotos.length > 0 && (
+              {photoFilter === "all" && showcase.length > 0 && (
                 <div className="mb-14">
                   <div className="flex items-baseline justify-between mb-6">
                     <div>
-                      <p className="eyebrow text-black/40 mb-2">Latest shoots</p>
+                      <p className="eyebrow text-black/40 mb-2">{t("work.showcase_eyebrow")}</p>
                       <h3 className="text-[26px] md:text-[32px] font-bold tracking-[-0.02em]">
-                        New additions
+                        {t("work.showcase_h2")}
                       </h3>
                     </div>
                     <span className="text-black/40 text-[14px] tabular-nums">
-                      {newPhotos.length} of {PHOTOS.length} photos
+                      {t("work.showcase_count", { n: showcase.length, m: photos.length })}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    {newPhotos.map((item, i) => (
+                    {showcase.map((item, i) => (
                       <button
                         key={item.slug}
                         onClick={() => openShowcasePhoto(item)}
@@ -520,17 +552,17 @@ export default function WorkPage() {
             className="h-14 w-14 object-contain mx-auto mb-10"
           />
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">
-            Let&apos;s make your next listing stand out.
+            {t("work.cta_h2")}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link to="/order" className="btn-lime">
-              Book a Shoot
+              {t("work.cta_book")}
             </Link>
             <Link
               to="/about"
               className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
             >
-              Meet the team <ArrowUpRight className="w-4 h-4" />
+              {t("work.cta_team")} <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -538,10 +570,11 @@ export default function WorkPage() {
 
       <SiteFooter />
 
-      {active !== null && (
+      {active !== null && films[active] && (
         <Lightbox
-          item={PORTFOLIO[active]}
+          item={films[active]}
           index={active}
+          total={films.length}
           onClose={close}
           onPrev={prev}
           onNext={next}
