@@ -642,14 +642,14 @@ export default function OrderPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2 min-w-0">
                     <Label className="text-base font-medium">{t("order.label_date")}</Label>
-                    <Input type="date" value={shootForm.shoot_date} onChange={(e) => setShootForm({ ...shootForm, shoot_date: e.target.value })} className="h-12 text-base" />
+                    <Input type="date" value={shootForm.shoot_date} onChange={(e) => setShootForm({ ...shootForm, shoot_date: e.target.value })} className="h-12 text-base w-full min-w-0" />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-2 min-w-0">
                     <Label className="text-base font-medium">{t("order.label_time")}</Label>
-                    <Input type="time" value={shootForm.shoot_time} onChange={(e) => setShootForm({ ...shootForm, shoot_time: e.target.value })} className="h-12 text-base" />
+                    <Input type="time" value={shootForm.shoot_time} onChange={(e) => setShootForm({ ...shootForm, shoot_time: e.target.value })} className="h-12 text-base w-full min-w-0" />
                   </div>
                 </div>
                 <div className="space-y-2">
