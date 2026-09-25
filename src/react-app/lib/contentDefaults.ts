@@ -587,7 +587,7 @@ export const DEFAULT_TERMS: TermEntry[] = [
   { key: "delivery_time", label: "Delivery time", value: "24 hours" },
   { key: "delivery_adjective", label: "Delivery adjective", value: "24-hour delivery" },
   { key: "flyer_bulk_price", label: "Bulk flyer price (each, for 2+)", value: "35" },
-  { key: "featured_photo", label: "Homepage featured twilight photo", value: "/stills/twilight-featured.jpg" },
+  { key: "featured_photo", label: "Homepage featured twilight photo", value: "/work/photos/new-twilight-4.jpg" },
   { key: "still_1", label: "Homepage still 1", value: "/stills/still-1.jpg" },
   { key: "still_2", label: "Homepage still 2", value: "/stills/still-2.jpg" },
   { key: "og_image", label: "Social share image path", value: "/og-image.jpg" },

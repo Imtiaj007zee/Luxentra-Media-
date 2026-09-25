@@ -13,6 +13,7 @@ import {
   useT,
   useTerms,
 } from "@/react-app/lib/siteContent";
+import { useSiteSettings } from "@/react-app/lib/siteSettings";
 
 function useServices(t: ReturnType<typeof useT>) {
   return useMemo(
@@ -87,16 +88,16 @@ function FeaturedTwilight() {
 }
 
 // ── Real Estate Impact Dashboard ─────────────────────────────
-// Live values come from Numbers & Terms (editable at /backstage).
+// Live values come from Site Settings (editable at /backstage).
 
 function useImpactMetrics() {
-  const terms = useTerms();
+  const { settings } = useSiteSettings();
   const t = useT();
   return useMemo(
     () => [
       {
         id: "properties-covered",
-        value: Number(terms.stat_properties) || 0,
+        value: settings.stat_properties || 0,
         decimals: 0,
         prefix: "",
         suffix: "+",
@@ -106,7 +107,7 @@ function useImpactMetrics() {
       },
       {
         id: "value-covered",
-        value: Number(terms.stat_value_m) || 0,
+        value: settings.stat_value_m || 0,
         decimals: 1,
         prefix: "$",
         suffix: "M+",
@@ -116,7 +117,7 @@ function useImpactMetrics() {
       },
       {
         id: "success-rate",
-        value: Number(terms.stat_success_rate) || 0,
+        value: settings.stat_success_rate || 0,
         decimals: 0,
         prefix: "",
         suffix: "%+",
@@ -125,7 +126,7 @@ function useImpactMetrics() {
         desc: t("home.metric3_desc"),
       },
     ],
-    [terms, t]
+    [settings, t]
   );
 }
 
