@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Plus } from "lucide-react";
+import { Plus, ArrowRight } from "lucide-react";
 
 const FAQS = [
   {
@@ -82,15 +82,14 @@ export default function FaqSection() {
         </div>
 
         <p className="mt-10 text-[16px] text-black/60">
-          Still not sure?{" "}
-          <Link
-            to="/order?package=consultation"
-            className="text-black font-semibold underline underline-offset-4 decoration-[#c7ff00] decoration-2"
-          >
-            Book a free one-on-one
-          </Link>{" "}
-          and we will point you to the right service.
+          Still not sure? We will point you to the right service.
         </p>
+        <Link
+          to="/order?package=consultation"
+          className="btn-lime mt-5 inline-flex items-center gap-2"
+        >
+          Book a free one-on-one <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </section>
   );
