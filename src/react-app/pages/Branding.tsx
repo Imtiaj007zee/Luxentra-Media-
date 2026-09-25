@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, ArrowUpRight, Check, MoveRight } from "lucide-react";
-import { BRANDING_PLANS, getBrandingPlanById } from "@/react-app/data/packages";
+import { useCatalog } from "@/react-app/lib/siteSettings";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
@@ -70,12 +70,12 @@ const HANDLED = [
   "Paid advertising",
 ];
 
-// Package data lives in the shared catalog (src/react-app/data/packages.ts)
-// so the branding page and the booking page always use the same official prices.
-const PACKAGES = BRANDING_PLANS.filter((p) => p.id !== "brand-content");
-const BRAND_CONTENT = getBrandingPlanById("brand-content")!;
-
+// Package data lives in the shared catalog; prices update live from
+// Site Settings (editable at /backstage).
 export default function BrandingPage() {
+  const { brandingPlans, getBrandingPlanById } = useCatalog();
+  const PACKAGES = brandingPlans.filter((p) => p.id !== "brand-content");
+  const BRAND_CONTENT = getBrandingPlanById("brand-content")!;
   return (
     <div className="bg-[#0b0b0b] text-white min-h-screen relative">
       <SiteNav />

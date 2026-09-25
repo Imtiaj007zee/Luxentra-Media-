@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket, Tag } from "lucide-react";
-import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById, SERVICE_TYPES } from "@/react-app/data/packages";
+import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Rocket, Tag, Plus, ShoppingCart, Layers } from "lucide-react";
+import { SERVICE_TYPES } from "@/react-app/data/packages";
+import { useCatalog, ORDERS_ENDPOINT } from "@/react-app/lib/siteSettings";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
 import { Textarea } from "@/react-app/components/ui/textarea";
@@ -10,25 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 
-type AddOn = { id: string; name: string; price: number; icon: typeof Box; description?: string; };
-
-const ADD_ONS: AddOn[] = [
-  { id: "flyer", name: "Custom Listing Flyer", price: 39, icon: FileText },
-  { id: "drone", name: "Drone Photos & Video", price: 99, icon: Plane },
-  { id: "3d_tour", name: "3D Virtual Tour", price: 99, icon: Box },
-  { id: "video", name: "Walkthrough/Cinematic Video", price: 299, icon: Video },
-  { id: "reel", name: "Creative Personal Branding Reel", price: 499, icon: Video },
-];
-
-const VIRTUAL_STAGING_TIERS = [
-  { id: "staging_1", label: "1 Room", price: 40 },
-  { id: "staging_3", label: "3 Rooms", price: 99 },
-  { id: "staging_5", label: "5 Rooms", price: 149 },
-];
-
-// Free order database: Google Apps Script web app appending rows to the
-// "LuxEntra Orders" Google Sheet. text/plain avoids a CORS preflight.
-const ORDERS_ENDPOINT = "https://script.google.com/macros/s/AKfycbwz11hRMrInyVjGKXjbNMSRUoTlojQH_YZO85xZdrEJHmk30u-a-7GziCNk_Bpvmf-ecA/exec";
+// Add-ons, staging tiers, bundles, plans, and prices come from the live
+// catalog (Site Settings, editable at /backstage).
 
 const EMPTY_SHOOT = { name: "", email: "", phone: "", borough: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" };
 const EMPTY_CONSULT = { name: "", email: "", phone: "", role: "", meeting_format: "", preferred_date: "", preferred_time: "", goals: "" };
@@ -66,6 +50,19 @@ export default function OrderPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+
+  // Live catalog: prices update from Site Settings (/backstage).
+  const {
+    addOns,
+    stagingTiers,
+    bundles,
+    brandingPlans,
+    standardPrice: standardPackagePrice,
+    getBundleById,
+    getBrandingPlanById,
+  } = useCatalog();
+  const flyerUnit = addOns.find((a) => a.id === "flyer")?.price ?? 39;
+  const FLYER_BULK_UNIT = 35;
 
   // Read ?package=<id> from the URL and pre-select the matching bundle,
   // personal-branding plan, or consultation. The id is only a lookup key —
@@ -116,15 +113,13 @@ export default function OrderPage() {
   };
 
   const stagingPrice = selectedStagingTier
-    ? VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.price || 0
+    ? stagingTiers.find((t) => t.id === selectedStagingTier)?.price || 0
     : 0;
 
-  const standardPackagePrice = 175;
-
   const addOnsTotal = Array.from(selectedAddOns).reduce((sum, id) => {
-    const addon = ADD_ONS.find((a) => a.id === id);
+    const addon = addOns.find((a) => a.id === id);
     if (!addon) return sum;
-    if (id === "flyer") return sum + (flyerQty === 1 ? 39 : flyerQty * 35);
+    if (id === "flyer") return sum + (flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT);
     if (id === "reel") return sum + (addon.price * reelQty);
     return sum + addon.price;
   }, 0);
@@ -192,8 +187,8 @@ export default function OrderPage() {
     e.preventDefault();
     setIsSubmitting(true);
     const selectedAddOnNames = [
-      ...Array.from(selectedAddOns).map((id) => ADD_ONS.find((a) => a.id === id)?.name).filter(Boolean),
-      selectedStagingTier ? `Virtual Staging (${VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})` : null,
+      ...Array.from(selectedAddOns).map((id) => addOns.find((a) => a.id === id)?.name).filter(Boolean),
+      selectedStagingTier ? `Virtual Staging (${stagingTiers.find((t) => t.id === selectedStagingTier)?.label})` : null,
     ].filter(Boolean).join(", ");
     try {
       const res = await fetch(ORDERS_ENDPOINT, {
@@ -337,7 +332,7 @@ export default function OrderPage() {
               {/* Launch bundles */}
               <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">Launch bundles</h3>
               <div className="space-y-3 mb-4">
-                {LAUNCH_BUNDLES.map((bundle) => {
+                {bundles.map((bundle) => {
                   const isSelected = selectedBundle === bundle.id;
                   return (
                     <div key={bundle.id} className={cardClass(isSelected)} onClick={() => pickShootPlan(() => { setSelectedBundle(isSelected ? null : bundle.id); if (!isSelected) { setSelectedBranding(null); setIncludeStandard(false); } })}>
@@ -372,7 +367,7 @@ export default function OrderPage() {
               {/* Personal branding plans */}
               <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">Personal branding plans</h3>
               <div className="space-y-3 mb-4">
-                {BRANDING_PLANS.map((plan) => {
+                {brandingPlans.map((plan) => {
                   const isSelected = selectedBranding === plan.id;
                   return (
                     <div key={plan.id} className={cardClass(isSelected)} onClick={() => pickShootPlan(() => { setSelectedBranding(isSelected ? null : plan.id); if (!isSelected) { setSelectedBundle(null); setIncludeStandard(false); } })}>
@@ -440,10 +435,10 @@ export default function OrderPage() {
               <p className="text-[15px] text-white/50 mb-8">Add-ons are optional. Skip ahead whenever you&apos;re ready.</p>
 
               <div className="space-y-3">
-                {ADD_ONS.map((addOn) => {
+                {addOns.map((addOn) => {
                   const Icon = addOn.icon;
                   const isSelected = selectedAddOns.has(addOn.id);
-                  const displayPrice = addOn.id === "flyer" ? (flyerQty === 1 ? 39 : flyerQty * 35) : addOn.id === "reel" ? addOn.price * reelQty : addOn.price;
+                  const displayPrice = addOn.id === "flyer" ? (flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT) : addOn.id === "reel" ? addOn.price * reelQty : addOn.price;
                   return (
                     <div key={addOn.id} className={cardClass(isSelected)} onClick={() => toggleAddOn(addOn.id)}>
                       <div className="flex items-center gap-4">
@@ -455,7 +450,7 @@ export default function OrderPage() {
                             <h3 className="font-semibold text-[17px]">{addOn.name}</h3>
                             <span className="font-semibold shrink-0">{fmt(displayPrice)}</span>
                           </div>
-                          {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">$39 for 1 · $35 each for 2+</p>}
+                          {addOn.id === "flyer" && <p className="text-[13px] text-white/40 mt-0.5">{fmt(flyerUnit)} for 1 · {fmt(FLYER_BULK_UNIT)} each for 2+</p>}
                           {addOn.id === "reel" && <p className="text-[13px] text-white/40 mt-0.5">Concept, scripting, filming and editing</p>}
                         </div>
                         <SelectButton selected={isSelected} label={isSelected ? `Remove ${addOn.name}` : `Add ${addOn.name}`} />
@@ -468,9 +463,9 @@ export default function OrderPage() {
                             <span className="w-8 text-center font-semibold">{flyerQty}</span>
                             <button type="button" onClick={() => setFlyerQty(flyerQty + 1)} className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white hover:bg-white/10 font-bold">+</button>
                           </div>
-                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(flyerQty === 1 ? 39 : flyerQty * 35)}</span></span>
+                          <span className="text-[15px] text-white/60">= <span className="font-semibold text-white">{fmt(flyerQty === 1 ? flyerUnit : flyerQty * FLYER_BULK_UNIT)}</span></span>
                           {flyerQty > 1 && (
-                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">Save {fmt(39 * flyerQty - flyerQty * 35)} vs full price</span>
+                            <span className="text-[13px] text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full">Save {fmt(flyerUnit * flyerQty - flyerQty * FLYER_BULK_UNIT)} vs full price</span>
                           )}
                         </div>
                       )}
@@ -502,7 +497,7 @@ export default function OrderPage() {
                     {selectedStagingTier && <span className="font-semibold shrink-0">{fmt(stagingPrice)}</span>}
                   </div>
                   <div className="flex gap-2 ml-14">
-                    {VIRTUAL_STAGING_TIERS.map((tier) => (
+                    {stagingTiers.map((tier) => (
                       <button
                         key={tier.id}
                         type="button"
@@ -541,8 +536,8 @@ export default function OrderPage() {
                   {includeStandard && <div className="flex justify-between"><span className="text-white/60">Standard Package</span><span className="font-medium">{fmt(standardPackagePrice)}</span></div>}
                   {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} Bundle</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
                   {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name} · Personal Branding</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
-                  {Array.from(selectedAddOns).map((id) => { const a = ADD_ONS.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.price)}</span></div>; })}
-                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">Virtual Staging ({VIRTUAL_STAGING_TIERS.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
+                  {Array.from(selectedAddOns).map((id) => { const a = addOns.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.price)}</span></div>; })}
+                  {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">Virtual Staging ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>
                 <div className="pt-4 border-t border-white/15">
                   {discountAmount > 0 && (

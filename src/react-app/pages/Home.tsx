@@ -46,15 +46,18 @@ const PACKAGE_FEATURES = [
   "Light, color & exposure revisions",
 ];
 
-import { LAUNCH_BUNDLES } from "@/react-app/data/packages";
+import { useSiteSettings, useCatalog, type SiteSettings } from "@/react-app/lib/siteSettings";
 
-const ADD_ONS = [  { name: "Custom Listing Flyer", price: "$39", note: "$39 for one" },
-  { name: "Virtual Staging", price: "From $40", note: "From $40" },
-  { name: "Drone Photos & Video", price: "$99", note: "$99" },
-  { name: "3D Virtual Tour", price: "$99", note: "$99" },
-  { name: "Walkthrough/Cinematic Video", price: "$299", note: "$299" },
-  { name: "Creative Personal Branding Reel", price: "$499", note: "$499" },
-];
+function getAddOns(s: SiteSettings) {
+  return [
+    { name: "Custom Listing Flyer", price: `$${s.price_addon_flyer}`, note: `$${s.price_addon_flyer} for one` },
+    { name: "Virtual Staging", price: `From $${s.price_staging_1}`, note: `From $${s.price_staging_1}` },
+    { name: "Drone Photos & Video", price: `$${s.price_addon_drone}`, note: `$${s.price_addon_drone}` },
+    { name: "3D Virtual Tour", price: `$${s.price_addon_3d_tour}`, note: `$${s.price_addon_3d_tour}` },
+    { name: "Walkthrough/Cinematic Video", price: `$${s.price_addon_video}`, note: `$${s.price_addon_video}` },
+    { name: "Creative Personal Branding Reel", price: `$${s.price_addon_reel}`, note: `$${s.price_addon_reel}` },
+  ];
+}
 
 const STEPS = [
   {
@@ -99,39 +102,42 @@ function FeaturedTwilight() {
 }
 
 // ── Real Estate Impact Dashboard ─────────────────────────────
+// Live values come from Site Settings (editable at /backstage).
 
-const IMPACT_METRICS = [
-  {
-    id: "properties-covered",
-    value: 27,
-    decimals: 0,
-    prefix: "",
-    suffix: "+",
-    ring: 100,
-    label: "Properties Covered",
-    desc: "Homes we've shot and marketed so far.",
-  },
-  {
-    id: "value-covered",
-    value: 18.3,
-    decimals: 1,
-    prefix: "$",
-    suffix: "M+",
-    ring: 100,
-    label: "Property Value Covered",
-    desc: "Combined value of the homes we've covered.",
-  },
-  {
-    id: "success-rate",
-    value: 92,
-    decimals: 0,
-    prefix: "",
-    suffix: "%+",
-    ring: 100,
-    label: "Marketing Success Rate",
-    desc: "Clients who got the result they wanted.",
-  },
-];
+function getImpactMetrics(s: SiteSettings) {
+  return [
+    {
+      id: "properties-covered",
+      value: s.stat_properties,
+      decimals: 0,
+      prefix: "",
+      suffix: "+",
+      ring: 100,
+      label: "Properties Covered",
+      desc: "Homes we've shot and marketed so far.",
+    },
+    {
+      id: "value-covered",
+      value: s.stat_value_m,
+      decimals: 1,
+      prefix: "$",
+      suffix: "M+",
+      ring: 100,
+      label: "Property Value Covered",
+      desc: "Combined value of the homes we've covered.",
+    },
+    {
+      id: "success-rate",
+      value: s.stat_success_rate,
+      decimals: 0,
+      prefix: "",
+      suffix: "%+",
+      ring: 100,
+      label: "Marketing Success Rate",
+      desc: "Clients who got the result they wanted.",
+    },
+  ];
+}
 
 function useCountUp(target: number, decimals: number, start: boolean, duration = 1800) {
   const [val, setVal] = useState(0);
@@ -225,7 +231,7 @@ function ImpactCard({
   index,
   started,
 }: {
-  metric: (typeof IMPACT_METRICS)[number];
+  metric: ReturnType<typeof getImpactMetrics>[number];
   index: number;
   started: boolean;
 }) {
@@ -253,6 +259,8 @@ function ImpactCard({
 }
 
 function ImpactDashboard() {
+  const { settings } = useSiteSettings();
+  const metrics = getImpactMetrics(settings);
   const dashboardRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -343,7 +351,7 @@ function ImpactDashboard() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-5 md:gap-6 mb-16 md:mb-20">
-            {IMPACT_METRICS.map((m, i) => (
+            {metrics.map((m, i) => (
               <ImpactCard key={m.id} metric={m} index={i} started={inView} />
             ))}
           </div>
@@ -423,9 +431,12 @@ function PackageButton({ to, dark, children }: { to: string; dark?: boolean; chi
 }
 
 export default function HomePage() {
+  const { settings } = useSiteSettings();
+  const { bundles } = useCatalog();
+  const addOns = getAddOns(settings);
   // Hovered / focused / tapped package card. Defaults to the featured
   // ("Most chosen") package; resets when the cursor leaves the section.
-  const defaultPackage = LAUNCH_BUNDLES.find((b) => b.featured)?.id ?? LAUNCH_BUNDLES[0].id;
+  const defaultPackage = bundles.find((b) => b.featured)?.id ?? bundles[0].id;
   const [activePackage, setActivePackage] = useState(defaultPackage);
 
   return (
@@ -588,7 +599,7 @@ export default function HomePage() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {LAUNCH_BUNDLES.map((p) => {
+            {bundles.map((p) => {
               const isActive = activePackage === p.id;
               return (
               <div
@@ -685,7 +696,7 @@ export default function HomePage() {
           </p>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-            {ADD_ONS.map((a) => (
+            {addOns.map((a) => (
               <Link
                 key={a.name}
                 to="/order"

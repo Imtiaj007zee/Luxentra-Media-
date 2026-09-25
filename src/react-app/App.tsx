@@ -7,7 +7,9 @@ import WorkPage from "@/react-app/pages/Work";
 import BrandingPage from "./pages/Branding";
 import PrivacyPage from "./pages/Privacy";
 import NotFoundPage from "./pages/NotFound";
+import AdminPage from "./pages/Admin";
 import PageMeta from "@/react-app/components/PageMeta";
+import { SiteSettingsProvider } from "@/react-app/lib/siteSettings";
 
 /** Scrolls to an in-page anchor (e.g. /#package) after navigation. */
 function ScrollToHash() {
@@ -30,6 +32,7 @@ function ScrollToHash() {
 
 export default function App() {
   return (
+    <SiteSettingsProvider>
     <Router>
       <PageMeta />
       <ScrollToHash />
@@ -42,8 +45,11 @@ export default function App() {
         <Route path="/branding" element={<BrandingPage />} />
         <Route path="/consultation" element={<Navigate to="/order?package=consultation" replace />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        {/* Hidden control panel: not linked anywhere on the public site. */}
+        <Route path="/backstage" element={<AdminPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
+    </SiteSettingsProvider>
   );
 }

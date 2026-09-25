@@ -1,23 +1,32 @@
-// Verified LuxEntra impact figures. Update these only from real counts.
+// Verified LuxEntra impact figures. Live values come from Site Settings
+// (editable at /backstage); these are the fallbacks.
 const STATS = [
   {
-    number: "27+",
+    key: "properties" as const,
     label: "Properties Covered",
     explainer: "Homes across New York City and Long Island, shot and delivered.",
   },
   {
-    number: "$18.3M+",
+    key: "value" as const,
     label: "Property Value Covered",
     explainer: "The combined value of the listings our media has marketed.",
   },
   {
-    number: "92%+",
+    key: "success" as const,
     label: "Marketing Success Rate",
     explainer: "Clients who got the result they wanted.",
   },
 ];
 
+import { useSiteSettings } from "@/react-app/lib/siteSettings";
+
 export default function ProofSection() {
+  const { settings } = useSiteSettings();
+  const numbers: Record<string, string> = {
+    properties: `${settings.stat_properties}+`,
+    value: `$${settings.stat_value_m}M+`,
+    success: `${settings.stat_success_rate}%+`,
+  };
   return (
     <section className="bg-[#f4f4f4] py-20 md:py-28">
       <div className="max-w-[1200px] mx-auto px-6">
@@ -36,7 +45,7 @@ export default function ProofSection() {
               className="bg-white rounded-md p-8 hover:shadow-lg transition-shadow"
             >
               <p className="price-num text-[52px] md:text-[60px] font-bold tracking-[-0.03em] leading-none mb-3">
-                {s.number}
+                {numbers[s.key]}
               </p>
               <p className="text-[16px] font-bold tracking-tight mb-2">{s.label}</p>
               <p className="text-[14px] text-black/50 leading-relaxed">{s.explainer}</p>
