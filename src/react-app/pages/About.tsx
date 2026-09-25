@@ -23,18 +23,18 @@ const TEAM: Member[] = [
     title: "Founder & Creative Director · Photographer & Cinematographer",
     bio: [
       "Great visuals are not just about how a property looks, they are about how it makes a buyer feel. Imtiaj works closely with every agent to understand the story of each listing and turn it into imagery that feels authentic, intentional, and memorable.",
-      "With more than six years behind the camera, he has covered over 27 properties across New York City and Long Island, representing more than $18.3M in listing value. From the first showing to the final closing, he presents every home at its best, with 24-hour delivery and a marketer's eye for what makes buyers stop scrolling. Every project gets the same care, creativity, and purpose.",
+      "With eight years behind the camera, he has covered 27 properties in the last six months alone across New York City and Long Island, representing more than $18.3M in listing value. From the first showing to the final closing, he presents every home at its best, with 24-hour delivery and a marketer's eye for what makes buyers stop scrolling. Every project gets the same care, creativity, and purpose.",
       "As the founder of LuxEntra Media, his goal is simple: to give every listing a lasting impression.",
     ],
     highlights: [
-      "6+ Years of Photography & Cinematography Experience",
+      "8+ Years of Photography & Cinematography Experience",
       "Commercial, Corporate & Real Estate Productions",
       "27+ Real Estate Properties Covered",
       "Professional Headshots & Personal Branding",
       "Institutional, Celebrity & High-Profile Event Experience",
     ],
     quote: "Your vision. Your story. Brought to life with purpose in every frame.",
-    badge: "6+",
+    badge: "8+",
     photo: "/Zee2.JPG",
   },
   {
