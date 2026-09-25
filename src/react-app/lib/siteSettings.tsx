@@ -221,11 +221,13 @@ async function postAction(body: Record<string, unknown>) {
 }
 
 export async function verifyAdmin(
+  username: string,
   password: string
 ): Promise<{ ok: boolean; who: string }> {
   try {
     const data = await postAction({
       action: "verifyAdmin",
+      username,
       password,
       device: typeof navigator !== "undefined" ? navigator.userAgent : "",
     });
@@ -237,9 +239,9 @@ export async function verifyAdmin(
 
 export type LoginEntry = { time: string; who: string; device: string; result: string };
 
-export async function getLoginLog(password: string): Promise<LoginEntry[]> {
+export async function getLoginLog(username: string, password: string): Promise<LoginEntry[]> {
   try {
-    const data = await postAction({ action: "getLoginLog", password });
+    const data = await postAction({ action: "getLoginLog", username, password });
     if (data && data.ok === true && Array.isArray(data.log)) return data.log;
   } catch {
     /* ignore */
@@ -248,11 +250,12 @@ export async function getLoginLog(password: string): Promise<LoginEntry[]> {
 }
 
 export async function saveSiteSettings(
+  username: string,
   password: string,
   settings: SiteSettings
 ): Promise<{ ok: boolean; error?: string }> {
   try {
-    const data = await postAction({ action: "saveSettings", password, settings });
+    const data = await postAction({ action: "saveSettings", username, password, settings });
     if (data && data.ok === true) {
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify(settings));

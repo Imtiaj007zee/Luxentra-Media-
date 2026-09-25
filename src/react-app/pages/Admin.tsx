@@ -14,6 +14,7 @@ import {
 // The password is checked server-side in the Apps Script web app.
 
 const SESSION_KEY = "lux_admin_ok_v1";
+const SAVED_USER_KEY = "lux_admin_user_v1";
 const SAVED_PASSWORD_KEY = "lux_admin_pw_v1";
 const SESSION_WHO_KEY = "lux_admin_who_v1";
 
@@ -104,6 +105,13 @@ export default function AdminPage() {
       return false;
     }
   });
+  const [username, setUsername] = useState(() => {
+    try {
+      return sessionStorage.getItem(SAVED_USER_KEY) || "";
+    } catch {
+      return "";
+    }
+  });
   const [password, setPassword] = useState(() => {
     try {
       return sessionStorage.getItem(SAVED_PASSWORD_KEY) || "";
@@ -136,30 +144,31 @@ export default function AdminPage() {
 
   // Load the login history whenever the panel is unlocked.
   useEffect(() => {
-    if (authed && password) {
-      getLoginLog(password).then(setLoginLog).catch(() => {});
+    if (authed && username && password) {
+      getLoginLog(username, password).then(setLoginLog).catch(() => {});
     }
-  }, [authed, password]);
+  }, [authed, username, password]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) return;
     setChecking(true);
     setLoginError("");
-    const { ok, who: whoAmI } = await verifyAdmin(password);
+    const { ok, who: whoAmI } = await verifyAdmin(username, password);
     setChecking(false);
     if (ok) {
       setAuthed(true);
       setWho(whoAmI);
       try {
         sessionStorage.setItem(SESSION_KEY, "1");
+        sessionStorage.setItem(SAVED_USER_KEY, username);
         sessionStorage.setItem(SAVED_PASSWORD_KEY, password);
         sessionStorage.setItem(SESSION_WHO_KEY, whoAmI);
       } catch {
         /* ignore */
       }
     } else {
-      setLoginError("Wrong password, or the control panel is not connected yet.");
+      setLoginError("Wrong username or password, or the control panel is not connected yet.");
     }
   };
 
@@ -169,6 +178,7 @@ export default function AdminPage() {
     setWho("");
     try {
       sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SAVED_USER_KEY);
       sessionStorage.removeItem(SAVED_PASSWORD_KEY);
       sessionStorage.removeItem(SESSION_WHO_KEY);
     } catch {
@@ -185,7 +195,7 @@ export default function AdminPage() {
   const save = async () => {
     setSaving(true);
     setSaveMsg(null);
-    const res = await saveSiteSettings(password, form);
+    const res = await saveSiteSettings(username, password, form);
     setSaving(false);
     if (res.ok) {
       setSaveMsg({ ok: true, text: "Saved. The whole site now uses these numbers." });
@@ -208,10 +218,18 @@ export default function AdminPage() {
           </p>
           <form onSubmit={login}>
             <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              autoComplete="username"
+              className={`${inputClass} mb-3`}
+            />
+            <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Admin password"
+              placeholder="Password"
               autoComplete="current-password"
               className={`${inputClass} mb-3`}
             />
@@ -222,7 +240,7 @@ export default function AdminPage() {
             )}
             <button
               type="submit"
-              disabled={checking || !password}
+              disabled={checking || !username || !password}
               className="btn-lime w-full h-12 disabled:opacity-40 inline-flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" /> {checking ? "Checking..." : "Log in"}
