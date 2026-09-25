@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowLeft, Lock, Save, LogOut, CheckCircle2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Lock, Save, LogOut, CheckCircle2, AlertCircle, History, ShieldCheck } from "lucide-react";
 import {
   useSiteSettings,
   verifyAdmin,
   saveSiteSettings,
+  getLoginLog,
   type SiteSettings,
+  type LoginEntry,
 } from "@/react-app/lib/siteSettings";
 
 // Hidden control panel. Not linked anywhere on the public site.
@@ -66,6 +68,32 @@ const GROUPS: Group[] = [
 const inputClass =
   "w-full h-11 px-3 rounded-md bg-white/10 border border-white/20 text-white text-[15px] outline-none focus:border-[#c7ff00] [color-scheme:dark]";
 
+/** Turn a raw user-agent string into a short readable device label. */
+function prettyDevice(ua: string): string {
+  if (!ua) return "Unknown device";
+  if (/iPhone/i.test(ua)) return "iPhone";
+  if (/iPad/i.test(ua)) return "iPad";
+  if (/Android/i.test(ua)) {
+    const m = ua.match(/Android[^;]*;\s*([^;)]+)/i);
+    return m ? `Android (${m[1].trim()})` : "Android";
+  }
+  if (/Macintosh/i.test(ua)) return "Mac";
+  if (/Windows/i.test(ua)) return "Windows PC";
+  if (/Linux/i.test(ua)) return "Linux";
+  return ua.slice(0, 60);
+}
+
+function prettyTime(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export default function AdminPage() {
   const { settings: liveSettings, loaded } = useSiteSettings();
   const [authed, setAuthed] = useState(() => {
@@ -87,6 +115,7 @@ export default function AdminPage() {
   const [form, setForm] = useState<SiteSettings>(liveSettings);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [loginLog, setLoginLog] = useState<LoginEntry[]>([]);
   const synced = useRef(false);
 
   // Pull the latest saved values into the form once they arrive.
@@ -96,6 +125,13 @@ export default function AdminPage() {
       setForm(liveSettings);
     }
   }, [loaded, liveSettings]);
+
+  // Load the login history whenever the panel is unlocked.
+  useEffect(() => {
+    if (authed && password) {
+      getLoginLog(password).then(setLoginLog).catch(() => {});
+    }
+  }, [authed, password]);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,36 +185,41 @@ export default function AdminPage() {
   if (!authed) {
     return (
       <div className="min-h-screen bg-[#0b0b0b] text-white flex items-center justify-center px-6 pt-16">
-        <form onSubmit={login} className="w-full max-w-sm">
+        <div className="w-full max-w-sm rounded-lg border border-white/10 bg-white/[0.03] p-8">
+          <p className="eyebrow text-[#c7ff00] mb-5">LuxEntra · Admin</p>
           <div className="w-12 h-12 rounded-md bg-[#c7ff00]/15 border border-[#c7ff00]/30 flex items-center justify-center mb-6">
-            <Lock className="w-5 h-5 text-[#c7ff00]" />
+            <ShieldCheck className="w-5 h-5 text-[#c7ff00]" />
           </div>
-          <h1 className="text-[28px] font-bold tracking-tight mb-2">Control panel</h1>
-          <p className="text-[14px] text-white/50 mb-6">Enter the admin password to continue.</p>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            autoComplete="current-password"
-            className={`${inputClass} mb-3`}
-          />
-          {loginError && (
-            <p className="flex items-center gap-2 text-[13px] text-red-400 mb-3">
-              <AlertCircle className="w-4 h-4 shrink-0" /> {loginError}
-            </p>
-          )}
-          <button
-            type="submit"
-            disabled={checking || !password}
-            className="btn-lime w-full h-12 disabled:opacity-40"
-          >
-            {checking ? "Checking..." : "Unlock"}
-          </button>
+          <h1 className="text-[28px] font-bold tracking-tight mb-2">Admin login</h1>
+          <p className="text-[14px] text-white/50 mb-6">
+            This panel controls the numbers and prices on the live site. Authorized access only.
+          </p>
+          <form onSubmit={login}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Admin password"
+              autoComplete="current-password"
+              className={`${inputClass} mb-3`}
+            />
+            {loginError && (
+              <p className="flex items-center gap-2 text-[13px] text-red-400 mb-3">
+                <AlertCircle className="w-4 h-4 shrink-0" /> {loginError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={checking || !password}
+              className="btn-lime w-full h-12 disabled:opacity-40 inline-flex items-center justify-center gap-2"
+            >
+              <Lock className="w-4 h-4" /> {checking ? "Checking..." : "Log in"}
+            </button>
+          </form>
           <Link to="/" className="inline-flex items-center gap-2 text-[13px] text-white/40 hover:text-white/70 mt-6">
             <ArrowLeft className="w-4 h-4" /> Back to the site
           </Link>
-        </form>
+        </div>
       </div>
     );
   }
@@ -237,6 +278,38 @@ export default function AdminPage() {
         <button onClick={save} disabled={saving} className="btn-lime w-full h-12 mt-6 disabled:opacity-40 inline-flex items-center justify-center gap-2">
           <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save all changes"}
         </button>
+
+        <section className="mt-12">
+          <h2 className="text-[19px] font-bold tracking-tight mb-1 inline-flex items-center gap-2">
+            <History className="w-4 h-4 text-white/50" /> Login history
+          </h2>
+          <p className="text-[13px] text-white/40 mb-4">
+            Every login attempt, with the time and device. Failed attempts show up too.
+          </p>
+          {loginLog.length === 0 ? (
+            <p className="text-[13px] text-white/35">No logins recorded yet.</p>
+          ) : (
+            <div className="rounded-md border border-white/10 bg-white/[0.03] divide-y divide-white/10">
+              {loginLog.map((entry, i) => (
+                <div key={i} className="flex items-center justify-between gap-4 px-4 py-3">
+                  <div>
+                    <p className="text-[14px] text-white/85">{prettyTime(entry.time)}</p>
+                    <p className="text-[12px] text-white/40">{prettyDevice(entry.device)}</p>
+                  </div>
+                  <span
+                    className={`text-[12px] font-medium px-2.5 py-1 rounded-full ${
+                      entry.result === "Success"
+                        ? "bg-[#c7ff00]/15 text-[#c7ff00]"
+                        : "bg-red-400/15 text-red-400"
+                    }`}
+                  >
+                    {entry.result}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
 
         <Link to="/" className="inline-flex items-center gap-2 text-[13px] text-white/40 hover:text-white/70 mt-8">
           <ArrowLeft className="w-4 h-4" /> Back to the site

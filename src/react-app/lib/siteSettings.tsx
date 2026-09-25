@@ -222,11 +222,27 @@ async function postAction(body: Record<string, unknown>) {
 
 export async function verifyAdmin(password: string): Promise<boolean> {
   try {
-    const data = await postAction({ action: "verifyAdmin", password });
+    const data = await postAction({
+      action: "verifyAdmin",
+      password,
+      device: typeof navigator !== "undefined" ? navigator.userAgent : "",
+    });
     return data && data.ok === true;
   } catch {
     return false;
   }
+}
+
+export type LoginEntry = { time: string; device: string; result: string };
+
+export async function getLoginLog(password: string): Promise<LoginEntry[]> {
+  try {
+    const data = await postAction({ action: "getLoginLog", password });
+    if (data && data.ok === true && Array.isArray(data.log)) return data.log;
+  } catch {
+    /* ignore */
+  }
+  return [];
 }
 
 export async function saveSiteSettings(
