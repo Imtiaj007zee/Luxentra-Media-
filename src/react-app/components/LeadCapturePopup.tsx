@@ -100,7 +100,7 @@ export default function LeadCapturePopup() {
           <>
             <p className="eyebrow text-[#c7ff00] mb-4">First order perk</p>
             <h3 className="text-[32px] md:text-[38px] font-bold tracking-[-0.03em] leading-[1.05] mb-3">
-              Realtors, take $25 off your first shoot.
+              Realtors, take $25 off your first booking.
             </h3>
             <p className="text-[15px] text-white/60 leading-relaxed mb-7">
               Drop your details and we will send your code. New clients only.
