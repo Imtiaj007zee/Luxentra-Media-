@@ -22,9 +22,9 @@ const TEAM: Member[] = [
     knownAs: "Zee",
     title: "Founder & Creative Director · Photographer & Cinematographer",
     bio: [
-      "Great visuals are not just about how something looks they are about how they make people feel. Imtiaj works closely with every client to understand their vision and transform it into meaningful imagery that feels authentic, intentional, and memorable.",
-      "With more than six years of experience, he has captured everything from growing brands and distinctive properties to personal milestones and once-in-a-lifetime celebrations. Whether he is helping a business tell its story, presenting a property at its best, or preserving an important moment, Imtiaj approaches every project with care, creativity, and purpose.",
-      "As the founder of LuxEntra Media, his goal is simple: to create visuals that reflect your story, connect with your audience, and leave a lasting impression.",
+      "Great visuals are not just about how a property looks, they are about how it makes a buyer feel. Imtiaj works closely with every agent to understand the story of each listing and turn it into imagery that feels authentic, intentional, and memorable.",
+      "With more than six years behind the camera, he has covered over 27 properties across New York City and Long Island, representing more than $18.3M in listing value. From the first showing to the final closing, he presents every home at its best, with 24-hour delivery and a marketer's eye for what makes buyers stop scrolling. Every project gets the same care, creativity, and purpose.",
+      "As the founder of LuxEntra Media, his goal is simple: to give every listing a lasting impression.",
     ],
     highlights: [
       "6+ Years of Photography & Cinematography Experience",
