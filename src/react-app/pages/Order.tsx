@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, AlertCircle, CalendarCheck, Camera, Video, Plane, Box, Plus, ShoppingCart, Layers, FileText, Rocket, Tag } from "lucide-react";
 import { LAUNCH_BUNDLES, getBundleById, BRANDING_PLANS, getBrandingPlanById, SERVICE_TYPES } from "@/react-app/data/packages";
 import { Button } from "@/react-app/components/ui/button";
 import { Input } from "@/react-app/components/ui/input";
@@ -594,14 +594,23 @@ export default function OrderPage() {
                   <Label className="text-base font-medium">Property Address / Location</Label>
                   <Input type="text" placeholder="123 Main St, Brooklyn, NY..." value={shootForm.shoot_location} onChange={(e) => setShootForm({ ...shootForm, shoot_location: e.target.value })} className="h-12 text-base" />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-base font-medium">Discount code <span className="text-white/40 font-normal">(optional)</span></Label>
-                  <Input type="text" value={discountCode} onChange={(e) => setDiscountCode(e.target.value)} className="h-12 text-base uppercase" placeholder="Have a code? Enter it here" />
+                <div className="rounded-md border border-[#c7ff00]/40 bg-[#c7ff00]/[0.06] p-5">
+                  <Label className="text-base font-medium flex items-center gap-2">
+                    <Tag className="w-4 h-4 text-[#c7ff00]" /> Have a discount code?
+                  </Label>
+                  <p className="text-[13px] text-white/45 mt-1 mb-3">Realtors, take $25 off your first booking with code WELCOME25.</p>
+                  <Input
+                    type="text"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    className="h-12 text-base uppercase text-white placeholder:normal-case placeholder:text-white/35 bg-white/10 border-white/20"
+                    placeholder="Enter your code here"
+                  />
                   {discountCode.trim() !== "" && discountAmount === 0 && (
-                    <p className="text-[13px] text-white/40">That code didn&apos;t match. Codes are not case sensitive.</p>
+                    <p className="text-[13px] text-white/40 mt-2">That code didn&apos;t match. Codes are not case sensitive.</p>
                   )}
                   {discountAmount > 0 && (
-                    <p className="text-[13px] text-[#c7ff00]">WELCOME25 applied. $25 off your first order.</p>
+                    <p className="text-[13px] text-[#c7ff00] mt-2">WELCOME25 applied. $25 off your first booking.</p>
                   )}
                 </div>
                 <div className="space-y-2">
