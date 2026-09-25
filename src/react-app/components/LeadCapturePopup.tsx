@@ -4,7 +4,7 @@ import { X, ArrowRight } from "lucide-react";
 
 const SEEN_KEY = "luxentra_lead_seen_v1";
 const ENDPOINT =
-  "https://script.google.com/macros/s/AKfycbyAxPzsawzO8zYeFqyBD3RxcCWs-xUs5vTqte6_CQa9QJZJkd56MrVS3SANgNNO-RMg-w/exec";
+  "https://script.google.com/macros/s/AKfycbwz11hRMrInyVjGKXjbNMSRUoTlojQH_YZO85xZdrEJHmk30u-a-7GziCNk_Bpvmf-ecA/exec";
 const DISCOUNT_CODE = "WELCOME25";
 
 function hasSeen(): boolean {

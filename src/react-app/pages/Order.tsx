@@ -28,7 +28,7 @@ const VIRTUAL_STAGING_TIERS = [
 
 // Free order database: Google Apps Script web app appending rows to the
 // "LuxEntra Orders" Google Sheet. text/plain avoids a CORS preflight.
-const ORDERS_ENDPOINT = "https://script.google.com/macros/s/AKfycbyAxPzsawzO8zYeFqyBD3RxcCWs-xUs5vTqte6_CQa9QJZJkd56MrVS3SANgNNO-RMg-w/exec";
+const ORDERS_ENDPOINT = "https://script.google.com/macros/s/AKfycbwz11hRMrInyVjGKXjbNMSRUoTlojQH_YZO85xZdrEJHmk30u-a-7GziCNk_Bpvmf-ecA/exec";
 
 const EMPTY_SHOOT = { name: "", email: "", phone: "", borough: "", service_type: "", shoot_date: "", shoot_time: "", shoot_location: "", request_details: "" };
 const EMPTY_CONSULT = { name: "", email: "", phone: "", role: "", meeting_format: "", preferred_date: "", preferred_time: "", goals: "" };
