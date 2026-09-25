@@ -103,7 +103,7 @@ function FeaturedTwilight() {
 const IMPACT_METRICS = [
   {
     id: "properties-covered",
-    value: 25,
+    value: 27,
     decimals: 0,
     prefix: "",
     suffix: "+",
@@ -113,7 +113,7 @@ const IMPACT_METRICS = [
   },
   {
     id: "value-covered",
-    value: 15.9,
+    value: 18.3,
     decimals: 1,
     prefix: "$",
     suffix: "M+",

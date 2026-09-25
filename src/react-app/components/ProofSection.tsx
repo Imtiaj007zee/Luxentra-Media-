@@ -1,12 +1,12 @@
 // Verified LuxEntra impact figures. Update these only from real counts.
 const STATS = [
   {
-    number: "25+",
+    number: "27+",
     label: "Properties Covered",
     explainer: "Homes across New York City and Long Island, shot and delivered.",
   },
   {
-    number: "$15.9M+",
+    number: "$18.3M+",
     label: "Property Value Covered",
     explainer: "The combined value of the listings our media has marketed.",
   },
