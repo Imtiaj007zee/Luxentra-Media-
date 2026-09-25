@@ -741,14 +741,14 @@ export default function OrderPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2 min-w-0">
                       <Label className="text-base font-medium">{t("order.label_day")}</Label>
-                      <Input type="date" value={consultForm.preferred_date} onChange={(e) => setConsultForm({ ...consultForm, preferred_date: e.target.value })} className="h-12 text-base" />
+                      <Input type="date" value={consultForm.preferred_date} onChange={(e) => setConsultForm({ ...consultForm, preferred_date: e.target.value })} className="h-12 text-base w-full min-w-0" />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 min-w-0">
                       <Label className="text-base font-medium">{t("order.label_time2")}</Label>
-                      <Input type="time" value={consultForm.preferred_time} onChange={(e) => setConsultForm({ ...consultForm, preferred_time: e.target.value })} className="h-12 text-base" />
+                      <Input type="time" value={consultForm.preferred_time} onChange={(e) => setConsultForm({ ...consultForm, preferred_time: e.target.value })} className="h-12 text-base w-full min-w-0" />
                     </div>
                   </div>
                   <div className="space-y-2">
