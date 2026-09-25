@@ -220,20 +220,22 @@ async function postAction(body: Record<string, unknown>) {
   return res.json();
 }
 
-export async function verifyAdmin(password: string): Promise<boolean> {
+export async function verifyAdmin(
+  password: string
+): Promise<{ ok: boolean; who: string }> {
   try {
     const data = await postAction({
       action: "verifyAdmin",
       password,
       device: typeof navigator !== "undefined" ? navigator.userAgent : "",
     });
-    return data && data.ok === true;
+    return { ok: data && data.ok === true, who: (data && data.who) || "" };
   } catch {
-    return false;
+    return { ok: false, who: "" };
   }
 }
 
-export type LoginEntry = { time: string; device: string; result: string };
+export type LoginEntry = { time: string; who: string; device: string; result: string };
 
 export async function getLoginLog(password: string): Promise<LoginEntry[]> {
   try {

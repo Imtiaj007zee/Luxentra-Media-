@@ -15,6 +15,7 @@ import {
 
 const SESSION_KEY = "lux_admin_ok_v1";
 const SAVED_PASSWORD_KEY = "lux_admin_pw_v1";
+const SESSION_WHO_KEY = "lux_admin_who_v1";
 
 type Field = { key: keyof SiteSettings; label: string; step?: string };
 type Group = { title: string; hint?: string; fields: Field[] };
@@ -112,6 +113,13 @@ export default function AdminPage() {
   });
   const [loginError, setLoginError] = useState("");
   const [checking, setChecking] = useState(false);
+  const [who, setWho] = useState(() => {
+    try {
+      return sessionStorage.getItem(SESSION_WHO_KEY) || "";
+    } catch {
+      return "";
+    }
+  });
   const [form, setForm] = useState<SiteSettings>(liveSettings);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState<{ ok: boolean; text: string } | null>(null);
@@ -138,13 +146,15 @@ export default function AdminPage() {
     if (!password) return;
     setChecking(true);
     setLoginError("");
-    const ok = await verifyAdmin(password);
+    const { ok, who: whoAmI } = await verifyAdmin(password);
     setChecking(false);
     if (ok) {
       setAuthed(true);
+      setWho(whoAmI);
       try {
         sessionStorage.setItem(SESSION_KEY, "1");
         sessionStorage.setItem(SAVED_PASSWORD_KEY, password);
+        sessionStorage.setItem(SESSION_WHO_KEY, whoAmI);
       } catch {
         /* ignore */
       }
@@ -156,9 +166,11 @@ export default function AdminPage() {
   const logout = () => {
     setAuthed(false);
     setPassword("");
+    setWho("");
     try {
       sessionStorage.removeItem(SESSION_KEY);
       sessionStorage.removeItem(SAVED_PASSWORD_KEY);
+      sessionStorage.removeItem(SESSION_WHO_KEY);
     } catch {
       /* ignore */
     }
@@ -232,6 +244,11 @@ export default function AdminPage() {
             <h1 className="text-[32px] md:text-[40px] font-bold tracking-[-0.02em]">Control panel</h1>
             <p className="text-[14px] text-white/50 mt-1">
               Change any number below and hit save. Every page updates.
+              {who && (
+                <span className="ml-2 inline-block text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-[#c7ff00]/15 text-[#c7ff00] align-middle">
+                  Logged in as {who}
+                </span>
+              )}
             </p>
           </div>
           <button
@@ -293,7 +310,12 @@ export default function AdminPage() {
               {loginLog.map((entry, i) => (
                 <div key={i} className="flex items-center justify-between gap-4 px-4 py-3">
                   <div>
-                    <p className="text-[14px] text-white/85">{prettyTime(entry.time)}</p>
+                    <p className="text-[14px] text-white/85">
+                      {prettyTime(entry.time)}
+                      {entry.who && entry.who !== "-" && (
+                        <span className="text-white/45"> · {entry.who}</span>
+                      )}
+                    </p>
                     <p className="text-[12px] text-white/40">{prettyDevice(entry.device)}</p>
                   </div>
                   <span
