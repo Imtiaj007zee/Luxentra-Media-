@@ -61,6 +61,7 @@ export default function OrderPage() {
   const [selectedBundle, setSelectedBundle] = useState<string | null>(null);
   const [selectedBranding, setSelectedBranding] = useState<string | null>(null);
   const [isConsultation, setIsConsultation] = useState(false);
+  const [planTab, setPlanTab] = useState<"listing" | "brand">("listing");
   const [shootForm, setShootForm] = useState(EMPTY_SHOOT);
   const [consultForm, setConsultForm] = useState(EMPTY_CONSULT);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -102,6 +103,7 @@ export default function OrderPage() {
       setSelectedBranding(null);
       setIsConsultation(false);
       setIncludeStandard(false);
+      setPlanTab("listing");
       return;
     }
     const plan = getBrandingPlanById(packageParam);
@@ -110,6 +112,7 @@ export default function OrderPage() {
       setSelectedBundle(null);
       setIsConsultation(false);
       setIncludeStandard(false);
+      setPlanTab("brand");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [packageParam]);
@@ -326,8 +329,27 @@ export default function OrderPage() {
           {step === 0 && (
             <div>
               <h2 className="text-[28px] font-semibold tracking-tight mb-2">{t("order.plan_title")}</h2>
-              <p className="text-[15px] text-white/50 mb-8">{t("order.plan_sub")}</p>
+              <p className="text-[15px] text-white/50 mb-6">{t("order.plan_sub")}</p>
 
+              {/* Plan audience tabs */}
+              <p className="text-center text-[15px] font-semibold text-white/80 mb-3">{t("order.plan_tab_question")}</p>
+              <div className="flex bg-white/[0.06] border border-white/15 rounded-full p-1 gap-1 mb-8" role="tablist" aria-label={t("order.plan_tab_question")}>
+                {(["listing", "brand"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    type="button"
+                    role="tab"
+                    aria-selected={planTab === tab}
+                    onClick={() => setPlanTab(tab)}
+                    className={`flex-1 rounded-full py-2.5 text-[14px] font-bold transition-colors ${planTab === tab ? "bg-[#c7ff00] text-black" : "text-white/55 hover:text-white"}`}
+                  >
+                    {t(tab === "listing" ? "order.plan_tab_listing" : "order.plan_tab_brand")}
+                  </button>
+                ))}
+              </div>
+
+              {planTab === "listing" && (
+              <>
               {/* Standard package */}
               <div className={`${cardClass(includeStandard)} mb-4`} onClick={() => pickShootPlan(() => { const next = !includeStandard; setIncludeStandard(next); if (next) { setSelectedBundle(null); setSelectedBranding(null); } })}>
                 <div className="flex items-start gap-4">
@@ -386,8 +408,13 @@ export default function OrderPage() {
                 })}
               </div>
 
+              </>
+              )}
+
+              {planTab === "brand" && (
+              <>
               {/* Personal branding plans */}
-              <h3 className="text-[20px] font-semibold tracking-tight mt-8 mb-4">{t("order.plan_branding_title")}</h3>
+              <h3 className="text-[20px] font-semibold tracking-tight mb-4">{t("order.plan_branding_title")}</h3>
               <div className="space-y-3 mb-4">
                 {brandingPlans.map((plan) => {
                   const isSelected = selectedBranding === plan.id;
@@ -424,24 +451,20 @@ export default function OrderPage() {
                 })}
               </div>
 
-              {/* Consultation option */}
-              <div
-                className={`rounded-md p-5 border transition-colors cursor-pointer mt-8 ${isConsultation ? "border-[#c7ff00] bg-[#c7ff00]/[0.06]" : "border-[#c7ff00]/40 hover:border-[#c7ff00]"}`}
-                onClick={() => { setIsConsultation(!isConsultation); if (!isConsultation) { setIncludeStandard(false); setSelectedBundle(null); setSelectedBranding(null); } }}
-                role="button"
-                aria-pressed={isConsultation}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-md bg-[#c7ff00] flex items-center justify-center shrink-0">
-                    <CalendarCheck className="w-6 h-6 text-black" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-[18px]">{t("order.consult_card_title")}</h4>
-                    <p className="text-[14px] text-white/55 mt-1">{t("order.consult_card_copy")}</p>
-                  </div>
-                  <SelectButton selected={isConsultation} label={t("order.consult_card_title")} />
-                </div>
-              </div>
+              </>
+              )}
+
+              {/* Consultation quiet link */}
+              <p className="text-center text-[14px] mt-8">
+                <button
+                  type="button"
+                  aria-pressed={isConsultation}
+                  onClick={() => { setIsConsultation(!isConsultation); if (!isConsultation) { setIncludeStandard(false); setSelectedBundle(null); setSelectedBranding(null); } }}
+                  className={`underline underline-offset-4 decoration-[#c7ff00]/60 hover:decoration-[#c7ff00] transition-colors ${isConsultation ? "text-[#c7ff00] font-semibold" : "text-white/55 hover:text-white"}`}
+                >
+                  {t("order.plan_consult_link")}
+                </button>
+              </p>
 
               <Button onClick={goNext} disabled={!hasPlan} className="w-full h-14 text-[17px] rounded-full mt-10">
                 {t("order.continue")} <ArrowRight className="w-5 h-5 ml-1" />
