@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check } from "lucide-react";
+import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import FaqSection from "@/react-app/components/FaqSection";
 import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
+import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
 import { useT } from "@/react-app/lib/siteContent";
 import { useSiteSettings } from "@/react-app/lib/siteSettings";
 
@@ -201,6 +202,120 @@ function TypedRotator() {
         {prefix} <span className="text-[#c7ff00]">{visible}</span>
         <span className="typed-cursor" aria-hidden="true" /> {suffix}
       </p>
+    </section>
+  );
+}
+
+// ── Selected work strip ──────────────────────────────────────────────────
+// Horizontal snap-scroll row of listing-film cards right after the hero.
+// Tap a card to play its video inline (only one plays at a time; videos
+// never preload — only the tapped card loads its source).
+
+const WORK_FILM_SLUGS = [
+  "850-e-223-st",
+  "2802-miles-ave",
+  "25112-maclay-ave",
+  "3277-park-side-place",
+  "324-under-hill-ave",
+  "3640-palmer-ave",
+];
+
+function FilmCard({
+  item,
+  active,
+  onPlay,
+  onStop,
+}: {
+  item: PortfolioItem;
+  active: boolean;
+  onPlay: () => void;
+  onStop: () => void;
+}) {
+  return (
+    <div className="relative w-[210px] md:w-[240px] shrink-0 snap-start aspect-[9/16] rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111]">
+      {active ? (
+        <video
+          key={item.slug}
+          src={item.src}
+          poster={item.poster}
+          autoPlay
+          muted
+          playsInline
+          loop
+          controls
+          preload="none"
+          aria-label={item.title}
+          className="absolute inset-0 h-full w-full object-cover"
+          onClick={(e) => {
+            e.currentTarget.pause();
+            onStop();
+          }}
+        />
+      ) : (
+        <button
+          type="button"
+          onClick={onPlay}
+          aria-label={`Play ${item.title}`}
+          className="group absolute inset-0 h-full w-full text-left"
+        >
+          <img
+            src={item.poster}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#c7ff00] text-black transition-transform duration-200 group-hover:scale-110">
+              <Play className="h-6 w-6 fill-current" aria-hidden="true" />
+            </span>
+          </span>
+          <span className="absolute bottom-0 left-0 right-0 p-4">
+            <span className="block text-[15px] font-bold tracking-tight text-white leading-tight">
+              {item.title}
+            </span>
+            <span className="block text-[12px] text-white/60 mt-1">{item.category}</span>
+          </span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+function WorkStrip() {
+  const t = useT();
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const films = useMemo(() => {
+    const bySlug = new Map(PORTFOLIO.map((p) => [p.slug, p]));
+    return WORK_FILM_SLUGS.map((slug) => bySlug.get(slug)).filter(
+      (p): p is PortfolioItem => Boolean(p)
+    );
+  }, []);
+
+  return (
+    <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
+      <div className="max-w-[1200px] mx-auto px-6 pt-14 md:pt-20 pb-8 flex items-end justify-between gap-4">
+        <p className="eyebrow text-white/50">{t("home.work_eyebrow")}</p>
+        <Link
+          to="/work#films"
+          className="inline-flex items-center gap-1 text-white font-medium text-[15px] hover:text-[#c7ff00] transition-colors shrink-0"
+        >
+          {t("home.work_link")} <ArrowUpRight className="w-4 h-4" />
+        </Link>
+      </div>
+      <div className="overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20">
+        <div className="flex gap-4 w-max pl-6 pr-6 md:pl-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))] md:pr-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))]">
+          {films.map((item) => (
+            <FilmCard
+              key={item.slug}
+              item={item}
+              active={activeSlug === item.slug}
+              onPlay={() => setActiveSlug(item.slug)}
+              onStop={() => setActiveSlug(null)}
+            />
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
@@ -783,6 +898,7 @@ export default function HomePage() {
       <LeadCapturePopup />
 
       <Hero />
+      <WorkStrip />
       <TypedRotator />
       <ProofTicker />
       <ServiceCards />
