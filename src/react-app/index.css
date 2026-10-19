@@ -387,3 +387,23 @@
     animation: none;
   }
 }
+
+/* Shuffle deal: cards settle into their new shuffled order */
+.shuffle-deal {
+  animation: shuffle-settle 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes shuffle-settle {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shuffle-deal {
+    animation: none;
+  }
+}

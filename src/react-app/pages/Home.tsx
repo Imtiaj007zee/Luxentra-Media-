@@ -51,21 +51,13 @@ function Hero() {
     <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        {/* Giant X logo watermark */}
-        <svg
-          viewBox="0 0 200 200"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] text-[#c7ff00] opacity-[0.05] animate-[spin_140s_linear_infinite] motion-reduce:animate-none"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="30"
-          strokeLinecap="round"
-        >
-          <line x1="28" y1="100" x2="172" y2="100" />
-          <line x1="42" y1="42" x2="88" y2="88" />
-          <line x1="158" y1="42" x2="112" y2="88" />
-          <line x1="42" y1="158" x2="88" y2="112" />
-          <line x1="158" y1="158" x2="112" y2="112" />
-        </svg>
+        {/* Giant X logo watermark (actual logo mark) */}
+        <img
+          src="/logo-mark-cutout.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] object-contain opacity-[0.06] animate-[spin_140s_linear_infinite] motion-reduce:animate-none"
+        />
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
         <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
         <div
@@ -300,12 +292,44 @@ function FilmCard({
 function WorkStrip() {
   const t = useT();
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const [order, setOrder] = useState<string[]>(WORK_FILM_SLUGS);
+  const [shuffleTick, setShuffleTick] = useState(0);
+  const [userHolding, setUserHolding] = useState(false);
   const films = useMemo(() => {
     const bySlug = new Map(PORTFOLIO.map((p) => [p.slug, p]));
-    return WORK_FILM_SLUGS.map((slug) => bySlug.get(slug)).filter(
-      (p): p is PortfolioItem => Boolean(p)
-    );
-  }, []);
+    return order
+      .map((slug) => bySlug.get(slug))
+      .filter((p): p is PortfolioItem => Boolean(p));
+  }, [order]);
+  const reducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    []
+  );
+
+  // Shuffle the deck every few seconds, like a living portfolio wall.
+  // Pauses while a video plays, while the visitor is touching the strip,
+  // and under reduced-motion.
+  useEffect(() => {
+    if (userHolding || activeSlug !== null || reducedMotion) return;
+    const id = setInterval(() => {
+      setOrder((prev) => {
+        const next = [...prev];
+        let guard = 0;
+        do {
+          for (let i = next.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [next[i], next[j]] = [next[j], next[i]];
+          }
+          guard++;
+        } while (next.every((s, i) => s === prev[i]) && guard < 8);
+        return next;
+      });
+      setShuffleTick((n) => n + 1);
+    }, 6000);
+    return () => clearInterval(id);
+  }, [userHolding, activeSlug, reducedMotion]);
 
   return (
     <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
@@ -318,16 +342,25 @@ function WorkStrip() {
           {t("home.work_link")} <ArrowUpRight className="w-4 h-4" />
         </Link>
       </div>
-      <div className="overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20">
+      <div
+        className="overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20"
+        onMouseEnter={() => setUserHolding(true)}
+        onMouseLeave={() => setUserHolding(false)}
+        onTouchStart={() => setUserHolding(true)}
+        onTouchEnd={() => setUserHolding(false)}
+        onFocus={() => setUserHolding(true)}
+        onBlur={() => setUserHolding(false)}
+      >
         <div className="flex gap-4 w-max pl-6 pr-6 md:pl-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))] md:pr-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))]">
           {films.map((item) => (
-            <FilmCard
-              key={item.slug}
-              item={item}
-              active={activeSlug === item.slug}
-              onPlay={() => setActiveSlug(item.slug)}
-              onStop={() => setActiveSlug(null)}
-            />
+            <div key={`${item.slug}-${shuffleTick}`} className="shuffle-deal">
+              <FilmCard
+                item={item}
+                active={activeSlug === item.slug}
+                onPlay={() => setActiveSlug(item.slug)}
+                onStop={() => setActiveSlug(null)}
+              />
+            </div>
           ))}
         </div>
       </div>
