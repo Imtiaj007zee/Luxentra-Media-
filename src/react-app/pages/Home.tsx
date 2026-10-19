@@ -307,6 +307,14 @@ function WorkStrip() {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     []
   );
+  // Real hover only: touch devices fire emulated mouseenter with no
+  // mouseleave, which would freeze the shuffle forever after one tap.
+  const canHover = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: hover)").matches,
+    []
+  );
 
   // Shuffle the deck every few seconds, like a living portfolio wall.
   // Pauses while a video plays, while the visitor is touching the strip,
@@ -344,8 +352,8 @@ function WorkStrip() {
       </div>
       <div
         className="overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20"
-        onMouseEnter={() => setUserHolding(true)}
-        onMouseLeave={() => setUserHolding(false)}
+        onMouseEnter={() => canHover && setUserHolding(true)}
+        onMouseLeave={() => canHover && setUserHolding(false)}
         onTouchStart={() => setUserHolding(true)}
         onTouchEnd={() => setUserHolding(false)}
         onFocus={() => setUserHolding(true)}
