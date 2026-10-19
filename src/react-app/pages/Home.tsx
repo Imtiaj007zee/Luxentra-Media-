@@ -1,93 +1,384 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router";
-import { ArrowUpRight, Check, Play } from "lucide-react";
+import { ArrowUpRight, Check } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import FaqSection from "@/react-app/components/FaqSection";
-import ProofSection from "@/react-app/components/ProofSection";
 import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
-import {
-  useAddOns,
-  useLiveCatalog,
-  useT,
-  useTerms,
-} from "@/react-app/lib/siteContent";
+import { useT } from "@/react-app/lib/siteContent";
 import { useSiteSettings } from "@/react-app/lib/siteSettings";
 
-function useServices(t: ReturnType<typeof useT>) {
-  return useMemo(
-    () => [
-      {
-        n: "01",
-        label: t("home.svc1_label"),
-        title: t("home.svc1_title"),
-        copy: t("home.svc1_copy"),
-        cta: t("home.svc1_cta"),
-        href: "/work?tab=photos",
-        dark: false,
-      },
-      {
-        n: "02",
-        label: t("home.svc2_label"),
-        title: t("home.svc2_title"),
-        copy: t("home.svc2_copy"),
-        cta: t("home.svc2_cta"),
-        href: "/branding",
-        dark: true,
-      },
-      {
-        n: "03",
-        label: t("home.svc3_label"),
-        title: t("home.svc3_title"),
-        copy: t("home.svc3_copy"),
-        cta: t("home.svc3_cta"),
-        href: "/work#films",
-        dark: false,
-      },
-    ],
-    [t]
-  );
-}
+// ── Scarcity bar ─────────────────────────────────────────────────────────
+// Thin fixed bar above the nav. Copy is backstage-editable (home.scarcity_bar).
 
-function useSteps(t: ReturnType<typeof useT>) {
-  return useMemo(
-    () => [
-      { n: "01", title: t("home.step1_title"), copy: t("home.step1_copy") },
-      { n: "02", title: t("home.step2_title"), copy: t("home.step2_copy") },
-      { n: "03", title: t("home.step3_title"), copy: t("home.step3_copy") },
-    ],
-    [t]
-  );
-}
-
-function FeaturedTwilight() {
+function ScarcityBar() {
   const t = useT();
-  const terms = useTerms();
   return (
     <Link
-      to="/work?tab=photos&filter=twilight"
-      className="relative block w-full rounded-md overflow-hidden bg-[#1a1a1a] text-left group"
-      aria-label={t("home.featured_aria")}
+      to="/order"
+      className="fixed top-0 left-0 right-0 z-[60] bg-[#c7ff00] text-black h-10 flex items-center justify-center px-4 hover:bg-[#d9ff4d] transition-colors"
     >
-      <img
-        src={terms.featured_photo || "/work/photos/new-twilight-4.jpg"}
-        alt={t("home.featured_alt")}
-        loading="lazy"
-        className="w-full aspect-video object-cover group-hover:scale-[1.02] transition-transform duration-500"
-      />
-      <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-      <span className="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="eyebrow text-[#c7ff00] block mb-1">{t("home.featured_eyebrow")}</span>
-        <span className="text-white text-[17px] font-bold tracking-tight block">
-          {t("home.featured_label")}
-        </span>
-      </span>
+      <p className="text-[13px] md:text-[14px] font-semibold tracking-tight truncate">
+        {t("home.scarcity_bar")}
+      </p>
     </Link>
   );
 }
 
-// ── Real Estate Impact Dashboard ─────────────────────────────
+// ── Hero ─────────────────────────────────────────────────────────────────
+// UNTOUCHED: headline, sub-copy and buttons stay exactly as they were.
+
+function Hero() {
+  const t = useT();
+  return (
+    <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
+      {/* Cinematic backdrop */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
+        <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
+        <div
+          className="absolute inset-0 opacity-60"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
+            WebkitMaskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
+          }}
+        />
+      </div>
+
+      <div className="relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28">
+        <p className="eyebrow text-white/50 mb-6 text-center">{t("home.eyebrow")}</p>
+        <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6 text-center">
+          {t("home.hero_h1a")}
+          <br />
+          {t("home.hero_h1b")}
+        </h1>
+        <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center">
+          {t("home.hero_sub1")}
+          <br className="hidden md:block" /> {t("home.hero_sub2")}
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32">
+          <PackageButton to="/order" dark={false}>
+            {t("home.cta_book")}
+          </PackageButton>
+          <Link
+            to="/work"
+            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
+          >
+            {t("home.cta_work")} <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6">
+          <p className="eyebrow text-white/50 mb-4">{t("home.picker_eyebrow")}</p>
+          <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
+            {t("home.picker_h2")}
+          </h2>
+          <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed mb-8 max-w-xl">
+            {t("home.picker_copy")}
+          </p>
+          <button
+            type="button"
+            onClick={openServicePicker}
+            className="btn-lime breathe-attention gap-2"
+          >
+            {t("home.picker_button")} <ArrowUpRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Proof ticker ─────────────────────────────────────────────────────────
+// Infinite scrolling strip of real proof points. Numbers bind to live settings.
+
+function ProofTicker() {
+  const t = useT();
+  const { settings } = useSiteSettings();
+  const items = useMemo(
+    () => [
+      t("home.ticker_reel1"),
+      `${settings.stat_properties}+ properties covered`,
+      `$${settings.stat_value_m}M+ in listing value`,
+      t("home.ticker_reel2"),
+      t("home.ticker_delivery"),
+    ],
+    [t, settings]
+  );
+  const renderRow = (hidden: boolean) => (
+    <>
+      {items.map((item, i) => (
+        <span key={i} className="flex items-center shrink-0" aria-hidden={hidden || undefined}>
+          <span className="text-[14px] md:text-[15px] font-medium text-white/85 whitespace-nowrap">
+            {item}
+          </span>
+          <span className="mx-8 w-1.5 h-1.5 rounded-full bg-[#c7ff00] shrink-0" aria-hidden="true" />
+        </span>
+      ))}
+    </>
+  );
+  return (
+    <div className="ticker bg-[#0b0b0b] border-y border-white/10 overflow-hidden py-4">
+      <div className="ticker-track flex w-max">
+        {renderRow(false)}
+        <div className="flex" aria-hidden="true">
+          {renderRow(true)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Service cards ────────────────────────────────────────────────────────
+// Numbered Reachwise-style cards. Prices bind to live Site Settings.
+
+function useServiceCards(t: ReturnType<typeof useT>) {
+  const { settings } = useSiteSettings();
+  return useMemo(
+    () => [
+      {
+        n: "01",
+        title: t("home.card1_title"),
+        copy: t("home.card1_copy"),
+        includes: t("home.card1_includes")
+          .split("\n")
+          .map((f) => f.trim())
+          .filter(Boolean),
+        price: `$${settings.price_standard}`,
+        priceNote: t("home.card1_price_note"),
+        proof: t("home.card1_proof"),
+        cta: t("home.card1_cta"),
+        href: "/order",
+        dark: false,
+      },
+      {
+        n: "02",
+        title: t("home.card2_title"),
+        copy: t("home.card2_copy"),
+        includes: t("home.card2_includes")
+          .split("\n")
+          .map((f) => f.trim())
+          .filter(Boolean),
+        price: `$${settings.price_bundle_listing_premiere}`,
+        priceNote: t("home.card2_price_prefix"),
+        proof: t("home.card2_proof"),
+        cta: t("home.card2_cta"),
+        href: "/order",
+        dark: false,
+      },
+      {
+        n: "03",
+        title: t("home.card3_title"),
+        copy: t("home.card3_copy"),
+        includes: t("home.card3_includes")
+          .split("\n")
+          .map((f) => f.trim())
+          .filter(Boolean),
+        price: `$${settings.price_branding_essential}`,
+        priceNote: t("home.card3_price_note"),
+        proof: t("home.card3_proof"),
+        cta: t("home.card3_cta"),
+        href: "/order",
+        dark: true,
+      },
+    ],
+    [t, settings]
+  );
+}
+
+function ServiceCards() {
+  const t = useT();
+  const cards = useServiceCards(t);
+  return (
+    <section id="services" className="bg-[#f4f4f4] py-20 md:py-28 scroll-mt-16">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="eyebrow text-black/40 mb-4">{t("home.cards_eyebrow")}</p>
+        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
+          {t("home.cards_h2a")}
+          <br />
+          {t("home.cards_h2b")}
+        </h2>
+        <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12 max-w-2xl">
+          {t("home.cards_intro")}
+        </p>
+        <div className="grid md:grid-cols-3 gap-5">
+          {cards.map((c) => (
+            <div
+              key={c.n}
+              className={`rounded-md p-8 flex flex-col ${
+                c.dark ? "bg-[#0b0b0b] text-white" : "bg-white text-black"
+              }`}
+            >
+              <p className={`eyebrow mb-6 ${c.dark ? "text-[#c7ff00]" : "text-black/40"}`}>
+                {c.n}
+              </p>
+              <h3 className="text-[28px] font-bold tracking-tight leading-tight mb-3">
+                {c.title}
+              </h3>
+              <p
+                className={`text-[15px] leading-relaxed mb-8 ${
+                  c.dark ? "text-white/60" : "text-black/60"
+                }`}
+              >
+                {c.copy}
+              </p>
+              <ul className="space-y-3 mb-8">
+                {c.includes.map((f) => (
+                  <li key={f} className="flex items-start gap-3 text-[15px]">
+                    <span
+                      className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                        c.dark ? "bg-[#c7ff00]" : "bg-black"
+                      }`}
+                    >
+                      <Check
+                        className={`w-3 h-3 ${c.dark ? "text-black" : "text-[#c7ff00]"}`}
+                        strokeWidth={3}
+                      />
+                    </span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-auto">
+                <p className="price-num text-[44px] font-bold tracking-[-0.03em] leading-none mb-1">
+                  {c.price}
+                </p>
+                <p className={`text-[13px] mb-3 ${c.dark ? "text-white/50" : "text-black/50"}`}>
+                  {c.priceNote}
+                </p>
+                <p className="flex items-center gap-2 text-[13px] font-semibold mb-8">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#c7ff00] shrink-0" aria-hidden="true" />
+                  {c.proof}
+                </p>
+                <PackageButton to={c.href} dark={!c.dark}>
+                  {c.cta}
+                </PackageButton>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Why LuxEntra ─────────────────────────────────────────────────────────
+
+function WhyLuxEntra() {
+  const t = useT();
+  return (
+    <section className="bg-[#0b0b0b] text-white py-20 md:py-28">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="eyebrow text-[#c7ff00] mb-6">{t("home.why_eyebrow")}</p>
+        <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.08] mb-10 max-w-4xl">
+          {t("home.why_h2")}
+        </h2>
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
+          <p className="text-[17px] md:text-[19px] text-white/70 leading-relaxed">
+            {t("home.why_p1")}
+          </p>
+          <p className="text-[17px] md:text-[19px] text-white/70 leading-relaxed">
+            {t("home.why_p2")}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Case study ───────────────────────────────────────────────────────────
+
+function CaseStudy() {
+  const t = useT();
+  const stats = [
+    { value: t("home.case_stat1_value"), label: t("home.case_stat1_label") },
+    { value: t("home.case_stat2_value"), label: t("home.case_stat2_label") },
+    { value: t("home.case_stat3_value"), label: t("home.case_stat3_label") },
+  ];
+  return (
+    <section className="bg-white py-20 md:py-28">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="eyebrow text-black/40 mb-4">{t("home.case_eyebrow")}</p>
+        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
+          {t("home.case_h2")}
+        </h2>
+        <p className="text-[14px] uppercase tracking-[0.12em] text-black/45 mb-8">
+          {t("home.case_client")}
+        </p>
+        <p className="text-[17px] md:text-[19px] text-black/65 leading-relaxed max-w-2xl mb-12">
+          {t("home.case_copy")}
+        </p>
+        <div className="grid grid-cols-3 gap-4 md:gap-5 max-w-2xl mb-12">
+          {stats.map((s) => (
+            <div key={s.label} className="bg-[#f4f4f4] rounded-md p-6 md:p-8 text-center">
+              <p className="price-num text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-none mb-2">
+                {s.value}
+              </p>
+              <p className="text-[13px] md:text-[14px] text-black/50">{s.label}</p>
+            </div>
+          ))}
+        </div>
+        <Link to="/work" className="btn-dark">
+          {t("home.case_cta")}
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+// ── Process ──────────────────────────────────────────────────────────────
+
+function useProcessSteps(t: ReturnType<typeof useT>) {
+  return useMemo(
+    () => [
+      { n: "01", title: t("home.pstep1_title"), copy: t("home.pstep1_copy") },
+      { n: "02", title: t("home.pstep2_title"), copy: t("home.pstep2_copy") },
+      { n: "03", title: t("home.pstep3_title"), copy: t("home.pstep3_copy") },
+      { n: "04", title: t("home.pstep4_title"), copy: t("home.pstep4_copy") },
+    ],
+    [t]
+  );
+}
+
+function ProcessSteps() {
+  const t = useT();
+  const steps = useProcessSteps(t);
+  return (
+    <section className="bg-[#f4f4f4] py-20 md:py-28">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="eyebrow text-black/40 mb-4">{t("home.process_eyebrow")}</p>
+        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
+          {t("home.process_h2")}
+        </h2>
+        <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div
+            className="hidden lg:block absolute top-5 left-[12%] right-[12%] h-px bg-black/15"
+            aria-hidden="true"
+          />
+          {steps.map((s) => (
+            <div key={s.n} className="relative">
+              <p className="relative z-10 w-10 h-10 rounded-full bg-[#c7ff00] text-black text-[15px] font-bold flex items-center justify-center mb-5">
+                {s.n}
+              </p>
+              <h3 className="text-[22px] font-bold tracking-tight mb-3">{s.title}</h3>
+              <p className="text-[15px] text-black/60 leading-relaxed">{s.copy}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-14">
+          <Link to="/order" className="btn-dark">
+            {t("nav.cta_book")}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Real Estate Impact Dashboard (stats only) ────────────────────────────
 // Live values come from Site Settings (editable at /backstage).
 
 function useImpactMetrics() {
@@ -249,7 +540,7 @@ function ImpactCard({
   );
 }
 
-function ImpactDashboard() {
+function ImpactStats() {
   const t = useT();
   const metrics = useImpactMetrics();
   const dashboardRef = useRef<HTMLDivElement>(null);
@@ -270,62 +561,8 @@ function ImpactDashboard() {
   }, []);
 
   return (
-    <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
-      {/* Cinematic backdrop */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
-        <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
-        <div
-          className="absolute inset-0 opacity-60"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
-            backgroundSize: "56px 56px",
-            maskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
-            WebkitMaskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
-          }}
-        />
-      </div>
-
-      <div className="relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28">
-        <p className="eyebrow text-white/50 mb-6 text-center">{t("home.eyebrow")}</p>
-        <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6 text-center">
-          {t("home.hero_h1a")}
-          <br />
-          {t("home.hero_h1b")}
-        </h1>
-        <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center">
-          {t("home.hero_sub1")}
-          <br className="hidden md:block" /> {t("home.hero_sub2")}
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32">
-          <PackageButton to="/order" dark={false}>
-            {t("home.cta_book")}
-          </PackageButton>
-          <Link
-            to="/work"
-            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
-          >
-            {t("home.cta_work")} <ArrowUpRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6">
-          <p className="eyebrow text-white/50 mb-4">{t("home.picker_eyebrow")}</p>
-          <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
-            {t("home.picker_h2")}
-          </h2>
-          <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed mb-8 max-w-xl">
-            {t("home.picker_copy")}
-          </p>
-          <button
-            type="button"
-            onClick={openServicePicker}
-            className="btn-lime breathe-attention gap-2"
-          >
-            {t("home.picker_button")} <ArrowUpRight className="w-4 h-4" />
-          </button>
-        </div>
-
+    <section className="relative bg-[#070707] text-white overflow-hidden border-t border-white/10">
+      <div className="relative max-w-[1200px] mx-auto px-6 py-20 md:py-28">
         <div ref={dashboardRef}>
           <div
             className={`impact-fade transition-all duration-700 ease-out ${
@@ -424,328 +661,21 @@ function PackageButton({ to, dark, children }: { to: string; dark?: boolean; chi
 
 export default function HomePage() {
   const t = useT();
-  const terms = useTerms();
-  const { bundles, standardPrice } = useLiveCatalog();
-  const addOns = useAddOns();
-  const SERVICES = useServices(t);
-  const STEPS = useSteps(t);
-  const pkgFeatures = useMemo(
-    () =>
-      t("home.pkg_features")
-        .split("\n")
-        .map((f) => f.trim())
-        .filter(Boolean),
-    [t]
-  );
-
-  // Hovered / focused / tapped package card. Defaults to the featured
-  // ("Most chosen") package; resets when the cursor leaves the section.
-  const defaultPackage = bundles.find((b) => b.featured)?.id ?? bundles[0]?.id;
-  const [activePackage, setActivePackage] = useState(defaultPackage);
 
   return (
-    <div className="min-h-screen bg-white text-black pt-16">
-      <SiteNav />
+    <div className="min-h-screen bg-white text-black pt-[104px]">
+      <ScarcityBar />
+      <SiteNav topOffset={40} />
       <ServicePickerModal />
       <LeadCapturePopup />
 
-      <ImpactDashboard />
-
-      {/* ── The Work ─────────────────────────────────────── */}
-      <section id="work" className="bg-white py-20 md:py-28 scroll-mt-16">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-            {t("home.stepinside_h2")}
-          </h2>
-          <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12 max-w-2xl">
-            {t("home.stepinside_copy1")}
-            <br />
-            {t("home.stepinside_copy2")}
-          </p>
-
-          <div className="grid lg:grid-cols-3 gap-5">
-            <div className="lg:col-span-2">
-              <FeaturedTwilight />
-            </div>
-            <div className="grid grid-rows-2 gap-5">
-              <Link
-                to="/work?tab=photos&filter=interior"
-                className="group relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px] block"
-                aria-label={t("home.stills_aria")}
-              >
-                <img src={terms.still_1 || "/stills/still-1.jpg"} alt={t("home.still1_alt")} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
-                <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
-                  {t("home.still1_caption")}
-                </figcaption>
-              </Link>
-              <Link
-                to="/work?tab=photos&filter=interior"
-                className="group relative rounded-md overflow-hidden bg-[#f4f4f4] min-h-[180px] block"
-                aria-label={t("home.stills_aria")}
-              >
-                <img src={terms.still_2 || "/stills/still-2.jpg"} alt={t("home.still2_alt")} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500" />
-                <figcaption className="absolute bottom-4 left-4 text-white text-[15px] font-medium drop-shadow">
-                  {t("home.still2_caption")}
-                </figcaption>
-              </Link>
-            </div>
-          </div>
-          <p className="text-[13px] text-black/40 mt-5">{t("home.stepinside_note")}</p>
-          <Link to="/work" className="link-dark text-[16px] mt-6 inline-flex">
-            {t("home.stepinside_link")} <ArrowUpRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
-
-      {/* ── What we create ───────────────────────────────── */}
-      <section id="services" className="bg-[#f4f4f4] py-20 md:py-28 scroll-mt-16">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
-            {t("home.services_h2a")}
-            <br />
-            {t("home.services_h2b")}
-          </h2>
-          <div className="grid md:grid-cols-3 gap-5">
-            {SERVICES.map((s) => (
-              <div
-                key={s.n}
-                className={`rounded-md p-8 flex flex-col ${
-                  s.dark ? "bg-[#0b0b0b] text-white" : "bg-white text-black"
-                }`}
-              >
-                <p className={`eyebrow mb-8 ${s.dark ? "text-[#c7ff00]" : "text-black/40"}`}>
-                  {s.n} / {s.label}
-                </p>
-                <h3 className="text-[28px] font-bold tracking-tight leading-tight mb-3">{s.title}</h3>
-                <p className={`text-[15px] leading-relaxed mb-8 ${s.dark ? "text-white/60" : "text-black/60"}`}>
-                  {s.copy}
-                </p>
-                <div className="mt-auto">
-                  {s.dark ? (
-                    <Link
-                      to={s.href}
-                      className="blink-attention inline-flex items-center gap-2 rounded-full bg-[#c7ff00] text-black text-[14px] font-bold px-5 py-2.5 hover:bg-[#d9ff4d] transition-colors shadow-[0_0_24px_rgba(199,255,0,0.65)]"
-                    >
-                      {s.cta}{" "}
-                      {s.href === "/order" ? (
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      ) : (
-                        <Play className="w-3.5 h-3.5 fill-black" />
-                      )}
-                    </Link>
-                  ) : (
-                    <Link to={s.href} className="link-dark text-[15px]">
-                      {s.cta} <ArrowUpRight className="w-4 h-4" />
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── The Listing Essentials ───────────────────────── */}
-      <section id="pricing" className="bg-white py-20 md:py-28 scroll-mt-16">
-        <div className="max-w-[1200px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          <div>
-            <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-6">
-              {t("home.pkg_h2a")}
-              <br />
-              {t("home.pkg_h2b")}
-            </h2>
-            <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
-              {t("home.pkg_copy")}
-            </p>
-            <p className="price-num text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
-              ${standardPrice}
-            </p>
-            <p className="text-[15px] text-black/50 mb-10">{t("home.pkg_per")}</p>
-            <Link to="/order" className="btn-dark">
-              {t("home.pkg_cta")}
-            </Link>
-          </div>
-
-          <div className="bg-[#f4f4f4] rounded-md p-8 md:p-10">
-            <h3 className="text-[24px] font-bold tracking-tight mb-8">{t("home.pkg_card_title")}</h3>
-            <ul className="space-y-4 mb-8">
-              {pkgFeatures.map((f) => (
-                <li key={f} className="flex items-start gap-3 text-[16px]">
-                  <span className="mt-0.5 w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
-                    <Check className="w-3 h-3 text-[#c7ff00]" strokeWidth={3} />
-                  </span>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="text-[13px] text-black/50 leading-relaxed">
-              {t("home.pkg_fineprint")}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Don't just list it. Launch it. ─────────────────── */}
-      <section
-        className="bg-black text-white py-20 md:py-28"
-        onMouseLeave={() => setActivePackage(defaultPackage)}
-      >
-        <div className="max-w-[1200px] mx-auto px-6">
-          <p className="apple-eyebrow !text-[#c7ff00] mb-4">{t("home.bundles_eyebrow")}</p>
-          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-            {t("home.bundles_h2a")}
-            <br />
-            {t("home.bundles_h2b")}
-          </h2>
-          <p className="text-[17px] md:text-[19px] text-white/60 leading-relaxed mb-14 max-w-2xl">
-            {t("home.bundles_intro")}
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {bundles.map((p) => {
-              const isActive = activePackage === p.id;
-              return (
-              <div
-                key={p.id}
-                tabIndex={0}
-                onMouseEnter={() => setActivePackage(p.id)}
-                onFocus={() => setActivePackage(p.id)}
-                onTouchStart={() => setActivePackage(p.id)}
-                className={`pkg-card relative rounded-md p-8 md:p-10 flex flex-col outline-none transition-all duration-300 ease-out ${
-                  isActive
-                    ? "bg-[#c7ff00] text-black scale-[1.06] -translate-y-4 z-10 shadow-[0_25px_70px_-15px_rgba(199,255,0,0.5),0_12px_32px_-10px_rgba(0,0,0,0.6)]"
-                    : "bg-white/5 border border-white/10 text-white scale-[0.98] z-0"
-                }`}
-              >
-                {p.badge && (
-                  <span
-                    className={`absolute -top-3.5 left-8 text-[11px] font-bold uppercase tracking-[0.14em] px-3.5 py-1.5 rounded-full ${
-                      isActive ? "bg-black text-[#c7ff00]" : "bg-[#c7ff00] text-black"
-                    }`}
-                  >
-                    {p.badge}
-                  </span>
-                )}
-                <h3 className="text-[24px] font-bold tracking-tight mb-3">
-                  {p.name}
-                </h3>
-                <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${isActive ? "text-black/60" : "text-white/50"}`}>
-                  {t("home.bundle_starting")}
-                </p>
-                <p className="price-num text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
-                  ${p.price}
-                </p>
-                <p className={`text-[15px] leading-relaxed mb-8 ${isActive ? "text-black/70" : "text-white/60"}`}>
-                  {p.blurb}
-                </p>
-                <ul className="space-y-3.5 mb-10 flex-1">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-[15px]">
-                      <span
-                        className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                          isActive ? "bg-black" : "bg-[#c7ff00]"
-                        }`}
-                      >
-                        <Check
-                          className={`w-3 h-3 ${isActive ? "text-[#c7ff00]" : "text-black"}`}
-                          strokeWidth={3}
-                        />
-                      </span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <PackageButton to={`/order?package=${p.id}`} dark={isActive}>
-                  {t("home.bundle_cta")}
-                </PackageButton>
-              </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Need something more custom? ─────────────────────── */}
-      <section className="bg-white py-20 md:py-28">
-        <div className="max-w-[1200px] mx-auto px-6 text-center">
-          <h2 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] leading-tight mb-5">
-            {t("home.custom_h2")}
-          </h2>
-          <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-2xl mx-auto">
-            {t("home.custom_copy")
-              .split("\n")
-              .map((l, i, arr) => (
-                <span key={i}>
-                  {l}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
-          </p>
-          <Link to="/order?package=consultation" className="btn-dark">
-            {t("home.custom_cta")}
-          </Link>
-        </div>
-      </section>
-
-      {/* ── Make it yours ────────────────────────────────── */}
-      <section className="bg-[#f4f4f4] py-20 md:py-28">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-            {t("home.addons_h2a")}
-            <br />
-            {t("home.addons_h2b")}
-          </h2>
-          <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12">
-            {t("home.addons_copy")
-              .split("\n")
-              .map((l, i, arr) => (
-                <span key={i}>
-                  {l}
-                  {i < arr.length - 1 && <br />}
-                </span>
-              ))}
-          </p>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
-            {addOns.map((a) => (
-              <Link
-                key={a.id}
-                to="/order"
-                className="group bg-white rounded-md p-7 flex flex-col hover:shadow-lg transition-shadow"
-              >
-                <span className="flex items-start justify-between mb-6">
-                  <span className="price-num text-[26px] font-bold tracking-tight">{a.price}</span>
-                  <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-[#a8cc00] transition-colors" />
-                </span>
-                <span className="text-[17px] font-bold tracking-tight">{a.name}</span>
-                <span className="text-[14px] text-black/50 mt-1">{a.note}</span>
-              </Link>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ── From shoot to listing ────────────────────────── */}
-      <section className="bg-white py-20 md:py-28">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
-            {t("home.steps_h2")}
-          </h2>
-          <div className="grid md:grid-cols-3 gap-10">
-            {STEPS.map((s) => (
-              <div key={s.n}>
-                <p className="eyebrow text-black/40 mb-4">{s.n}</p>
-                <h3 className="text-[22px] font-bold tracking-tight mb-3">{s.title}</h3>
-                <p className="text-[15px] text-black/60 leading-relaxed">{s.copy}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Proof ──────────────────────────────────────── */}
-      <ProofSection />
+      <Hero />
+      <ProofTicker />
+      <ServiceCards />
+      <WhyLuxEntra />
+      <CaseStudy />
+      <ProcessSteps />
+      <ImpactStats />
 
       {/* ── FAQ ──────────────────────────────────────────── */}
       <FaqSection />

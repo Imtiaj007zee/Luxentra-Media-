@@ -305,3 +305,21 @@
     @apply inline-flex items-center justify-center rounded-full bg-[#c7ff00] px-8 py-3.5 text-[17px] font-semibold text-black transition-colors hover:bg-[#d9ff4d] active:bg-[#a8cc00];
   }
 }
+
+/* ── Proof ticker (infinite marquee) ── */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.ticker-track {
+  animation: ticker-scroll 30s linear infinite;
+  will-change: transform;
+}
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}

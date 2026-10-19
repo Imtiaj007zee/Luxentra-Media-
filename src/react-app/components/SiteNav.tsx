@@ -6,7 +6,7 @@ import { useT } from "@/react-app/lib/siteContent";
  * LuxEntra global navigation: solid black sticky bar, lime brand lockup,
  * centered links, lime pill CTA, full-screen black overlay menu on mobile.
  */
-export default function SiteNav() {
+export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -36,7 +36,7 @@ export default function SiteNav() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0b0b0b]">
+      <header className="fixed left-0 right-0 z-50 bg-[#0b0b0b]" style={{ top: topOffset }}>
         <nav className="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
           <Link
             to="/"
