@@ -51,6 +51,21 @@ function Hero() {
     <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        {/* Giant X logo watermark */}
+        <svg
+          viewBox="0 0 200 200"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] text-[#c7ff00] opacity-[0.05] animate-[spin_140s_linear_infinite] motion-reduce:animate-none"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="30"
+          strokeLinecap="round"
+        >
+          <line x1="28" y1="100" x2="172" y2="100" />
+          <line x1="42" y1="42" x2="88" y2="88" />
+          <line x1="158" y1="42" x2="112" y2="88" />
+          <line x1="42" y1="158" x2="88" y2="112" />
+          <line x1="158" y1="158" x2="112" y2="112" />
+        </svg>
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
         <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
         <div
