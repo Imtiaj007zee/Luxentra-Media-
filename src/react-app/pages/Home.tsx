@@ -31,6 +31,21 @@ function ScarcityBar() {
 
 function Hero() {
   const t = useT();
+  // Entrance choreography: flip on after first paint, CSS does the rest.
+  // Content, keys, classes and layout below are unchanged; only animation
+  // wrappers/classes were added.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    let raf2 = 0;
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setMounted(true));
+    });
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+    };
+  }, []);
+
   return (
     <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
@@ -49,18 +64,41 @@ function Hero() {
         />
       </div>
 
-      <div className="relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28">
-        <p className="eyebrow text-white/50 mb-6 text-center">{t("home.eyebrow")}</p>
+      <div
+        className={`relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28${
+          mounted ? " hero-in" : ""
+        }`}
+      >
+        <p
+          className="eyebrow text-white/50 mb-6 text-center hero-fade"
+          style={{ transitionDelay: "300ms" }}
+        >
+          {t("home.eyebrow")}
+        </p>
         <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6 text-center">
-          {t("home.hero_h1a")}
+          <span className="hero-mask">
+            <span className="hero-rise" style={{ transitionDelay: "0ms" }}>
+              {t("home.hero_h1a")}
+            </span>
+          </span>
           <br />
-          {t("home.hero_h1b")}
+          <span className="hero-mask">
+            <span className="hero-rise" style={{ transitionDelay: "120ms" }}>
+              {t("home.hero_h1b")}
+            </span>
+          </span>
         </h1>
-        <p className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center">
+        <p
+          className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center hero-fade"
+          style={{ transitionDelay: "420ms" }}
+        >
           {t("home.hero_sub1")}
           <br className="hidden md:block" /> {t("home.hero_sub2")}
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32">
+        <div
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32 hero-fade"
+          style={{ transitionDelay: "540ms" }}
+        >
           <PackageButton to="/order" dark={false}>
             {t("home.cta_book")}
           </PackageButton>
@@ -71,7 +109,10 @@ function Hero() {
             {t("home.cta_work")} <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6">
+        <div
+          className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6 hero-fade"
+          style={{ transitionDelay: "680ms" }}
+        >
           <p className="eyebrow text-white/50 mb-4">{t("home.picker_eyebrow")}</p>
           <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
             {t("home.picker_h2")}
@@ -88,6 +129,78 @@ function Hero() {
           </button>
         </div>
       </div>
+    </section>
+  );
+}
+
+// ── Typed rotator strip ──────────────────────────────────────────────────
+// Shamim-style kinetic line between the hero and the proof ticker.
+// Words are backstage-editable (home.typed_words, one per line).
+
+function TypedRotator() {
+  const t = useT();
+  const prefix = t("home.typed_prefix");
+  const suffix = t("home.typed_suffix");
+  const words = useMemo(() => {
+    const raw = t("home.typed_words")
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return raw.length > 0 ? raw : ["listing films"];
+  }, [t]);
+
+  const [reduced] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+  const [wordIndex, setWordIndex] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+  const [phase, setPhase] = useState<"idle" | "typing" | "deleting">("idle");
+
+  useEffect(() => {
+    if (reduced) return;
+    const word = words[wordIndex % words.length];
+    let delay: number;
+    let next: () => void;
+    if (phase === "idle") {
+      delay = 900;
+      next = () => setPhase("typing");
+    } else if (phase === "typing") {
+      if (charCount < word.length) {
+        delay = 55;
+        next = () => setCharCount((c) => c + 1);
+      } else {
+        delay = 1600;
+        next = () => setPhase("deleting");
+      }
+    } else {
+      if (charCount > 0) {
+        delay = 28;
+        next = () => setCharCount((c) => c - 1);
+      } else {
+        delay = 350;
+        next = () => {
+          setWordIndex((i) => (i + 1) % words.length);
+          setPhase("typing");
+        };
+      }
+    }
+    const timer = window.setTimeout(next, delay);
+    return () => window.clearTimeout(timer);
+  }, [phase, charCount, wordIndex, words, reduced]);
+
+  const visible = reduced ? words[0] : words[wordIndex % words.length].slice(0, charCount);
+
+  return (
+    <section
+      aria-label={`${prefix} ${words[0]} ${suffix}`}
+      className="bg-[#070707] text-white px-6 py-10 md:py-14 overflow-hidden"
+    >
+      <p className="typed-line text-center text-[26px] md:text-[42px] font-bold tracking-[-0.02em] leading-[1.2]">
+        {prefix} <span className="text-[#c7ff00]">{visible}</span>
+        <span className="typed-cursor" aria-hidden="true" /> {suffix}
+      </p>
     </section>
   );
 }
@@ -670,6 +783,7 @@ export default function HomePage() {
       <LeadCapturePopup />
 
       <Hero />
+      <TypedRotator />
       <ProofTicker />
       <ServiceCards />
       <WhyLuxEntra />

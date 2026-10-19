@@ -117,6 +117,10 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "home.final_cta2", group: "Homepage", label: "Final button 2", value: "Meet the team" },
   // ── Homepage: scarcity bar ──
   { key: "home.scarcity_bar", group: "Homepage", label: "Scarcity bar line", value: "Now booking November — limited shoot days left" },
+  // ── Homepage: typed rotator ──
+  { key: "home.typed_prefix", group: "Homepage", label: "Typed line prefix", value: "We turn" },
+  { key: "home.typed_words", group: "Homepage", label: "Typed rotating words (one per line)", value: "listing films\nscroll-stopping reels\npersonal brands\nfirst impressions" },
+  { key: "home.typed_suffix", group: "Homepage", label: "Typed line suffix", value: "into clients." },
   // ── Homepage: proof ticker ──
   { key: "home.ticker_reel1", group: "Homepage", label: "Ticker item: reel 1", value: "3M views — Why Suffer, My Dear Realtors?" },
   { key: "home.ticker_reel2", group: "Homepage", label: "Ticker item: reel 2", value: "2.1M views — Parking Features Reel" },
