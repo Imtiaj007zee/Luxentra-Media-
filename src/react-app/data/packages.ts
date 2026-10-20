@@ -75,13 +75,13 @@ export const BRANDING_PLANS: BrandingPlan[] = [
   {
     id: "essential",
     name: "Essential",
-    price: 5999,
+    price: 3999,
     tagline: "Build Your Presence",
     desc: "For professionals who need a consistent, polished, and fully managed personal brand.",
     features: [
-      "15 short-form videos",
+      "10 short-form videos",
       "5 carousel posts",
-      "15–20 stories",
+      "15 stories",
       "Personal-brand and content strategy",
       "Monthly content planning",
       "Scripts, hooks, storytelling frameworks, and calls to action",
@@ -95,11 +95,11 @@ export const BRANDING_PLANS: BrandingPlan[] = [
   {
     id: "growth",
     name: "Growth",
-    price: 7999,
+    price: 5999,
     tagline: "Turn Attention Into Leads",
     desc: "For professionals ready to expand their reach and turn content engagement into qualified opportunities.",
     features: [
-      "20 short-form videos",
+      "15 short-form videos",
       "10 carousel posts",
       "30 stories",
       "Everything included in Essential",
@@ -120,13 +120,13 @@ export const BRANDING_PLANS: BrandingPlan[] = [
   {
     id: "premium",
     name: "Premium",
-    price: 10999,
+    price: 7999,
     tagline: "Convert, Optimize, and Scale",
     desc: "Our most advanced system for turning content into leads, potential clients, and measurable revenue opportunities.",
     badge: "Money-back guarantee",
     featured: true,
     features: [
-      "30 short-form videos",
+      "20 short-form videos",
       "15 carousel posts",
       "60 stories",
       "Everything included in Growth",
