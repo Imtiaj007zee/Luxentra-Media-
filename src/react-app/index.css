@@ -408,55 +408,14 @@
   }
 }
 
-/* ── Selected Work: U-shaped 3D fan (tablet and desktop) ─────────────────
-   Like shamimridha.com: the film strip bends into a U, edge cards larger
-   and turned in 3D, middle cards dipped and smaller, and the whole strip
-   drifts right to left on its own (see WorkStrip). Phones keep the flat
-   swipe row. Hovering straightens a card; playing a video flattens it. */
-@media (min-width: 768px) {
-  .work-fan {
-    perspective: 1400px;
-    perspective-origin: 50% 40%;
-  }
-  .work-fan .fan-card {
-    position: relative;
-    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform;
-  }
-  .work-fan .fan-card + .fan-card {
-    margin-left: -20px;
-  }
-  .work-fan .fan-card:nth-child(1) {
-    transform: rotateY(26deg) rotateZ(-3deg) scale(1.06);
-    z-index: 30;
-  }
-  .work-fan .fan-card:nth-child(2) {
-    transform: rotateY(15deg) rotateZ(-1.6deg) translateY(20px) scale(0.99);
-    z-index: 20;
-  }
-  .work-fan .fan-card:nth-child(3) {
-    transform: rotateY(5deg) rotateZ(-0.5deg) translateY(34px) scale(0.94);
-    z-index: 10;
-  }
-  .work-fan .fan-card:nth-child(4) {
-    transform: rotateY(-5deg) rotateZ(0.5deg) translateY(34px) scale(0.94);
-    z-index: 10;
-  }
-  .work-fan .fan-card:nth-child(5) {
-    transform: rotateY(-15deg) rotateZ(1.6deg) translateY(20px) scale(0.99);
-    z-index: 20;
-  }
-  .work-fan .fan-card:nth-child(6) {
-    transform: rotateY(-26deg) rotateZ(3deg) scale(1.06);
-    z-index: 30;
-  }
-  .work-fan[data-flat="true"] .fan-card {
-    transform: none;
-  }
-  .work-fan .fan-card:hover {
-    transform: rotateY(0deg) rotateZ(0deg) translateY(0) scale(1.12);
-    z-index: 40;
-  }
+/* ── Selected Work: Shamim-style 3D ring ─────────────────────────────────
+   The film strip is a cylinder viewed from inside, like shamimridha.com:
+   12 faces at 30-degree steps pushed 570px out under a 500px perspective
+   (set in JS), rotating right to left without stopping. Faces on the far
+   side of the ring are hidden by backface-visibility. */
+.ring-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* ── Hero logo: real 3D depth ────────────────────────────────────────────

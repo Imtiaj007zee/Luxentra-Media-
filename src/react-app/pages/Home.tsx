@@ -250,14 +250,16 @@ function FilmCard({
   active,
   onPlay,
   onStop,
+  className,
 }: {
   item: PortfolioItem;
   active: boolean;
   onPlay: () => void;
   onStop: () => void;
+  className?: string;
 }) {
   return (
-    <div className="shuffle-deal relative w-[210px] md:w-[240px] shrink-0 snap-start aspect-[9/16] rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111]">
+    <div className={`shuffle-deal relative shrink-0 snap-start rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111] ${className ?? "w-[210px] md:w-[240px] aspect-[9/16]"}`}>
       {active ? (
         <video
           key={item.slug}
@@ -309,20 +311,23 @@ function FilmCard({
 
 function WorkStrip() {
   const t = useT();
-  const [activeSlug, setActiveSlug] = useState<string | null>(null);
-  const [order, setOrder] = useState<string[]>(WORK_FILM_SLUGS);
-  const [userHolding, setUserHolding] = useState(false);
-  const [slide, setSlide] = useState<{ x: number; animate: boolean }>({
-    x: 0,
-    animate: false,
-  });
-  const trackRef = useRef<HTMLDivElement | null>(null);
   const films = useMemo(() => {
     const bySlug = new Map(PORTFOLIO.map((p) => [p.slug, p]));
-    return order
-      .map((slug) => bySlug.get(slug))
-      .filter((p): p is PortfolioItem => Boolean(p));
-  }, [order]);
+    return WORK_FILM_SLUGS.map((slug) => bySlug.get(slug)).filter(
+      (p): p is PortfolioItem => Boolean(p)
+    );
+  }, []);
+  // 12 ring slots: the 6 films twice around the cylinder.
+  const slots = useMemo(() => [...films, ...films], [films]);
+  const [activeSlot, setActiveSlot] = useState<number | null>(null);
+  const [holding, setHolding] = useState(false);
+  const ringRef = useRef<HTMLDivElement | null>(null);
+  const phiRef = useRef(0);
+  const targetPhiRef = useRef<number | null>(null);
+  const draggingRef = useRef(false);
+  const lastXRef = useRef(0);
+  const movedRef = useRef(0);
+  const resumeAtRef = useRef(0);
   const reducedMotion = useMemo(
     () =>
       typeof window !== "undefined" &&
@@ -330,56 +335,55 @@ function WorkStrip() {
     []
   );
   // Real hover only: touch devices fire emulated mouseenter with no
-  // mouseleave, which would freeze the drift forever after one tap.
+  // mouseleave, which would freeze the rotation forever after one tap.
   const canHover = useMemo(
     () =>
       typeof window !== "undefined" &&
       window.matchMedia("(hover: hover)").matches,
     []
   );
-  // The curved fan + drift run on tablet/desktop widths; phones keep the
-  // native swipe row.
-  const fanActive = useMemo(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(min-width: 768px)").matches,
-    []
-  );
 
-  const paused = userHolding || activeSlug !== null || reducedMotion || !fanActive;
-
-  // Continuous right-to-left drift: glide one slot left, wrap the first
-  // film to the end, snap back, repeat. Cards ride the curve as they move.
+  // Shamim-style shuffle: the ring never stops. Cards rotate around the
+  // inside of the cylinder, flowing right to left, each one taking its
+  // turn at the front. Dragging spins it; playing a film swings that
+  // film to the front and holds it there.
   useEffect(() => {
-    if (paused) {
-      setSlide({ x: 0, animate: false });
-      return;
-    }
-    let alive = true;
-    let t1 = 0;
-    let t2 = 0;
-    const cycle = () => {
-      if (!alive) return;
-      const track = trackRef.current;
-      const first = track?.children[0] as HTMLElement | undefined;
-      const second = track?.children[1] as HTMLElement | undefined;
-      const step =
-        first && second ? second.offsetLeft - first.offsetLeft : 236;
-      setSlide({ x: -step, animate: true });
-      t1 = window.setTimeout(() => {
-        if (!alive) return;
-        setOrder((prev) => [...prev.slice(1), prev[0]]);
-        setSlide({ x: 0, animate: false });
-        t2 = window.setTimeout(cycle, 1800);
-      }, 950);
+    let raf = 0;
+    const tick = () => {
+      const el = ringRef.current;
+      if (el) {
+        if (activeSlot !== null && targetPhiRef.current !== null) {
+          const diff =
+            ((targetPhiRef.current - phiRef.current + 540) % 360) - 180;
+          phiRef.current += diff * 0.075;
+          if (Math.abs(diff) < 0.05) phiRef.current = targetPhiRef.current;
+        } else if (
+          !draggingRef.current &&
+          !holding &&
+          !reducedMotion &&
+          Date.now() > resumeAtRef.current
+        ) {
+          phiRef.current += 0.045;
+        }
+        el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
+      }
+      raf = requestAnimationFrame(tick);
     };
-    t2 = window.setTimeout(cycle, 600);
-    return () => {
-      alive = false;
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-    };
-  }, [paused]);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [activeSlot, holding, reducedMotion]);
+
+  const playSlot = (slot: number) => {
+    // Swing the ring so this slot lands front and center, then play.
+    const delta = ((-slot * 30 - phiRef.current + 540) % 360) - 180;
+    targetPhiRef.current = phiRef.current + delta;
+    setActiveSlot(slot);
+  };
+  const stopSlot = () => {
+    setActiveSlot(null);
+    targetPhiRef.current = null;
+    resumeAtRef.current = Date.now() + 1500;
+  };
 
   return (
     <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
@@ -393,36 +397,58 @@ function WorkStrip() {
         </Link>
       </div>
       <div
-        className={
-          activeSlug !== null
-            ? "overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20"
-            : "overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-14 md:pb-20"
-        }
-        onMouseEnter={() => canHover && setUserHolding(true)}
-        onMouseLeave={() => canHover && setUserHolding(false)}
-        onTouchStart={() => setUserHolding(true)}
-        onTouchEnd={() => setUserHolding(false)}
-        onFocus={() => setUserHolding(true)}
-        onBlur={() => setUserHolding(false)}
+        className="relative h-[300px] md:h-[320px] w-full cursor-grab select-none touch-pan-y active:cursor-grabbing"
+        onMouseEnter={() => canHover && setHolding(true)}
+        onMouseLeave={() => canHover && setHolding(false)}
+        onPointerDown={(e) => {
+          draggingRef.current = true;
+          lastXRef.current = e.clientX;
+          movedRef.current = 0;
+          e.currentTarget.setPointerCapture(e.pointerId);
+        }}
+        onPointerMove={(e) => {
+          if (!draggingRef.current) return;
+          const dx = e.clientX - lastXRef.current;
+          lastXRef.current = e.clientX;
+          movedRef.current += Math.abs(dx);
+          phiRef.current -= dx * 0.22;
+        }}
+        onPointerUp={() => {
+          draggingRef.current = false;
+          resumeAtRef.current = Date.now() + 2500;
+        }}
+        onPointerCancel={() => {
+          draggingRef.current = false;
+          resumeAtRef.current = Date.now() + 2500;
+        }}
+        onClickCapture={(e) => {
+          // A drag is not a tap: don't let it start a video.
+          if (movedRef.current > 8) {
+            e.stopPropagation();
+            e.preventDefault();
+            movedRef.current = 0;
+          }
+        }}
       >
         <div
-          ref={trackRef}
-          data-flat={activeSlug !== null ? "true" : "false"}
-          className="work-fan flex gap-4 w-max pl-6 pr-6 md:pl-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))] md:pr-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))]"
-          style={{
-            transform: `translateX(${slide.x}px)`,
-            transition: slide.animate
-              ? "transform 0.95s cubic-bezier(0.22, 1, 0.36, 1)"
-              : "none",
-          }}
+          ref={ringRef}
+          className="absolute left-1/2 top-1/2 w-[1200px] h-[375px] -ml-[600px] -mt-[188px]"
+          style={{ transformStyle: "preserve-3d" }}
         >
-          {films.map((item) => (
-            <div key={item.slug} className="fan-card">
+          {slots.map((item, slot) => (
+            <div
+              key={slot}
+              className="ring-face absolute left-1/2 top-1/2 w-[250px] h-[375px] -ml-[125px] -mt-[188px]"
+              style={{
+                transform: `rotateY(${slot * 30}deg) translateZ(-570px)`,
+              }}
+            >
               <FilmCard
                 item={item}
-                active={activeSlug === item.slug}
-                onPlay={() => setActiveSlug(item.slug)}
-                onStop={() => setActiveSlug(null)}
+                className="w-full h-full"
+                active={activeSlot === slot}
+                onPlay={() => playSlot(slot)}
+                onStop={stopSlot}
               />
             </div>
           ))}
