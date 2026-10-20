@@ -239,7 +239,7 @@ function FilmCard({
   onStop: () => void;
 }) {
   return (
-    <div className="relative w-[210px] md:w-[240px] shrink-0 snap-start aspect-[9/16] rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111]">
+    <div className="shuffle-deal relative w-[210px] md:w-[240px] shrink-0 snap-start aspect-[9/16] rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111]">
       {active ? (
         <video
           key={item.slug}
@@ -351,7 +351,7 @@ function WorkStrip() {
         </Link>
       </div>
       <div
-        className="overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20"
+        className="overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory pb-14 md:pb-20"
         onMouseEnter={() => canHover && setUserHolding(true)}
         onMouseLeave={() => canHover && setUserHolding(false)}
         onTouchStart={() => setUserHolding(true)}
@@ -359,9 +359,12 @@ function WorkStrip() {
         onFocus={() => setUserHolding(true)}
         onBlur={() => setUserHolding(false)}
       >
-        <div className="flex gap-4 w-max pl-6 pr-6 md:pl-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))] md:pr-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))]">
+        <div
+          data-flat={activeSlug !== null ? "true" : "false"}
+          className="work-fan flex gap-4 w-max pl-6 pr-6 md:pl-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))] md:pr-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))]"
+        >
           {films.map((item) => (
-            <div key={`${item.slug}-${shuffleTick}`} className="shuffle-deal">
+            <div key={`${item.slug}-${shuffleTick}`} className="fan-card">
               <FilmCard
                 item={item}
                 active={activeSlug === item.slug}

@@ -407,3 +407,54 @@
     animation: none;
   }
 }
+
+/* ── Selected Work: Shamim-style curved fan (desktop only) ──────────────
+   On wide screens the film strip bends into an arc, like shamimridha.com:
+   edge cards sit lower, larger and turned in 3D; middle cards sit higher
+   and smaller; the fan bleeds off both edges. Mobile keeps the flat swipe
+   row. Hovering straightens a card; playing a video flattens the fan. */
+@media (min-width: 1024px) {
+  .work-fan {
+    perspective: 1400px;
+    perspective-origin: 50% 40%;
+  }
+  .work-fan .fan-card {
+    position: relative;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  .work-fan .fan-card + .fan-card {
+    margin-left: -20px;
+  }
+  .work-fan .fan-card:nth-child(1) {
+    transform: rotateY(28deg) rotateZ(-4deg) translateY(44px) scale(1.08);
+    z-index: 30;
+  }
+  .work-fan .fan-card:nth-child(2) {
+    transform: rotateY(17deg) rotateZ(-2.4deg) translateY(16px) scale(1);
+    z-index: 20;
+  }
+  .work-fan .fan-card:nth-child(3) {
+    transform: rotateY(6deg) rotateZ(-0.8deg) translateY(2px) scale(0.92);
+    z-index: 10;
+  }
+  .work-fan .fan-card:nth-child(4) {
+    transform: rotateY(-6deg) rotateZ(0.8deg) translateY(2px) scale(0.92);
+    z-index: 10;
+  }
+  .work-fan .fan-card:nth-child(5) {
+    transform: rotateY(-17deg) rotateZ(2.4deg) translateY(16px) scale(1);
+    z-index: 20;
+  }
+  .work-fan .fan-card:nth-child(6) {
+    transform: rotateY(-28deg) rotateZ(4deg) translateY(44px) scale(1.08);
+    z-index: 30;
+  }
+  .work-fan[data-flat="true"] .fan-card {
+    transform: none;
+  }
+  .work-fan .fan-card:hover {
+    transform: rotateY(0deg) rotateZ(0deg) translateY(0) scale(1.12);
+    z-index: 40;
+  }
+}
