@@ -7,7 +7,7 @@ import FaqSection from "@/react-app/components/FaqSection";
 import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
 import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
-import { useT } from "@/react-app/lib/siteContent";
+import { useAddOns, useLiveCatalog, useT } from "@/react-app/lib/siteContent";
 import { useSiteSettings } from "@/react-app/lib/siteSettings";
 
 // ── Scarcity bar ─────────────────────────────────────────────────────────
@@ -416,109 +416,222 @@ function ProofTicker() {
   );
 }
 
-// ── Service cards ────────────────────────────────────────────────────────
-// Numbered Reachwise-style cards. Prices bind to live Site Settings.
+// ── Services + pricing (original structure, restored) ────────────────────
+// Zee's original homepage layout: services grid (no prices), then his
+// pricing sections: Listing Essentials, launch bundles, custom, add-ons.
+// All prices and features read the live catalog and backstage copy keys.
 
-function useServiceCards(t: ReturnType<typeof useT>) {
-  const { settings } = useSiteSettings();
+function useServices(t: ReturnType<typeof useT>) {
   return useMemo(
     () => [
       {
         n: "01",
-        title: t("home.card1_title"),
-        copy: t("home.card1_copy"),
-        includes: t("home.card1_includes")
-          .split("\n")
-          .map((f) => f.trim())
-          .filter(Boolean),
-        price: `$${settings.price_standard}`,
-        priceNote: t("home.card1_price_note"),
-        proof: t("home.card1_proof"),
-        cta: t("home.card1_cta"),
-        href: "/order",
+        label: t("home.svc1_label"),
+        title: t("home.svc1_title"),
+        copy: t("home.svc1_copy"),
+        cta: t("home.svc1_cta"),
+        href: "/work?tab=photos",
         dark: false,
       },
       {
         n: "02",
-        title: t("home.card2_title"),
-        copy: t("home.card2_copy"),
-        includes: t("home.card2_includes")
-          .split("\n")
-          .map((f) => f.trim())
-          .filter(Boolean),
-        price: `$${settings.price_bundle_listing_premiere}`,
-        priceNote: t("home.card2_price_prefix"),
-        proof: t("home.card2_proof"),
-        cta: t("home.card2_cta"),
-        href: "/order",
-        dark: false,
+        label: t("home.svc2_label"),
+        title: t("home.svc2_title"),
+        copy: t("home.svc2_copy"),
+        cta: t("home.svc2_cta"),
+        href: "/branding",
+        dark: true,
       },
       {
         n: "03",
-        title: t("home.card3_title"),
-        copy: t("home.card3_copy"),
-        includes: t("home.card3_includes")
-          .split("\n")
-          .map((f) => f.trim())
-          .filter(Boolean),
-        price: `$${settings.price_branding_essential}`,
-        priceNote: t("home.card3_price_note"),
-        proof: t("home.card3_proof"),
-        cta: t("home.card3_cta"),
-        href: "/order",
-        dark: true,
+        label: t("home.svc3_label"),
+        title: t("home.svc3_title"),
+        copy: t("home.svc3_copy"),
+        cta: t("home.svc3_cta"),
+        href: "/work#films",
+        dark: false,
       },
     ],
-    [t, settings]
+    [t]
   );
 }
 
-function ServiceCards() {
+function ServicesGrid() {
   const t = useT();
-  const cards = useServiceCards(t);
+  const SERVICES = useServices(t);
   return (
     <section id="services" className="bg-[#f4f4f4] py-20 md:py-28 scroll-mt-16">
       <div className="max-w-[1200px] mx-auto px-6">
-        <p className="eyebrow text-black/40 mb-4">{t("home.cards_eyebrow")}</p>
-        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
-          {t("home.cards_h2a")}
+        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
+          {t("home.services_h2a")}
           <br />
-          {t("home.cards_h2b")}
+          {t("home.services_h2b")}
         </h2>
-        <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12 max-w-2xl">
-          {t("home.cards_intro")}
-        </p>
         <div className="grid md:grid-cols-3 gap-5">
-          {cards.map((c) => (
+          {SERVICES.map((s) => (
             <div
-              key={c.n}
+              key={s.n}
               className={`rounded-md p-8 flex flex-col ${
-                c.dark ? "bg-[#0b0b0b] text-white" : "bg-white text-black"
+                s.dark ? "bg-[#0b0b0b] text-white" : "bg-white text-black"
               }`}
             >
-              <p className={`eyebrow mb-6 ${c.dark ? "text-[#c7ff00]" : "text-black/40"}`}>
-                {c.n}
+              <p className={`eyebrow mb-8 ${s.dark ? "text-[#c7ff00]" : "text-black/40"}`}>
+                {s.n} / {s.label}
               </p>
-              <h3 className="text-[28px] font-bold tracking-tight leading-tight mb-3">
-                {c.title}
+              <h3 className="text-[28px] font-bold tracking-tight leading-tight mb-3">{s.title}</h3>
+              <p className={`text-[15px] leading-relaxed mb-8 ${s.dark ? "text-white/60" : "text-black/60"}`}>
+                {s.copy}
+              </p>
+              <div className="mt-auto">
+                {s.dark ? (
+                  <Link
+                    to={s.href}
+                    className="blink-attention inline-flex items-center gap-2 rounded-full bg-[#c7ff00] text-black text-[14px] font-bold px-5 py-2.5 hover:bg-[#d9ff4d] transition-colors shadow-[0_0_24px_rgba(199,255,0,0.65)]"
+                  >
+                    {s.cta}{" "}
+                    {s.href === "/order" ? (
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    ) : (
+                      <Play className="w-3.5 h-3.5 fill-black" />
+                    )}
+                  </Link>
+                ) : (
+                  <Link to={s.href} className="link-dark text-[15px]">
+                    {s.cta} <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ListingEssentials() {
+  const t = useT();
+  const { standardPrice } = useLiveCatalog();
+  const pkgFeatures = useMemo(
+    () =>
+      t("home.pkg_features")
+        .split("\n")
+        .map((f) => f.trim())
+        .filter(Boolean),
+    [t]
+  );
+  return (
+    <section id="pricing" className="bg-white py-20 md:py-28 scroll-mt-16">
+      <div className="max-w-[1200px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div>
+          <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-6">
+            {t("home.pkg_h2a")}
+            <br />
+            {t("home.pkg_h2b")}
+          </h2>
+          <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
+            {t("home.pkg_copy")}
+          </p>
+          <p className="price-num text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
+            ${standardPrice}
+          </p>
+          <p className="text-[15px] text-black/50 mb-10">{t("home.pkg_per")}</p>
+          <Link to="/order" className="btn-dark">
+            {t("home.pkg_cta")}
+          </Link>
+        </div>
+
+        <div className="bg-[#f4f4f4] rounded-md p-8 md:p-10">
+          <h3 className="text-[24px] font-bold tracking-tight mb-8">{t("home.pkg_card_title")}</h3>
+          <ul className="space-y-4 mb-8">
+            {pkgFeatures.map((f) => (
+              <li key={f} className="flex items-start gap-3 text-[16px]">
+                <span className="mt-0.5 w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
+                  <Check className="w-3 h-3 text-[#c7ff00]" strokeWidth={3} />
+                </span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[13px] text-black/50 leading-relaxed">
+            {t("home.pkg_fineprint")}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Bundles() {
+  const t = useT();
+  const { bundles } = useLiveCatalog();
+  // Hovered / focused / tapped package card. Defaults to the featured
+  // ("Most chosen") package; resets when the cursor leaves the section.
+  const defaultPackage = bundles.find((b) => b.featured)?.id ?? bundles[0]?.id;
+  const [activePackage, setActivePackage] = useState(defaultPackage);
+  return (
+    <section
+      className="bg-black text-white py-20 md:py-28"
+      onMouseLeave={() => setActivePackage(defaultPackage)}
+    >
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="apple-eyebrow !text-[#c7ff00] mb-4">{t("home.bundles_eyebrow")}</p>
+        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
+          {t("home.bundles_h2a")}
+          <br />
+          {t("home.bundles_h2b")}
+        </h2>
+        <p className="text-[17px] md:text-[19px] text-white/60 leading-relaxed mb-14 max-w-2xl">
+          {t("home.bundles_intro")}
+        </p>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {bundles.map((p) => {
+            const isActive = activePackage === p.id;
+            return (
+            <div
+              key={p.id}
+              tabIndex={0}
+              onMouseEnter={() => setActivePackage(p.id)}
+              onFocus={() => setActivePackage(p.id)}
+              onTouchStart={() => setActivePackage(p.id)}
+              className={`pkg-card relative rounded-md p-8 md:p-10 flex flex-col outline-none transition-all duration-300 ease-out ${
+                isActive
+                  ? "bg-[#c7ff00] text-black scale-[1.06] -translate-y-4 z-10 shadow-[0_25px_70px_-15px_rgba(199,255,0,0.5),0_12px_32px_-10px_rgba(0,0,0,0.6)]"
+                  : "bg-white/5 border border-white/10 text-white scale-[0.98] z-0"
+              }`}
+            >
+              {p.badge && (
+                <span
+                  className={`absolute -top-3.5 left-8 text-[11px] font-bold uppercase tracking-[0.14em] px-3.5 py-1.5 rounded-full ${
+                    isActive ? "bg-black text-[#c7ff00]" : "bg-[#c7ff00] text-black"
+                  }`}
+                >
+                  {p.badge}
+                </span>
+              )}
+              <h3 className="text-[24px] font-bold tracking-tight mb-3">
+                {p.name}
               </h3>
-              <p
-                className={`text-[15px] leading-relaxed mb-8 ${
-                  c.dark ? "text-white/60" : "text-black/60"
-                }`}
-              >
-                {c.copy}
+              <p className={`text-[13px] uppercase tracking-[0.12em] mb-1 ${isActive ? "text-black/60" : "text-white/50"}`}>
+                {t("home.bundle_starting")}
               </p>
-              <ul className="space-y-3 mb-8">
-                {c.includes.map((f) => (
+              <p className="price-num text-[52px] font-bold tracking-[-0.03em] leading-none mb-4">
+                ${p.price}
+              </p>
+              <p className={`text-[15px] leading-relaxed mb-8 ${isActive ? "text-black/70" : "text-white/60"}`}>
+                {p.blurb}
+              </p>
+              <ul className="space-y-3.5 mb-10 flex-1">
+                {p.features.map((f) => (
                   <li key={f} className="flex items-start gap-3 text-[15px]">
                     <span
                       className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                        c.dark ? "bg-[#c7ff00]" : "bg-black"
+                        isActive ? "bg-black" : "bg-[#c7ff00]"
                       }`}
                     >
                       <Check
-                        className={`w-3 h-3 ${c.dark ? "text-black" : "text-[#c7ff00]"}`}
+                        className={`w-3 h-3 ${isActive ? "text-[#c7ff00]" : "text-black"}`}
                         strokeWidth={3}
                       />
                     </span>
@@ -526,22 +639,80 @@ function ServiceCards() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-auto">
-                <p className="price-num text-[44px] font-bold tracking-[-0.03em] leading-none mb-1">
-                  {c.price}
-                </p>
-                <p className={`text-[13px] mb-3 ${c.dark ? "text-white/50" : "text-black/50"}`}>
-                  {c.priceNote}
-                </p>
-                <p className="flex items-center gap-2 text-[13px] font-semibold mb-8">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#c7ff00] shrink-0" aria-hidden="true" />
-                  {c.proof}
-                </p>
-                <PackageButton to={c.href} dark={!c.dark}>
-                  {c.cta}
-                </PackageButton>
-              </div>
+              <PackageButton to={`/order?package=${p.id}`} dark={isActive}>
+                {t("home.bundle_cta")}
+              </PackageButton>
             </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CustomCTA() {
+  const t = useT();
+  return (
+    <section className="bg-white py-20 md:py-28">
+      <div className="max-w-[1200px] mx-auto px-6 text-center">
+        <h2 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] leading-tight mb-5">
+          {t("home.custom_h2")}
+        </h2>
+        <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-2xl mx-auto">
+          {t("home.custom_copy")
+            .split("\n")
+            .map((l, i, arr) => (
+              <span key={i}>
+                {l}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
+        </p>
+        <Link to="/order?package=consultation" className="btn-dark">
+          {t("home.custom_cta")}
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function AddOns() {
+  const t = useT();
+  const addOns = useAddOns();
+  return (
+    <section className="bg-[#f4f4f4] py-20 md:py-28">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
+          {t("home.addons_h2a")}
+          <br />
+          {t("home.addons_h2b")}
+        </h2>
+        <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12">
+          {t("home.addons_copy")
+            .split("\n")
+            .map((l, i, arr) => (
+              <span key={i}>
+                {l}
+                {i < arr.length - 1 && <br />}
+              </span>
+            ))}
+        </p>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+          {addOns.map((a) => (
+            <Link
+              key={a.id}
+              to="/order"
+              className="group bg-white rounded-md p-7 flex flex-col hover:shadow-lg transition-shadow"
+            >
+              <span className="flex items-start justify-between mb-6">
+                <span className="price-num text-[26px] font-bold tracking-tight">{a.price}</span>
+                <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-[#a8cc00] transition-colors" />
+              </span>
+              <span className="text-[17px] font-bold tracking-tight">{a.name}</span>
+              <span className="text-[14px] text-black/50 mt-1">{a.note}</span>
+            </Link>
           ))}
         </div>
       </div>
@@ -957,7 +1128,11 @@ export default function HomePage() {
       <WorkStrip />
       <TypedRotator />
       <ProofTicker />
-      <ServiceCards />
+      <ServicesGrid />
+      <ListingEssentials />
+      <Bundles />
+      <CustomCTA />
+      <AddOns />
       <WhyLuxEntra />
       <CaseStudy />
       <ProcessSteps />
