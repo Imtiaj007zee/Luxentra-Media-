@@ -460,22 +460,20 @@ function WorkStrip() {
         }}
       >
         {/* The logo stands center stage behind the ring, the way Shamim's
-            portrait stands behind his: films rotate in front of it and
-            sweep past it. Deliberately the same dead-simple single-image
-            pattern as the hero watermark, which always renders. */}
+            portrait stands behind his: muted and quiet, atmosphere behind
+            the work, never competing with it. Films rotate in front. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
         >
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] md:w-[600px] md:h-[600px] rounded-full bg-[#c7ff00]/[0.09] blur-[110px]" />
           <img
             src="/logo-mark-cutout.png"
             alt=""
-            className="relative w-[440px] h-[440px] md:w-[680px] md:h-[680px] object-contain opacity-50 select-none"
+            className="relative w-[420px] h-[420px] md:w-[640px] md:h-[640px] object-contain opacity-[0.16] select-none"
             style={{
               transform: "rotate(-8deg)",
               filter:
-                "drop-shadow(0 0 60px rgba(199,255,0,0.25)) drop-shadow(0 30px 50px rgba(0,0,0,0.6))",
+                "brightness(0.62) saturate(0.72) drop-shadow(0 26px 44px rgba(0,0,0,0.55))",
             }}
           />
         </div>
