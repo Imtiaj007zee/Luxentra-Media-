@@ -51,31 +51,15 @@ function Hero() {
     <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        {/* Giant X logo watermark (actual logo mark) */}
-        {/* Giant X logo watermark: layered copies at real Z depths under a
-            3D tilt, so the mark reads as a solid 3D logo, not a flat fade */}
-        <div
+        {/* Giant X logo watermark (actual logo mark): flat and subtle,
+            dead center behind the headline. The layered 3D version turned
+            into dark blobs on large screens, so the hero keeps this one. */}
+        <img
+          src="/logo-mark-cutout.png"
+          alt=""
           aria-hidden="true"
-          className="hero-logo-3d-wrap absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] select-none"
-        >
-          <div className="hero-logo-3d relative w-full h-full">
-            <img
-              src="/logo-mark-cutout.png"
-              alt=""
-              className="hero-logo-depth hero-logo-depth-2 absolute inset-0 w-full h-full object-contain"
-            />
-            <img
-              src="/logo-mark-cutout.png"
-              alt=""
-              className="hero-logo-depth hero-logo-depth-1 absolute inset-0 w-full h-full object-contain"
-            />
-            <img
-              src="/logo-mark-cutout.png"
-              alt=""
-              className="hero-logo-face absolute inset-0 w-full h-full object-contain opacity-[0.07]"
-            />
-          </div>
-        </div>
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] object-contain opacity-[0.06] select-none"
+        />
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
         <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
         <div
