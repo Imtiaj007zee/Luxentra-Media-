@@ -422,28 +422,22 @@
    hero mark, standing bigger and more present, with a soft lime glow so
    it reads as an object on the stage, not a watermark. */
 .work-logo-3d {
-  width: 320px;
-  height: 320px;
+  position: relative;
+  width: 430px;
+  height: 430px;
   perspective: 1100px;
 }
 @media (min-width: 768px) {
   .work-logo-3d {
-    width: 500px;
-    height: 500px;
+    width: 640px;
+    height: 640px;
   }
 }
-.work-logo-3d .work-logo-layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.work-logo-3d .hero-logo-depth-2 { opacity: 0.28; }
-.work-logo-3d .hero-logo-depth-1 { opacity: 0.34; }
+.work-logo-3d .hero-logo-depth-2 { opacity: 0.3; }
+.work-logo-3d .hero-logo-depth-1 { opacity: 0.38; }
 .work-logo-3d .hero-logo-face {
-  opacity: 0.3;
-  filter: drop-shadow(0 0 55px rgba(199, 255, 0, 0.22))
+  opacity: 0.45;
+  filter: drop-shadow(0 0 55px rgba(199, 255, 0, 0.25))
     drop-shadow(0 34px 60px rgba(0, 0, 0, 0.65));
 }
 

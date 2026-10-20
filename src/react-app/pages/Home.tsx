@@ -482,11 +482,12 @@ function WorkStrip() {
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
         >
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] md:w-[560px] md:h-[560px] rounded-full bg-[#c7ff00]/[0.08] blur-[110px]" />
           <div className="work-logo-3d">
-            <div className="hero-logo-3d">
-              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth-2 work-logo-layer" />
-              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth-1 work-logo-layer" />
-              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-face work-logo-layer" />
+            <div className="hero-logo-3d relative w-full h-full">
+              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth hero-logo-depth-2 absolute inset-0 w-full h-full object-contain" />
+              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth hero-logo-depth-1 absolute inset-0 w-full h-full object-contain" />
+              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-face absolute inset-0 w-full h-full object-contain" />
             </div>
           </div>
         </div>
