@@ -408,12 +408,12 @@
   }
 }
 
-/* ── Selected Work: Shamim-style curved fan (desktop only) ──────────────
-   On wide screens the film strip bends into an arc, like shamimridha.com:
-   edge cards sit lower, larger and turned in 3D; middle cards sit higher
-   and smaller; the fan bleeds off both edges. Mobile keeps the flat swipe
-   row. Hovering straightens a card; playing a video flattens the fan. */
-@media (min-width: 1024px) {
+/* ── Selected Work: U-shaped 3D fan (tablet and desktop) ─────────────────
+   Like shamimridha.com: the film strip bends into a U, edge cards larger
+   and turned in 3D, middle cards dipped and smaller, and the whole strip
+   drifts right to left on its own (see WorkStrip). Phones keep the flat
+   swipe row. Hovering straightens a card; playing a video flattens it. */
+@media (min-width: 768px) {
   .work-fan {
     perspective: 1400px;
     perspective-origin: 50% 40%;
@@ -427,27 +427,27 @@
     margin-left: -20px;
   }
   .work-fan .fan-card:nth-child(1) {
-    transform: rotateY(28deg) rotateZ(-4deg) translateY(44px) scale(1.08);
+    transform: rotateY(26deg) rotateZ(-3deg) scale(1.06);
     z-index: 30;
   }
   .work-fan .fan-card:nth-child(2) {
-    transform: rotateY(17deg) rotateZ(-2.4deg) translateY(16px) scale(1);
+    transform: rotateY(15deg) rotateZ(-1.6deg) translateY(20px) scale(0.99);
     z-index: 20;
   }
   .work-fan .fan-card:nth-child(3) {
-    transform: rotateY(6deg) rotateZ(-0.8deg) translateY(2px) scale(0.92);
+    transform: rotateY(5deg) rotateZ(-0.5deg) translateY(34px) scale(0.94);
     z-index: 10;
   }
   .work-fan .fan-card:nth-child(4) {
-    transform: rotateY(-6deg) rotateZ(0.8deg) translateY(2px) scale(0.92);
+    transform: rotateY(-5deg) rotateZ(0.5deg) translateY(34px) scale(0.94);
     z-index: 10;
   }
   .work-fan .fan-card:nth-child(5) {
-    transform: rotateY(-17deg) rotateZ(2.4deg) translateY(16px) scale(1);
+    transform: rotateY(-15deg) rotateZ(1.6deg) translateY(20px) scale(0.99);
     z-index: 20;
   }
   .work-fan .fan-card:nth-child(6) {
-    transform: rotateY(-28deg) rotateZ(4deg) translateY(44px) scale(1.08);
+    transform: rotateY(-26deg) rotateZ(3deg) scale(1.06);
     z-index: 30;
   }
   .work-fan[data-flat="true"] .fan-card {
@@ -457,4 +457,32 @@
     transform: rotateY(0deg) rotateZ(0deg) translateY(0) scale(1.12);
     z-index: 40;
   }
+}
+
+/* ── Hero logo: real 3D depth ────────────────────────────────────────────
+   The watermark is three copies of the mark stacked at different Z depths
+   inside a tilted preserve-3d stage. The dark copies behind form the
+   extruded body, the lime copy in front is the face, so the logo reads as
+   a solid 3D object sitting in the hero. */
+.hero-logo-3d-wrap {
+  perspective: 1100px;
+}
+.hero-logo-3d {
+  transform-style: preserve-3d;
+  transform: rotateX(14deg) rotateY(-16deg);
+}
+.hero-logo-depth {
+  filter: brightness(0);
+}
+.hero-logo-depth-1 {
+  transform: translateZ(-38px);
+  opacity: 0.09;
+}
+.hero-logo-depth-2 {
+  transform: translateZ(-76px);
+  opacity: 0.05;
+}
+.hero-logo-face {
+  transform: translateZ(0);
+  filter: drop-shadow(0 30px 55px rgba(0, 0, 0, 0.6));
 }

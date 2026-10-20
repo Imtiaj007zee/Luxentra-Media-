@@ -52,12 +52,30 @@ function Hero() {
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         {/* Giant X logo watermark (actual logo mark) */}
-        <img
-          src="/logo-mark-cutout.png"
-          alt=""
+        {/* Giant X logo watermark: layered copies at real Z depths under a
+            3D tilt, so the mark reads as a solid 3D logo, not a flat fade */}
+        <div
           aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] object-contain opacity-[0.06] select-none"
-        />
+          className="hero-logo-3d-wrap absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] select-none"
+        >
+          <div className="hero-logo-3d relative w-full h-full">
+            <img
+              src="/logo-mark-cutout.png"
+              alt=""
+              className="hero-logo-depth hero-logo-depth-2 absolute inset-0 w-full h-full object-contain"
+            />
+            <img
+              src="/logo-mark-cutout.png"
+              alt=""
+              className="hero-logo-depth hero-logo-depth-1 absolute inset-0 w-full h-full object-contain"
+            />
+            <img
+              src="/logo-mark-cutout.png"
+              alt=""
+              className="hero-logo-face absolute inset-0 w-full h-full object-contain opacity-[0.07]"
+            />
+          </div>
+        </div>
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
         <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
         <div
@@ -293,8 +311,12 @@ function WorkStrip() {
   const t = useT();
   const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const [order, setOrder] = useState<string[]>(WORK_FILM_SLUGS);
-  const [shuffleTick, setShuffleTick] = useState(0);
   const [userHolding, setUserHolding] = useState(false);
+  const [slide, setSlide] = useState<{ x: number; animate: boolean }>({
+    x: 0,
+    animate: false,
+  });
+  const trackRef = useRef<HTMLDivElement | null>(null);
   const films = useMemo(() => {
     const bySlug = new Map(PORTFOLIO.map((p) => [p.slug, p]));
     return order
@@ -308,36 +330,56 @@ function WorkStrip() {
     []
   );
   // Real hover only: touch devices fire emulated mouseenter with no
-  // mouseleave, which would freeze the shuffle forever after one tap.
+  // mouseleave, which would freeze the drift forever after one tap.
   const canHover = useMemo(
     () =>
       typeof window !== "undefined" &&
       window.matchMedia("(hover: hover)").matches,
     []
   );
+  // The curved fan + drift run on tablet/desktop widths; phones keep the
+  // native swipe row.
+  const fanActive = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 768px)").matches,
+    []
+  );
 
-  // Shuffle the deck every few seconds, like a living portfolio wall.
-  // Pauses while a video plays, while the visitor is touching the strip,
-  // and under reduced-motion.
+  const paused = userHolding || activeSlug !== null || reducedMotion || !fanActive;
+
+  // Continuous right-to-left drift: glide one slot left, wrap the first
+  // film to the end, snap back, repeat. Cards ride the curve as they move.
   useEffect(() => {
-    if (userHolding || activeSlug !== null || reducedMotion) return;
-    const id = setInterval(() => {
-      setOrder((prev) => {
-        const next = [...prev];
-        let guard = 0;
-        do {
-          for (let i = next.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [next[i], next[j]] = [next[j], next[i]];
-          }
-          guard++;
-        } while (next.every((s, i) => s === prev[i]) && guard < 8);
-        return next;
-      });
-      setShuffleTick((n) => n + 1);
-    }, 6000);
-    return () => clearInterval(id);
-  }, [userHolding, activeSlug, reducedMotion]);
+    if (paused) {
+      setSlide({ x: 0, animate: false });
+      return;
+    }
+    let alive = true;
+    let t1 = 0;
+    let t2 = 0;
+    const cycle = () => {
+      if (!alive) return;
+      const track = trackRef.current;
+      const first = track?.children[0] as HTMLElement | undefined;
+      const second = track?.children[1] as HTMLElement | undefined;
+      const step =
+        first && second ? second.offsetLeft - first.offsetLeft : 236;
+      setSlide({ x: -step, animate: true });
+      t1 = window.setTimeout(() => {
+        if (!alive) return;
+        setOrder((prev) => [...prev.slice(1), prev[0]]);
+        setSlide({ x: 0, animate: false });
+        t2 = window.setTimeout(cycle, 1800);
+      }, 950);
+    };
+    t2 = window.setTimeout(cycle, 600);
+    return () => {
+      alive = false;
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
+  }, [paused]);
 
   return (
     <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
@@ -351,7 +393,11 @@ function WorkStrip() {
         </Link>
       </div>
       <div
-        className="overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory pb-14 md:pb-20"
+        className={
+          activeSlug !== null
+            ? "overflow-x-auto snap-x snap-mandatory pb-14 md:pb-20"
+            : "overflow-x-auto md:overflow-x-visible snap-x snap-mandatory pb-14 md:pb-20"
+        }
         onMouseEnter={() => canHover && setUserHolding(true)}
         onMouseLeave={() => canHover && setUserHolding(false)}
         onTouchStart={() => setUserHolding(true)}
@@ -360,11 +406,18 @@ function WorkStrip() {
         onBlur={() => setUserHolding(false)}
       >
         <div
+          ref={trackRef}
           data-flat={activeSlug !== null ? "true" : "false"}
           className="work-fan flex gap-4 w-max pl-6 pr-6 md:pl-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))] md:pr-[max(1.5rem,calc((100vw-75rem)/2+1.5rem))]"
+          style={{
+            transform: `translateX(${slide.x}px)`,
+            transition: slide.animate
+              ? "transform 0.95s cubic-bezier(0.22, 1, 0.36, 1)"
+              : "none",
+          }}
         >
           {films.map((item) => (
-            <div key={`${item.slug}-${shuffleTick}`} className="fan-card">
+            <div key={item.slug} className="fan-card">
               <FilmCard
                 item={item}
                 active={activeSlug === item.slug}
