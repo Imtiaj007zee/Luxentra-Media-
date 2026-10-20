@@ -308,7 +308,7 @@ function FilmCard({
           />
           <video
             ref={previewRef}
-            src={item.video}
+            src={item.src}
             poster={item.poster}
             muted
             loop
