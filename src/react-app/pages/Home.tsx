@@ -56,7 +56,7 @@ function Hero() {
           src="/logo-mark-cutout.png"
           alt=""
           aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] object-contain opacity-[0.06] animate-[spin_140s_linear_infinite] motion-reduce:animate-none"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] object-contain opacity-[0.06] select-none"
         />
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
         <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
