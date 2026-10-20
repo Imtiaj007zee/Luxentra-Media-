@@ -251,13 +251,28 @@ function FilmCard({
   onPlay,
   onStop,
   className,
+  preview,
 }: {
   item: PortfolioItem;
   active: boolean;
   onPlay: () => void;
   onStop: () => void;
   className?: string;
+  preview?: boolean;
 }) {
+  const previewRef = useRef<HTMLVideoElement | null>(null);
+
+  // Looping previews only run while the strip is on screen.
+  useEffect(() => {
+    const v = previewRef.current;
+    if (!v) return;
+    if (preview && !active) {
+      v.play().catch(() => {});
+    } else {
+      v.pause();
+    }
+  }, [preview, active]);
+
   return (
     <div className={`shuffle-deal relative shrink-0 snap-start rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111] ${className ?? "w-[210px] md:w-[240px] aspect-[9/16]"}`}>
       {active ? (
@@ -291,10 +306,25 @@ function FilmCard({
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
           />
+          <video
+            ref={previewRef}
+            src={item.video}
+            poster={item.poster}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onTimeUpdate={(e) => {
+              // Loop just the first five seconds: living cards, like Shamim's.
+              const v = e.currentTarget;
+              if (v.currentTime >= 5) v.currentTime = 0;
+            }}
+            className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+          />
           <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#c7ff00] text-black transition-transform duration-200 group-hover:scale-110">
-              <Play className="h-6 w-6 fill-current" aria-hidden="true" />
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#c7ff00] text-black transition-transform duration-200 group-hover:scale-110">
+              <Play className="h-5 w-5 fill-current" aria-hidden="true" />
             </span>
           </span>
           <span className="absolute bottom-0 left-0 right-0 p-4">
@@ -321,6 +351,8 @@ function WorkStrip() {
   const slots = useMemo(() => [...films, ...films], [films]);
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
   const [holding, setHolding] = useState(false);
+  const [stripInView, setStripInView] = useState(false);
+  const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const phiRef = useRef(0);
   const targetPhiRef = useRef<number | null>(null);
@@ -373,6 +405,18 @@ function WorkStrip() {
     return () => cancelAnimationFrame(raf);
   }, [activeSlot, holding, reducedMotion]);
 
+  // Looping previews play only while the strip is actually on screen.
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => setStripInView(entries[0]?.isIntersecting ?? false),
+      { threshold: 0.1 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const playSlot = (slot: number) => {
     // Swing the ring so this slot lands front and center, then play.
     const delta = ((-slot * 30 - phiRef.current + 540) % 360) - 180;
@@ -397,6 +441,7 @@ function WorkStrip() {
         </Link>
       </div>
       <div
+        ref={stageRef}
         className="relative h-[300px] md:h-[320px] w-full cursor-grab select-none touch-pan-y active:cursor-grabbing"
         onMouseEnter={() => canHover && setHolding(true)}
         onMouseLeave={() => canHover && setHolding(false)}
@@ -430,9 +475,24 @@ function WorkStrip() {
           }
         }}
       >
+        {/* The 3D logo stands center stage behind the ring, the way
+            Shamim's portrait stands behind his: films rotate in front
+            of it and sweep past it. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
+        >
+          <div className="work-logo-3d">
+            <div className="hero-logo-3d">
+              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth-2 work-logo-layer" />
+              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth-1 work-logo-layer" />
+              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-face work-logo-layer" />
+            </div>
+          </div>
+        </div>
         <div
           ref={ringRef}
-          className="absolute left-1/2 top-1/2 w-[1200px] h-[375px] -ml-[600px] -mt-[188px]"
+          className="absolute left-1/2 top-1/2 w-[1200px] h-[375px] -ml-[600px] -mt-[188px] z-10"
           style={{ transformStyle: "preserve-3d" }}
         >
           {slots.map((item, slot) => (
@@ -449,6 +509,7 @@ function WorkStrip() {
                 active={activeSlot === slot}
                 onPlay={() => playSlot(slot)}
                 onStop={stopSlot}
+                preview={stripInView}
               />
             </div>
           ))}
