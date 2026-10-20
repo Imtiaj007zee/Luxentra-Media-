@@ -459,21 +459,25 @@ function WorkStrip() {
           }
         }}
       >
-        {/* The 3D logo stands center stage behind the ring, the way
-            Shamim's portrait stands behind his: films rotate in front
-            of it and sweep past it. */}
+        {/* The logo stands center stage behind the ring, the way Shamim's
+            portrait stands behind his: films rotate in front of it and
+            sweep past it. Deliberately the same dead-simple single-image
+            pattern as the hero watermark, which always renders. */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
         >
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] md:w-[560px] md:h-[560px] rounded-full bg-[#c7ff00]/[0.08] blur-[110px]" />
-          <div className="work-logo-3d">
-            <div className="hero-logo-3d relative w-full h-full">
-              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth hero-logo-depth-2 absolute inset-0 w-full h-full object-contain" />
-              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-depth hero-logo-depth-1 absolute inset-0 w-full h-full object-contain" />
-              <img src="/logo-mark-cutout.png" alt="" className="hero-logo-face absolute inset-0 w-full h-full object-contain" />
-            </div>
-          </div>
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] md:w-[600px] md:h-[600px] rounded-full bg-[#c7ff00]/[0.09] blur-[110px]" />
+          <img
+            src="/logo-mark-cutout.png"
+            alt=""
+            className="relative w-[440px] h-[440px] md:w-[680px] md:h-[680px] object-contain opacity-50 select-none"
+            style={{
+              transform: "rotate(-8deg)",
+              filter:
+                "drop-shadow(0 0 60px rgba(199,255,0,0.25)) drop-shadow(0 30px 50px rgba(0,0,0,0.6))",
+            }}
+          />
         </div>
         <div
           ref={ringRef}
