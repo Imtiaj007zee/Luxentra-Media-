@@ -211,7 +211,7 @@ function TypedRotator() {
 
 // ── Selected work strip ──────────────────────────────────────────────────
 // Horizontal snap-scroll row of listing-film cards right after the hero.
-// Cards run fast-forward looping previews (first ten seconds at 2x);
+// Cards run looping previews (first ten seconds at normal speed);
 // tapping one opens that exact film on the Work page.
 
 const WORK_FILM_SLUGS = [
@@ -234,12 +234,12 @@ function FilmCard({
 }) {
   const previewRef = useRef<HTMLVideoElement | null>(null);
 
-  // Fast-forward previews run only while the strip is on screen.
+  // Previews run only while the strip is on screen.
   useEffect(() => {
     const v = previewRef.current;
     if (!v) return;
     if (preview) {
-      v.playbackRate = 2;
+      v.playbackRate = 1;
       v.play().catch(() => {});
     } else {
       v.pause();
@@ -267,7 +267,7 @@ function FilmCard({
             if (el) {
               el.muted = true;
               el.defaultMuted = true;
-              el.playbackRate = 2;
+              el.playbackRate = 1;
             }
           }}
           src={item.src}
@@ -278,8 +278,8 @@ function FilmCard({
           playsInline
           preload="auto"
           onTimeUpdate={(e) => {
-            // Fast-forward loop: the first ten seconds at 2x speed, so
-            // each card loops about every five seconds.
+            // Preview loop: the first ten seconds at normal speed,
+            // then start over.
             const v = e.currentTarget;
             if (v.currentTime >= 10) v.currentTime = 0;
           }}
@@ -421,7 +421,7 @@ function WorkStrip() {
           !reducedMotion &&
           Date.now() > resumeAtRef.current
         ) {
-          phiRef.current += 0.085;
+          phiRef.current += 0.1125;
         }
         el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
       }
