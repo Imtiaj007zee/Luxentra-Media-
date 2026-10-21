@@ -261,21 +261,24 @@
     animation: service-trigger-breathe 2.4s ease-in-out infinite;
   }
 
-  /* ── Breathing loop for the top scarcity bar: a slow, soft fade in and out ── */
-  @keyframes bar-breathe {
+  /* ── Swing loop for the top scarcity bar text: sways side to side like a
+        hanging sign and swells slightly at each end of the swing ── */
+  @keyframes bar-swing {
     0%,
     100% {
-      opacity: 1;
+      transform: rotate(-1.4deg) scale(1);
     }
     50% {
-      opacity: 0.78;
+      transform: rotate(1.4deg) scale(1.045);
     }
   }
-  .bar-breathe {
-    animation: bar-breathe 3.6s ease-in-out infinite;
+  .bar-swing {
+    display: inline-block;
+    transform-origin: 50% -60%;
+    animation: bar-swing 2.6s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce) {
-    .bar-breathe {
+    .bar-swing {
       animation: none;
     }
   }

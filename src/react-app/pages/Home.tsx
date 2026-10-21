@@ -18,9 +18,9 @@ function ScarcityBar() {
   return (
     <Link
       to="/order"
-      className="fixed top-0 left-0 right-0 z-[60] bg-[#c7ff00] text-black h-10 flex items-center justify-center px-4 hover:bg-[#d9ff4d] transition-colors bar-breathe"
+      className="fixed top-0 left-0 right-0 z-[60] bg-[#c7ff00] text-black h-10 flex items-center justify-center px-4 hover:bg-[#d9ff4d] transition-colors"
     >
-      <p className="text-[13px] md:text-[14px] font-semibold tracking-tight truncate">
+      <p className="text-[13px] md:text-[14px] font-semibold tracking-tight truncate bar-swing">
         {t("home.scarcity_bar")}
       </p>
     </Link>
