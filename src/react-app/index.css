@@ -432,8 +432,9 @@
 
 /* ── Selected Work: Shamim-style 3D ring ─────────────────────────────────
    The film strip is a cylinder viewed from inside, like shamimridha.com:
-   12 faces at 30-degree steps pushed 570px out under a 500px perspective
-   (set in JS), rotating right to left without stopping. Faces on the far
+   one face per film, step and radius computed in JS from the film count
+   under a 500px perspective, rotating right to left without stopping.
+   Faces on the far
    side of the ring are hidden by backface-visibility. */
 .ring-face {
   backface-visibility: hidden;

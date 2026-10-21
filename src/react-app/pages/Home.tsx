@@ -215,12 +215,23 @@ function TypedRotator() {
 // tapping one opens that exact film on the Work page.
 
 const WORK_FILM_SLUGS = [
-  "850-e-223-st",
+  "how-i-sale",
+  "kazi-x-cj",
+  "7-primrose-ave",
+  "name-the-real-problem",
+  "ai-cannot",
+  "talk-you-out-of-it",
+  "more-than-opening-doors",
+  "dont-buy-with-emotions",
+  "home-central-capital",
+  "message-to-ny-realtors",
+  "sold-it",
   "2802-miles-ave",
-  "25112-maclay-ave",
-  "3277-park-side-place",
-  "324-under-hill-ave",
-  "3640-palmer-ave",
+  "i-just-need-30-min",
+  "the-dream-never-disappears",
+  "taking-a-big-risk",
+  "7-primrose-ave-hook-3",
+  "biggest-purchase-of-your-life",
 ];
 
 function FilmCard({
@@ -380,8 +391,12 @@ function WorkStrip() {
       (p): p is PortfolioItem => Boolean(p)
     );
   }, []);
-  // 12 ring slots: the 6 films twice around the cylinder.
-  const slots = useMemo(() => [...films, ...films], [films]);
+  // One slot per film, all the way around the cylinder. Step and
+  // radius are derived from the slot count so the cards stay evenly
+  // spaced at about their own width apart, whatever the count is.
+  const slots = films;
+  const step = 360 / slots.length;
+  const radius = Math.round(125 / Math.tan(Math.PI / slots.length));
   const [stripInView, setStripInView] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
@@ -508,7 +523,7 @@ function WorkStrip() {
               key={slot}
               className="ring-face absolute left-1/2 top-1/2 w-[250px] h-[375px] -ml-[125px] -mt-[188px]"
               style={{
-                transform: `rotateY(${slot * 30}deg) translateZ(-570px)`,
+                transform: `rotateY(${slot * step}deg) translateZ(${-radius}px)`,
               }}
             >
               <FilmCard
