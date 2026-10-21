@@ -927,46 +927,6 @@ function WhyLuxEntra() {
   );
 }
 
-// ── Case study ───────────────────────────────────────────────────────────
-
-function CaseStudy() {
-  const t = useT();
-  const stats = [
-    { value: t("home.case_stat1_value"), label: t("home.case_stat1_label") },
-    { value: t("home.case_stat2_value"), label: t("home.case_stat2_label") },
-    { value: t("home.case_stat3_value"), label: t("home.case_stat3_label") },
-  ];
-  return (
-    <section className="bg-white py-20 md:py-28">
-      <div className="max-w-[1200px] mx-auto px-6">
-        <p className="eyebrow text-black/40 mb-4">{t("home.case_eyebrow")}</p>
-        <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
-          {t("home.case_h2")}
-        </h2>
-        <p className="text-[14px] uppercase tracking-[0.12em] text-black/45 mb-8">
-          {t("home.case_client")}
-        </p>
-        <p className="text-[17px] md:text-[19px] text-black/65 leading-relaxed max-w-2xl mb-12">
-          {t("home.case_copy")}
-        </p>
-        <div className="grid grid-cols-3 gap-4 md:gap-5 max-w-2xl mb-12">
-          {stats.map((s) => (
-            <div key={s.label} className="bg-[#f4f4f4] rounded-md p-6 md:p-8 text-center">
-              <p className="price-num text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-none mb-2">
-                {s.value}
-              </p>
-              <p className="text-[13px] md:text-[14px] text-black/50">{s.label}</p>
-            </div>
-          ))}
-        </div>
-        <Link to="/work" className="btn-dark">
-          {t("home.case_cta")}
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 // ── Process ──────────────────────────────────────────────────────────────
 
 function useProcessSteps(t: ReturnType<typeof useT>) {
@@ -1318,7 +1278,6 @@ export default function HomePage() {
       <CustomCTA />
       <AddOns />
       <WhyLuxEntra />
-      <CaseStudy />
       <ProcessSteps />
       <ImpactStats />
 
