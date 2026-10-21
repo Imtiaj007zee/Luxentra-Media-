@@ -399,9 +399,9 @@ function WorkStrip() {
     []
   );
   // Shamim-style shuffle: the ring never stops and never pauses. Cards
-  // rotate around the inside of the cylinder, flowing left to right
-  // across the front at about 10.5 degrees a second (measured on
-  // Shamim's site), each one taking its turn at the front. Hovering
+  // rotate around the inside of the cylinder, flowing right to left
+  // across the front at about 10.5 degrees a second (matched to
+  // Shamim's ring), each one taking its turn at the front. Hovering
   // does not pause it. A drag does not track the pointer; it only
   // builds flick velocity, thrown into the spin on release, and the
   // ring settles back to baseline on its own. Tapping a card opens
@@ -415,7 +415,7 @@ function WorkStrip() {
       last = now;
       if (el) {
         if (!reducedMotion) {
-          phiRef.current -= 10.5 * dt;
+          phiRef.current += 10.5 * dt;
           if (momentumRef.current !== 0) {
             phiRef.current += momentumRef.current * dt;
             momentumRef.current *= Math.exp(-dt / 0.8);
