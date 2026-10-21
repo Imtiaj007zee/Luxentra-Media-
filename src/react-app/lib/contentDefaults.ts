@@ -116,7 +116,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "home.final_cta1", group: "Homepage", label: "Final button 1", value: "Book a Shoot" },
   { key: "home.final_cta2", group: "Homepage", label: "Final button 2", value: "Meet the team" },
   // ── Homepage: scarcity bar ──
-  { key: "home.scarcity_bar", group: "Homepage", label: "Scarcity bar line", value: "November is almost booked out. Grab your shoot day before another agent does." },
+  { key: "home.scarcity_bar", group: "Homepage", label: "Scarcity bar line", value: "November is almost booked out. Only 7 shoot days left, grab yours before another agent does." },
   // ── Homepage: typed rotator ──
   { key: "home.typed_prefix", group: "Homepage", label: "Typed line prefix", value: "We turn" },
   { key: "home.typed_words", group: "Homepage", label: "Typed rotating words (one per line)", value: "listing films\nscroll-stopping reels\npersonal brands\nfirst impressions" },
