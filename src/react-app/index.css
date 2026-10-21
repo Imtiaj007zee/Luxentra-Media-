@@ -261,6 +261,25 @@
     animation: service-trigger-breathe 2.4s ease-in-out infinite;
   }
 
+  /* ── Breathing loop for the top scarcity bar: a slow, soft fade in and out ── */
+  @keyframes bar-breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.78;
+    }
+  }
+  .bar-breathe {
+    animation: bar-breathe 3.6s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bar-breathe {
+      animation: none;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .spm-overlay,
     .spm-panel,
