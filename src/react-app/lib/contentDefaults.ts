@@ -116,7 +116,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "home.final_cta1", group: "Homepage", label: "Final button 1", value: "Book a Shoot" },
   { key: "home.final_cta2", group: "Homepage", label: "Final button 2", value: "Meet the team" },
   // ── Homepage: scarcity bar ──
-  { key: "home.scarcity_bar", group: "Homepage", label: "Scarcity bar line", value: "Now booking November — limited shoot days left" },
+  { key: "home.scarcity_bar", group: "Homepage", label: "Scarcity bar line", value: "November is almost booked out. Grab your shoot day before another agent does." },
   // ── Homepage: typed rotator ──
   { key: "home.typed_prefix", group: "Homepage", label: "Typed line prefix", value: "We turn" },
   { key: "home.typed_words", group: "Homepage", label: "Typed rotating words (one per line)", value: "listing films\nscroll-stopping reels\npersonal brands\nfirst impressions" },
@@ -125,8 +125,8 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "home.work_eyebrow", group: "Homepage", label: "Work strip eyebrow", value: "Selected work" },
   { key: "home.work_link", group: "Homepage", label: "Work strip link label", value: "See all work" },
   // ── Homepage: proof ticker ──
-  { key: "home.ticker_reel1", group: "Homepage", label: "Ticker item: reel 1", value: "3M views — Why Suffer, My Dear Realtors?" },
-  { key: "home.ticker_reel2", group: "Homepage", label: "Ticker item: reel 2", value: "2.1M views — Parking Features Reel" },
+  { key: "home.ticker_reel1", group: "Homepage", label: "Ticker item: reel 1", value: "3M views, Why Suffer, My Dear Realtors?" },
+  { key: "home.ticker_reel2", group: "Homepage", label: "Ticker item: reel 2", value: "2.1M views, Parking Features Reel" },
   { key: "home.ticker_delivery", group: "Homepage", label: "Ticker item: delivery", value: "24-hour delivery" },
   // ── Homepage: service cards ──
   { key: "home.cards_eyebrow", group: "Homepage", label: "Service cards eyebrow", value: "What we do" },
@@ -149,7 +149,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "home.card3_copy", group: "Homepage", label: "Card 3 copy", value: "Your next client meets your content before they meet you. We turn your expertise into trust and leads." },
   { key: "home.card3_includes", group: "Homepage", label: "Card 3 includes (one per line)", value: "15 short-form videos a month\n5 carousel posts and stories\nScripts, filming and editing\nPosting and platform management\nMonthly performance summary" },
   { key: "home.card3_price_note", group: "Homepage", label: "Card 3 price note", value: "/month, Essential plan" },
-  { key: "home.card3_proof", group: "Homepage", label: "Card 3 proof line", value: "2.1M views — Parking Features Reel" },
+  { key: "home.card3_proof", group: "Homepage", label: "Card 3 proof line", value: "2.1M views, Parking Features Reel" },
   { key: "home.card3_cta", group: "Homepage", label: "Card 3 button", value: "Build my brand" },
   // ── Homepage: why ──
   { key: "home.why_eyebrow", group: "Homepage", label: "Why eyebrow", value: "Why LuxEntra" },
