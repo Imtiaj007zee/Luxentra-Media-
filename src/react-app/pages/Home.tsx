@@ -51,15 +51,9 @@ function Hero() {
     <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        {/* Giant X logo watermark (actual logo mark): flat and subtle,
-            dead center behind the headline. The layered 3D version turned
-            into dark blobs on large screens, so the hero keeps this one. */}
-        <img
-          src="/logo-mark-cutout.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[135vmin] h-[135vmin] object-contain opacity-[0.06] select-none"
-        />
+        {/* The logo watermark lives in ScrollDrivenLogo now: one mark
+            that starts here, huge and faint, and shrinks down to park
+            behind the Selected Work ring as you scroll. */}
         <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
         <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
         <div
@@ -75,7 +69,7 @@ function Hero() {
       </div>
 
       <div
-        className={`relative max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28${
+        className={`relative z-10 max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28${
           mounted ? " hero-in" : ""
         }`}
       >
@@ -323,6 +317,80 @@ function FilmCard({
   );
 }
 
+// ── Scroll-driven logo ─────────────────────────────────────────────────────
+// One logo for the whole top of the page. In the hero it sits huge and
+// faint behind the headline. As you scroll it shrinks, rides down with
+// the page, and parks at ring size behind the Selected Work films, then
+// leaves with the strip. It is a pure function of scroll position, so
+// scrolling back up reverses the whole journey exactly.
+function ScrollDrivenLogo() {
+  const imgRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const hero = document.getElementById("hero");
+      const stage = document.getElementById("work-stage");
+      if (!hero || !stage) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const heroRect = hero.getBoundingClientRect();
+      const stageRect = stage.getBoundingClientRect();
+      // Dock progress: 0 while the strip is still almost a full screen
+      // away, 1 once its top has risen to a third of the viewport.
+      const raw = (vh * 0.95 - stageRect.top) / (vh * 0.95 - vh * 0.35);
+      const p = Math.min(1, Math.max(0, raw));
+      const ease = p * p * (3 - 2 * p);
+      const heroSize = 1.35 * Math.min(vw, vh);
+      const dockSize = vw >= 768 ? 392 : 300;
+      const size = heroSize + (dockSize - heroSize) * ease;
+      const heroCenter = heroRect.top + heroRect.height / 2;
+      const stageCenter = stageRect.top + stageRect.height / 2;
+      const centerY = heroCenter + (stageCenter - heroCenter) * ease;
+      // Faint in the hero, a little more present behind the ring, and
+      // dipped mid-journey so it never fights what it passes over.
+      let opacity = 0.06 + (0.2 - 0.06) * ease;
+      opacity *= 1 - 0.5 * Math.sin(Math.PI * ease);
+      // Once the strip has scrolled away above, fade out for good.
+      if (stageRect.bottom < vh * 0.2) {
+        opacity *= Math.max(0, stageRect.bottom / (vh * 0.2));
+      }
+      img.style.opacity = `${opacity}`;
+      img.style.transform = `translate(-50%, ${centerY - heroSize / 2}px) scale(${size / heroSize})`;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <img
+      ref={imgRef}
+      src="/logo-mark-cutout.png"
+      alt=""
+      aria-hidden="true"
+      className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform"
+      style={{
+        width: "135vmin",
+        height: "135vmin",
+        opacity: 0,
+        filter: "brightness(0.85) saturate(0.9)",
+      }}
+    />
+  );
+}
+
 function WorkStrip() {
   const t = useT();
   const films = useMemo(() => {
@@ -425,6 +493,7 @@ function WorkStrip() {
         </Link>
       </div>
       <div
+        id="work-stage"
         ref={stageRef}
         className="relative h-[300px] md:h-[320px] w-full cursor-grab select-none touch-pan-y active:cursor-grabbing"
         onMouseEnter={() => canHover && setHolding(true)}
@@ -459,23 +528,8 @@ function WorkStrip() {
           }
         }}
       >
-        {/* The logo stands center stage behind the ring, the way Shamim's
-            portrait stands behind his: muted and quiet, atmosphere behind
-            the work, never competing with it. Films rotate in front. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
-        >
-          <img
-            src="/logo-mark-cutout.png"
-            alt=""
-            className="relative w-[300px] h-[300px] md:w-[392px] md:h-[392px] object-contain opacity-20 select-none"
-            style={{
-              filter:
-                "brightness(0.7) saturate(0.8) drop-shadow(0 22px 38px rgba(0,0,0,0.5))",
-            }}
-          />
-        </div>
+        {/* The mark behind this ring is the ScrollDrivenLogo: it starts
+            huge in the hero and shrinks down to park here on scroll. */}
         <div
           ref={ringRef}
           className="absolute left-1/2 top-1/2 w-[1200px] h-[375px] -ml-[600px] -mt-[188px] z-10"
@@ -1255,6 +1309,7 @@ export default function HomePage() {
 
       <Hero />
       <WorkStrip />
+      <ScrollDrivenLogo />
       <TypedRotator />
       <ProofTicker />
       <ServicesGrid />
