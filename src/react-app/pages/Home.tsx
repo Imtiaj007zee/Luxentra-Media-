@@ -469,11 +469,10 @@ function WorkStrip() {
           <img
             src="/logo-mark-cutout.png"
             alt=""
-            className="relative w-[420px] h-[420px] md:w-[640px] md:h-[640px] object-contain opacity-[0.16] select-none"
+            className="relative w-[300px] h-[300px] md:w-[392px] md:h-[392px] object-contain opacity-20 select-none"
             style={{
-              transform: "rotate(-8deg)",
               filter:
-                "brightness(0.62) saturate(0.72) drop-shadow(0 26px 44px rgba(0,0,0,0.55))",
+                "brightness(0.7) saturate(0.8) drop-shadow(0 22px 38px rgba(0,0,0,0.5))",
             }}
           />
         </div>
