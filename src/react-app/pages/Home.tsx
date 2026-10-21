@@ -483,11 +483,11 @@ function WorkStrip() {
 
   return (
     <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-6 pt-14 md:pt-20 pb-8 flex items-end justify-between gap-4">
+      <div className="relative z-20 max-w-[1200px] mx-auto px-6 pt-14 md:pt-20 pb-8 flex items-end justify-between gap-4">
         <p className="eyebrow text-white/50">{t("home.work_eyebrow")}</p>
         <Link
           to="/work#films"
-          className="inline-flex items-center gap-1 text-white font-medium text-[15px] hover:text-[#c7ff00] transition-colors shrink-0"
+          className="inline-flex items-center gap-1 text-white font-medium text-[15px] hover:text-[#c7ff00] transition-colors shrink-0 py-2 -my-2 px-1 -mr-1"
         >
           {t("home.work_link")} <ArrowUpRight className="w-4 h-4" />
         </Link>

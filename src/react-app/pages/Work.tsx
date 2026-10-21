@@ -253,6 +253,18 @@ export default function WorkPage() {
   const [tab, setTab] = useState<"films" | "photos">(() =>
     searchParams.get("tab") === "photos" ? "photos" : "films"
   );
+
+  // Arriving with a hash (e.g. /work#films from the homepage strip)
+  // should land on that section, not the top of the page. React renders
+  // after the browser's own anchor jump, so do it again once mounted.
+  useEffect(() => {
+    const id = window.location.hash.replace("#", "");
+    if (!id) return;
+    const t = window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView();
+    }, 60);
+    return () => window.clearTimeout(t);
+  }, []);
   const [active, setActive] = useState<number | null>(null);
   const [activePhoto, setActivePhoto] = useState<number | null>(null);
   const t = useT();
