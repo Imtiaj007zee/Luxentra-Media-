@@ -350,9 +350,10 @@ function ScrollDrivenLogo() {
       const heroCenter = heroRect.top + heroRect.height / 2;
       const stageCenter = stageRect.top + stageRect.height / 2;
       const centerY = heroCenter + (stageCenter - heroCenter) * ease;
-      // Faint in the hero, a little more present behind the ring, and
-      // dipped mid-journey so it never fights what it passes over.
-      let opacity = 0.06 + (0.2 - 0.06) * ease;
+      // True neon at low strength: faint in the hero, a calm tint behind
+      // the ring, and dipped mid-journey so it never fights what it
+      // passes over. The color itself is never muted, only its weight.
+      let opacity = 0.06 + (0.15 - 0.06) * ease;
       opacity *= 1 - 0.5 * Math.sin(Math.PI * ease);
       // Once the strip has scrolled away above, fade out for good.
       if (stageRect.bottom < vh * 0.2) {
@@ -385,7 +386,6 @@ function ScrollDrivenLogo() {
         width: "135vmin",
         height: "135vmin",
         opacity: 0,
-        filter: "brightness(0.85) saturate(0.9)",
       }}
     />
   );
