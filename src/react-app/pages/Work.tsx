@@ -293,6 +293,20 @@ export default function WorkPage() {
       : "all";
   });
 
+  // Deep link to one film: /work?tab=films&film=<slug> (from the homepage
+  // ring) opens that film's player directly, once content has loaded.
+  const filmParam = searchParams.get("film");
+  const filmOpenedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!filmParam || filmOpenedRef.current === filmParam) return;
+    const idx = films.findIndex((f) => f.slug === filmParam);
+    if (idx >= 0) {
+      filmOpenedRef.current = filmParam;
+      setTab("films");
+      setActive(idx);
+    }
+  }, [filmParam, films]);
+
   // Deep links like /work?tab=photos&filter=twilight (from the homepage)
   useEffect(() => {
     const tb = searchParams.get("tab");

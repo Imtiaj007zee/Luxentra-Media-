@@ -211,8 +211,8 @@ function TypedRotator() {
 
 // ── Selected work strip ──────────────────────────────────────────────────
 // Horizontal snap-scroll row of listing-film cards right after the hero.
-// Tap a card to play its video inline (only one plays at a time; videos
-// never preload — only the tapped card loads its source).
+// Cards run fast-forward looping previews (first ten seconds at 2x);
+// tapping one opens that exact film on the Work page.
 
 const WORK_FILM_SLUGS = [
   "850-e-223-st",
@@ -225,97 +225,78 @@ const WORK_FILM_SLUGS = [
 
 function FilmCard({
   item,
-  active,
-  onPlay,
-  onStop,
   className,
   preview,
 }: {
   item: PortfolioItem;
-  active: boolean;
-  onPlay: () => void;
-  onStop: () => void;
   className?: string;
   preview?: boolean;
 }) {
   const previewRef = useRef<HTMLVideoElement | null>(null);
 
-  // Looping previews only run while the strip is on screen.
+  // Fast-forward previews run only while the strip is on screen.
   useEffect(() => {
     const v = previewRef.current;
     if (!v) return;
-    if (preview && !active) {
+    if (preview) {
+      v.playbackRate = 2;
       v.play().catch(() => {});
     } else {
       v.pause();
     }
-  }, [preview, active]);
+  }, [preview]);
 
   return (
     <div className={`shuffle-deal relative shrink-0 snap-start rounded-xl overflow-hidden ring-1 ring-white/10 bg-[#111] ${className ?? "w-[210px] md:w-[240px] aspect-[9/16]"}`}>
-      {active ? (
+      <Link
+        to={`/work?tab=films&film=${item.slug}`}
+        aria-label={`Watch ${item.title}`}
+        className="group absolute inset-0 h-full w-full text-left"
+      >
+        <img
+          src={item.poster}
+          alt=""
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         <video
-          key={item.slug}
+          ref={(el) => {
+            previewRef.current = el;
+            // iOS only honors autoplay when muted is a real property set
+            // before playback, not just a React prop.
+            if (el) {
+              el.muted = true;
+              el.defaultMuted = true;
+              el.playbackRate = 2;
+            }
+          }}
           src={item.src}
           poster={item.poster}
           autoPlay
           muted
-          playsInline
           loop
-          controls
-          preload="none"
-          aria-label={item.title}
-          className="absolute inset-0 h-full w-full object-cover"
-          onClick={(e) => {
-            e.currentTarget.pause();
-            onStop();
+          playsInline
+          preload="auto"
+          onTimeUpdate={(e) => {
+            // Fast-forward loop: the first ten seconds at 2x speed, so
+            // each card loops about every five seconds.
+            const v = e.currentTarget;
+            if (v.currentTime >= 10) v.currentTime = 0;
           }}
+          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
         />
-      ) : (
-        <button
-          type="button"
-          onClick={onPlay}
-          aria-label={`Play ${item.title}`}
-          className="group absolute inset-0 h-full w-full text-left"
-        >
-          <img
-            src={item.poster}
-            alt=""
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <video
-            ref={previewRef}
-            src={item.src}
-            poster={item.poster}
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onTimeUpdate={(e) => {
-              // Loop just the first five seconds: living cards, like Shamim's.
-              const v = e.currentTarget;
-              if (v.currentTime >= 5) v.currentTime = 0;
-            }}
-            className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-          />
-          <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#c7ff00] text-black transition-transform duration-200 group-hover:scale-110">
-              <Play className="h-5 w-5 fill-current" aria-hidden="true" />
-            </span>
+        <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+        <span className="absolute bottom-0 left-0 right-0 p-4">
+          <span className="block text-[15px] font-bold tracking-tight text-white leading-tight">
+            {item.title}
           </span>
-          <span className="absolute bottom-0 left-0 right-0 p-4">
-            <span className="block text-[15px] font-bold tracking-tight text-white leading-tight">
-              {item.title}
-            </span>
-            <span className="block text-[12px] text-white/60 mt-1">{item.category}</span>
-          </span>
-        </button>
-      )}
+          <span className="block text-[12px] text-white/60 mt-1">{item.category}</span>
+        </span>
+      </Link>
     </div>
   );
 }
+
 
 // ── Scroll-driven logo ─────────────────────────────────────────────────────
 // One logo for the whole top of the page. In the hero it sits huge and
@@ -401,13 +382,11 @@ function WorkStrip() {
   }, []);
   // 12 ring slots: the 6 films twice around the cylinder.
   const slots = useMemo(() => [...films, ...films], [films]);
-  const [activeSlot, setActiveSlot] = useState<number | null>(null);
   const [holding, setHolding] = useState(false);
   const [stripInView, setStripInView] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const phiRef = useRef(0);
-  const targetPhiRef = useRef<number | null>(null);
   const draggingRef = useRef(false);
   const lastXRef = useRef(0);
   const movedRef = useRef(0);
@@ -429,25 +408,20 @@ function WorkStrip() {
 
   // Shamim-style shuffle: the ring never stops. Cards rotate around the
   // inside of the cylinder, flowing right to left, each one taking its
-  // turn at the front. Dragging spins it; playing a film swings that
-  // film to the front and holds it there.
+  // turn at the front. Dragging spins it; tapping a card opens that
+  // film on the Work page.
   useEffect(() => {
     let raf = 0;
     const tick = () => {
       const el = ringRef.current;
       if (el) {
-        if (activeSlot !== null && targetPhiRef.current !== null) {
-          const diff =
-            ((targetPhiRef.current - phiRef.current + 540) % 360) - 180;
-          phiRef.current += diff * 0.075;
-          if (Math.abs(diff) < 0.05) phiRef.current = targetPhiRef.current;
-        } else if (
+        if (
           !draggingRef.current &&
           !holding &&
           !reducedMotion &&
           Date.now() > resumeAtRef.current
         ) {
-          phiRef.current += 0.045;
+          phiRef.current += 0.085;
         }
         el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
       }
@@ -455,7 +429,7 @@ function WorkStrip() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [activeSlot, holding, reducedMotion]);
+  }, [holding, reducedMotion]);
 
   // Looping previews play only while the strip is actually on screen.
   useEffect(() => {
@@ -468,18 +442,6 @@ function WorkStrip() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-
-  const playSlot = (slot: number) => {
-    // Swing the ring so this slot lands front and center, then play.
-    const delta = ((-slot * 30 - phiRef.current + 540) % 360) - 180;
-    targetPhiRef.current = phiRef.current + delta;
-    setActiveSlot(slot);
-  };
-  const stopSlot = () => {
-    setActiveSlot(null);
-    targetPhiRef.current = null;
-    resumeAtRef.current = Date.now() + 1500;
-  };
 
   return (
     <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
@@ -520,7 +482,7 @@ function WorkStrip() {
           resumeAtRef.current = Date.now() + 2500;
         }}
         onClickCapture={(e) => {
-          // A drag is not a tap: don't let it start a video.
+          // A drag is not a tap: don't let it open a film.
           if (movedRef.current > 8) {
             e.stopPropagation();
             e.preventDefault();
@@ -546,9 +508,6 @@ function WorkStrip() {
               <FilmCard
                 item={item}
                 className="w-full h-full"
-                active={activeSlot === slot}
-                onPlay={() => playSlot(slot)}
-                onStop={stopSlot}
                 preview={stripInView}
               />
             </div>
