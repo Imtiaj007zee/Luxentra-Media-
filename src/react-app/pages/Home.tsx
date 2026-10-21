@@ -382,7 +382,6 @@ function WorkStrip() {
   }, []);
   // 12 ring slots: the 6 films twice around the cylinder.
   const slots = useMemo(() => [...films, ...films], [films]);
-  const [holding, setHolding] = useState(false);
   const [stripInView, setStripInView] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
@@ -390,38 +389,38 @@ function WorkStrip() {
   const draggingRef = useRef(false);
   const lastXRef = useRef(0);
   const movedRef = useRef(0);
-  const resumeAtRef = useRef(0);
+  const velRef = useRef(0);
+  const lastMoveAtRef = useRef(0);
+  const momentumRef = useRef(0);
   const reducedMotion = useMemo(
     () =>
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     []
   );
-  // Real hover only: touch devices fire emulated mouseenter with no
-  // mouseleave, which would freeze the rotation forever after one tap.
-  const canHover = useMemo(
-    () =>
-      typeof window !== "undefined" &&
-      window.matchMedia("(hover: hover)").matches,
-    []
-  );
-
-  // Shamim-style shuffle: the ring never stops. Cards rotate around the
-  // inside of the cylinder, flowing right to left, each one taking its
-  // turn at the front. Dragging spins it; tapping a card opens that
-  // film on the Work page.
+  // Shamim-style shuffle: the ring never stops and never pauses. Cards
+  // rotate around the inside of the cylinder, flowing left to right
+  // across the front at about 10.5 degrees a second (measured on
+  // Shamim's site), each one taking its turn at the front. Hovering
+  // does not pause it. A drag does not track the pointer; it only
+  // builds flick velocity, thrown into the spin on release, and the
+  // ring settles back to baseline on its own. Tapping a card opens
+  // that film on the Work page.
   useEffect(() => {
     let raf = 0;
-    const tick = () => {
+    let last = performance.now();
+    const tick = (now: number) => {
       const el = ringRef.current;
+      const dt = Math.min(now - last, 50) / 1000;
+      last = now;
       if (el) {
-        if (
-          !draggingRef.current &&
-          !holding &&
-          !reducedMotion &&
-          Date.now() > resumeAtRef.current
-        ) {
-          phiRef.current += 0.1125;
+        if (!reducedMotion) {
+          phiRef.current -= 10.5 * dt;
+          if (momentumRef.current !== 0) {
+            phiRef.current += momentumRef.current * dt;
+            momentumRef.current *= Math.exp(-dt / 0.8);
+            if (Math.abs(momentumRef.current) < 0.05) momentumRef.current = 0;
+          }
         }
         el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
       }
@@ -429,7 +428,7 @@ function WorkStrip() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [holding, reducedMotion]);
+  }, [reducedMotion]);
 
   // Looping previews play only while the strip is actually on screen.
   useEffect(() => {
@@ -458,12 +457,12 @@ function WorkStrip() {
         id="work-stage"
         ref={stageRef}
         className="relative h-[300px] md:h-[320px] w-full cursor-grab select-none touch-pan-y active:cursor-grabbing"
-        onMouseEnter={() => canHover && setHolding(true)}
-        onMouseLeave={() => canHover && setHolding(false)}
         onPointerDown={(e) => {
           draggingRef.current = true;
           lastXRef.current = e.clientX;
           movedRef.current = 0;
+          velRef.current = 0;
+          lastMoveAtRef.current = performance.now();
           e.currentTarget.setPointerCapture(e.pointerId);
         }}
         onPointerMove={(e) => {
@@ -471,15 +470,22 @@ function WorkStrip() {
           const dx = e.clientX - lastXRef.current;
           lastXRef.current = e.clientX;
           movedRef.current += Math.abs(dx);
-          phiRef.current -= dx * 0.22;
+          const now = performance.now();
+          const instV = (dx / Math.max(now - lastMoveAtRef.current, 1)) * 1000;
+          lastMoveAtRef.current = now;
+          velRef.current = velRef.current * 0.65 + instV * 0.35;
         }}
         onPointerUp={() => {
           draggingRef.current = false;
-          resumeAtRef.current = Date.now() + 2500;
+          if (movedRef.current > 8) {
+            const boost = Math.max(-35, Math.min(35, velRef.current * 0.03));
+            momentumRef.current = -boost;
+          }
+          velRef.current = 0;
         }}
         onPointerCancel={() => {
           draggingRef.current = false;
-          resumeAtRef.current = Date.now() + 2500;
+          velRef.current = 0;
         }}
         onClickCapture={(e) => {
           // A drag is not a tap: don't let it open a film.
