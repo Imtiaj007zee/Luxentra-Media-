@@ -534,115 +534,13 @@ function WorkStrip() {
       <div
         id="work-stage"
         ref={stageRef}
-        className="relative h-[300px] md:h-[320px] w-full cursor-grab select-none touch-pan-y active:cursor-grabbing"
-        onPointerDown={(e) => {
-          draggingRef.current = true;
-          lastXRef.current = e.clientX;
-          movedRef.current = 0;
-          velRef.current = 0;
-          lastMoveAtRef.current = performance.now();
-          downXRef.current = e.clientX;
-          downYRef.current = e.clientY;
-          downAtRef.current = performance.now();
-          lastDispRef.current = 0;
-          lastPosRef.current = { x: e.clientX, y: e.clientY };
-          // Remember which card this gesture started on, resolved
-          // geometrically from the faces' on-screen rectangles (the
-          // event target is only a fallback — inside the rotating 3D
-          // ring it is unreliable). The tap is navigated manually on
-          // pointer-up, because the plain click event gets discarded
-          // when the card rotates out from under the press.
-          tapHrefRef.current =
-            resolveHrefAt(e.clientX, e.clientY) ??
-            (e.target as HTMLElement).closest?.("a")?.getAttribute("href") ??
-            null;
-          // No setPointerCapture here: capturing the pointer on the
-          // stage retargets the tap's click to the stage, so the
-          // card's link never fires. Drag events still reach the
-          // stage by bubbling from the card under the pointer.
-        }}
-        onPointerMove={(e) => {
-          if (!draggingRef.current) return;
-          lastPosRef.current = { x: e.clientX, y: e.clientY };
-          const dx = e.clientX - lastXRef.current;
-          lastXRef.current = e.clientX;
-          movedRef.current += Math.abs(dx);
-          const now = performance.now();
-          const instV = (dx / Math.max(now - lastMoveAtRef.current, 1)) * 1000;
-          lastMoveAtRef.current = now;
-          velRef.current = velRef.current * 0.65 + instV * 0.35;
-        }}
-        onPointerUp={(e) => {
-          draggingRef.current = false;
-          const disp = Math.hypot(
-            e.clientX - downXRef.current,
-            e.clientY - downYRef.current
-          );
-          lastDispRef.current = disp;
-          lastUpAtRef.current = Date.now();
-          // A tap is judged by NET displacement, not total wobble: a
-          // real thumb tap jitters more than a few pixels, and the old
-          // path-length guard mistook those taps for drags and ate
-          // the click. Short, near-stationary press on a card = open
-          // that film, navigated here so it does not depend on the
-          // click event surviving the 3D ring.
-          if (
-            tapHrefRef.current &&
-            disp < 14 &&
-            performance.now() - downAtRef.current < 600
-          ) {
-            manualNavAtRef.current = Date.now();
-            navigate(tapHrefRef.current);
-          } else if (movedRef.current > 8) {
-            const boost = Math.max(-35, Math.min(35, velRef.current * 0.03));
-            momentumRef.current = -boost;
-          }
-          velRef.current = 0;
-          tapHrefRef.current = null;
-        }}
-        onPointerCancel={() => {
-          draggingRef.current = false;
-          velRef.current = 0;
-          // Safari can claim a touch for scrolling and cancel the
-          // pointer instead of completing it. If what it cancelled
-          // was really a tap (short, near-stationary), honour it as
-          // one; a genuine scroll travels much further first.
-          const dx = lastPosRef.current.x - downXRef.current;
-          const dy = lastPosRef.current.y - downYRef.current;
-          if (
-            tapHrefRef.current &&
-            performance.now() - downAtRef.current < 300 &&
-            Math.hypot(dx, dy) < 18
-          ) {
-            manualNavAtRef.current = Date.now();
-            navigate(tapHrefRef.current);
-          }
-          tapHrefRef.current = null;
-        }}
-        onClickCapture={(e) => {
-          // If the tap was already navigated on pointer-up, swallow
-          // the trailing click so it does not double-navigate. If the
-          // gesture really travelled, it was a flick, not a tap:
-          // don't let it open a film.
-          if (Date.now() - manualNavAtRef.current < 700) {
-            e.stopPropagation();
-            e.preventDefault();
-            return;
-          }
-          if (
-            Date.now() - lastUpAtRef.current < 1000 &&
-            lastDispRef.current >= 14
-          ) {
-            e.stopPropagation();
-            e.preventDefault();
-          }
-        }}
+        className="relative h-[300px] md:h-[320px] w-full select-none"
       >
         {/* The mark behind this ring is the ScrollDrivenLogo: it starts
             huge in the hero and shrinks down to park here on scroll. */}
         <div
           ref={ringRef}
-          className="absolute left-1/2 top-1/2 w-[1200px] h-[375px] -ml-[600px] -mt-[188px] z-10"
+          className="absolute left-1/2 top-1/2 w-[1200px] h-[375px] -ml-[600px] -mt-[188px] z-10 pointer-events-none"
           style={{ transformStyle: "preserve-3d" }}
         >
           {slots.map((item, slot) => (
@@ -664,6 +562,135 @@ function WorkStrip() {
             </div>
           ))}
         </div>
+        {/* Flat hit layer over the ring. WebKit's hit-testing
+            inside preserve-3d scenes is buggy (taps on elements at
+            negative translateZ go to the parent), so the ring
+            itself is pointer-events-none and every gesture lands
+            on this plain element; the film is resolved
+            geometrically from the faces' on-screen rectangles. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-20 cursor-grab touch-pan-y active:cursor-grabbing"
+          onPointerDown={(e) => {
+            draggingRef.current = true;
+            lastXRef.current = e.clientX;
+            movedRef.current = 0;
+            velRef.current = 0;
+            lastMoveAtRef.current = performance.now();
+            downXRef.current = e.clientX;
+            downYRef.current = e.clientY;
+            downAtRef.current = performance.now();
+            lastDispRef.current = 0;
+            lastPosRef.current = { x: e.clientX, y: e.clientY };
+            // Remember which card this gesture started on, resolved
+            // geometrically from the faces' on-screen rectangles (the
+            // event target is only a fallback — inside the rotating 3D
+            // ring it is unreliable). The tap is navigated manually on
+            // pointer-up, because the plain click event gets discarded
+            // when the card rotates out from under the press.
+            tapHrefRef.current =
+              resolveHrefAt(e.clientX, e.clientY) ??
+              (e.target as HTMLElement).closest?.("a")?.getAttribute("href") ??
+              null;
+            // No setPointerCapture here: capturing the pointer on the
+            // stage retargets the tap's click to the stage, so the
+            // card's link never fires. Drag events still reach the
+            // stage by bubbling from the card under the pointer.
+          }}
+          onPointerMove={(e) => {
+            if (!draggingRef.current) return;
+            lastPosRef.current = { x: e.clientX, y: e.clientY };
+            const dx = e.clientX - lastXRef.current;
+            lastXRef.current = e.clientX;
+            movedRef.current += Math.abs(dx);
+            const now = performance.now();
+            const instV = (dx / Math.max(now - lastMoveAtRef.current, 1)) * 1000;
+            lastMoveAtRef.current = now;
+            velRef.current = velRef.current * 0.65 + instV * 0.35;
+          }}
+          onPointerUp={(e) => {
+            draggingRef.current = false;
+            const disp = Math.hypot(
+              e.clientX - downXRef.current,
+              e.clientY - downYRef.current
+            );
+            lastDispRef.current = disp;
+            lastUpAtRef.current = Date.now();
+            // A tap is judged by NET displacement, not total wobble: a
+            // real thumb tap jitters more than a few pixels, and the old
+            // path-length guard mistook those taps for drags and ate
+            // the click. Short, near-stationary press on a card = open
+            // that film, navigated here so it does not depend on the
+            // click event surviving the 3D ring.
+            if (
+              tapHrefRef.current &&
+              disp < 14 &&
+              performance.now() - downAtRef.current < 600
+            ) {
+              manualNavAtRef.current = Date.now();
+              navigate(tapHrefRef.current);
+            } else if (movedRef.current > 8) {
+              const boost = Math.max(-35, Math.min(35, velRef.current * 0.03));
+              momentumRef.current = -boost;
+            }
+            velRef.current = 0;
+            // tapHrefRef stays set briefly: the overlay's click handler
+            // can still rescue this tap if pointer-up was swallowed.
+          }}
+          onPointerCancel={() => {
+            draggingRef.current = false;
+            velRef.current = 0;
+            // Safari can claim a touch for scrolling and cancel the
+            // pointer instead of completing it. If what it cancelled
+            // was really a tap (short, near-stationary), honour it as
+            // one; a genuine scroll travels much further first.
+            const dx = lastPosRef.current.x - downXRef.current;
+            const dy = lastPosRef.current.y - downYRef.current;
+            if (
+              tapHrefRef.current &&
+              performance.now() - downAtRef.current < 300 &&
+              Math.hypot(dx, dy) < 18
+            ) {
+              manualNavAtRef.current = Date.now();
+              navigate(tapHrefRef.current);
+            }
+            tapHrefRef.current = null;
+          }}
+          onClickCapture={(e) => {
+            // If the tap was already navigated on pointer-up, swallow
+            // the trailing click so it does not double-navigate. If the
+            // gesture really travelled, it was a flick, not a tap:
+            // don't let it open a film.
+            if (Date.now() - manualNavAtRef.current < 700) {
+              e.stopPropagation();
+              e.preventDefault();
+              return;
+            }
+            if (
+              Date.now() - lastUpAtRef.current < 1000 &&
+              lastDispRef.current >= 14
+            ) {
+              e.stopPropagation();
+              e.preventDefault();
+            }
+          }}
+          onClick={() => {
+            // Third chance for a tap: if a click event did arrive but
+            // neither pointer-up nor pointer-cancel navigated (every
+            // guard is time- and displacement-based, and a successful
+            // navigation stamps manualNavAtRef, so this cannot
+            // double-fire), open the film resolved at pointer-down.
+            if (
+              tapHrefRef.current &&
+              Date.now() - lastUpAtRef.current < 1000 &&
+              lastDispRef.current < 14 &&
+              Date.now() - manualNavAtRef.current > 700
+            ) {
+              manualNavAtRef.current = Date.now();
+              navigate(tapHrefRef.current);
+            }
+          }}
+        />
       </div>
     </section>
   );
