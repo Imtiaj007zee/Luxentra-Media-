@@ -477,7 +477,10 @@ function WorkStrip() {
           movedRef.current = 0;
           velRef.current = 0;
           lastMoveAtRef.current = performance.now();
-          e.currentTarget.setPointerCapture(e.pointerId);
+          // No setPointerCapture here: capturing the pointer on the
+          // stage retargets the tap's click to the stage, so the
+          // card's link never fires. Drag events still reach the
+          // stage by bubbling from the card under the pointer.
         }}
         onPointerMove={(e) => {
           if (!draggingRef.current) return;
