@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
@@ -286,7 +286,6 @@ function FilmCard({
           // enough that every card actually autoplays and loops
           // forever. The card link still opens the full film on /work.
           src={`/work/previews/${item.slug}.mp4`}
-          poster={item.poster}
           autoPlay
           muted
           loop
@@ -383,6 +382,7 @@ function ScrollDrivenLogo() {
 
 function WorkStrip() {
   const t = useT();
+  const navigate = useNavigate();
   const films = useMemo(() => {
     const bySlug = new Map(PORTFOLIO.map((p) => [p.slug, p]));
     return WORK_FILM_SLUGS.map((slug) => bySlug.get(slug)).filter(
@@ -397,6 +397,7 @@ function WorkStrip() {
   const step = 360 / slots.length;
   const radius = Math.round((125 * 1.22) / Math.tan(Math.PI / slots.length));
   const [stripInView, setStripInView] = useState(false);
+  const [activeSlots, setActiveSlots] = useState<ReadonlySet<number>>(new Set());
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const phiRef = useRef(0);
@@ -406,6 +407,13 @@ function WorkStrip() {
   const velRef = useRef(0);
   const lastMoveAtRef = useRef(0);
   const momentumRef = useRef(0);
+  const activeKeyRef = useRef("");
+  const downXRef = useRef(0);
+  const downAtRef = useRef(0);
+  const tapHrefRef = useRef<string | null>(null);
+  const manualNavAtRef = useRef(0);
+  const lastDispRef = useRef(0);
+  const lastUpAtRef = useRef(0);
   const reducedMotion = useMemo(
     () =>
       typeof window !== "undefined" &&
@@ -437,6 +445,25 @@ function WorkStrip() {
           }
         }
         el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
+        // Only cards near the front actually play. Phones have a hard
+        // limit on simultaneous video decoders; asking 17 videos to
+        // play at once leaves most of them frozen on their posters.
+        // Cards within ~65 degrees of the front play (about 7 max);
+        // the rest hold on their poster image until they rotate in.
+        const phi = ((phiRef.current % 360) + 360) % 360;
+        let key = "";
+        const next = new Set<number>();
+        for (let s = 0; s < slots.length; s++) {
+          const a = (phi + s * step) % 360;
+          if (Math.min(a, 360 - a) <= 65) {
+            key += s + ",";
+            next.add(s);
+          }
+        }
+        if (key !== activeKeyRef.current) {
+          activeKeyRef.current = key;
+          setActiveSlots(next);
+        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -477,6 +504,17 @@ function WorkStrip() {
           movedRef.current = 0;
           velRef.current = 0;
           lastMoveAtRef.current = performance.now();
+          downXRef.current = e.clientX;
+          downAtRef.current = performance.now();
+          lastDispRef.current = 0;
+          // Remember which card this gesture started on. The tap is
+          // navigated manually on pointer-up (see below), because the
+          // plain click event is not reliable inside a 3D-transformed
+          // ring on touch browsers: it can be swallowed or land after
+          // the card has rotated away.
+          tapHrefRef.current =
+            (e.target as HTMLElement).closest?.("a")?.getAttribute("href") ??
+            null;
           // No setPointerCapture here: capturing the pointer on the
           // stage retargets the tap's click to the stage, so the
           // card's link never fires. Drag events still reach the
@@ -492,24 +530,52 @@ function WorkStrip() {
           lastMoveAtRef.current = now;
           velRef.current = velRef.current * 0.65 + instV * 0.35;
         }}
-        onPointerUp={() => {
+        onPointerUp={(e) => {
           draggingRef.current = false;
-          if (movedRef.current > 8) {
+          const disp = Math.abs(e.clientX - downXRef.current);
+          lastDispRef.current = disp;
+          lastUpAtRef.current = Date.now();
+          // A tap is judged by NET displacement, not total wobble: a
+          // real thumb tap jitters more than a few pixels, and the old
+          // path-length guard mistook those taps for drags and ate
+          // the click. Short, near-stationary press on a card = open
+          // that film, navigated here so it does not depend on the
+          // click event surviving the 3D ring.
+          if (
+            tapHrefRef.current &&
+            disp < 14 &&
+            performance.now() - downAtRef.current < 600
+          ) {
+            manualNavAtRef.current = Date.now();
+            navigate(tapHrefRef.current);
+          } else if (movedRef.current > 8) {
             const boost = Math.max(-35, Math.min(35, velRef.current * 0.03));
             momentumRef.current = -boost;
           }
           velRef.current = 0;
+          tapHrefRef.current = null;
         }}
         onPointerCancel={() => {
           draggingRef.current = false;
           velRef.current = 0;
+          tapHrefRef.current = null;
         }}
         onClickCapture={(e) => {
-          // A drag is not a tap: don't let it open a film.
-          if (movedRef.current > 8) {
+          // If the tap was already navigated on pointer-up, swallow
+          // the trailing click so it does not double-navigate. If the
+          // gesture really travelled, it was a flick, not a tap:
+          // don't let it open a film.
+          if (Date.now() - manualNavAtRef.current < 700) {
             e.stopPropagation();
             e.preventDefault();
-            movedRef.current = 0;
+            return;
+          }
+          if (
+            Date.now() - lastUpAtRef.current < 1000 &&
+            lastDispRef.current >= 14
+          ) {
+            e.stopPropagation();
+            e.preventDefault();
           }
         }}
       >
@@ -531,7 +597,7 @@ function WorkStrip() {
               <FilmCard
                 item={item}
                 className="w-full h-full"
-                preview={stripInView}
+                preview={stripInView && activeSlots.has(slot)}
               />
             </div>
           ))}
