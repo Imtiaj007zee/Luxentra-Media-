@@ -409,11 +409,38 @@ function WorkStrip() {
   const momentumRef = useRef(0);
   const activeKeyRef = useRef("");
   const downXRef = useRef(0);
+  const downYRef = useRef(0);
   const downAtRef = useRef(0);
   const tapHrefRef = useRef<string | null>(null);
   const manualNavAtRef = useRef(0);
   const lastDispRef = useRef(0);
   const lastUpAtRef = useRef(0);
+  const faceRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lastPosRef = useRef({ x: 0, y: 0 });
+  // Which film is under a screen point, decided by geometry alone:
+  // the faces' real on-screen rectangles, front-most face winning any
+  // overlap. This deliberately ignores the event target. Inside a
+  // continuously rotating preserve-3d ring, browsers (Safari above
+  // all) misreport or drop tap targets: the card slides out from
+  // under the press between pointer-down and pointer-up, the click
+  // lands on the stage or a neighbouring card, and navigation dies.
+  // The rectangles are what the visitor actually sees, so they are
+  // the ground truth for "which card did I tap".
+  const resolveHrefAt = (x: number, y: number): string | null => {
+    let best: { href: string; ang: number } | null = null;
+    for (let s = 0; s < slots.length; s++) {
+      const el = faceRefs.current[s];
+      if (!el) continue;
+      const r = el.getBoundingClientRect();
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+      const a = (((phiRef.current + s * step) % 360) + 360) % 360;
+      const ang = Math.min(a, 360 - a);
+      if (!best || ang < best.ang) {
+        best = { href: `/work?tab=films&film=${slots[s].slug}`, ang };
+      }
+    }
+    return best?.href ?? null;
+  };
   const reducedMotion = useMemo(
     () =>
       typeof window !== "undefined" &&
@@ -505,14 +532,18 @@ function WorkStrip() {
           velRef.current = 0;
           lastMoveAtRef.current = performance.now();
           downXRef.current = e.clientX;
+          downYRef.current = e.clientY;
           downAtRef.current = performance.now();
           lastDispRef.current = 0;
-          // Remember which card this gesture started on. The tap is
-          // navigated manually on pointer-up (see below), because the
-          // plain click event is not reliable inside a 3D-transformed
-          // ring on touch browsers: it can be swallowed or land after
-          // the card has rotated away.
+          lastPosRef.current = { x: e.clientX, y: e.clientY };
+          // Remember which card this gesture started on, resolved
+          // geometrically from the faces' on-screen rectangles (the
+          // event target is only a fallback — inside the rotating 3D
+          // ring it is unreliable). The tap is navigated manually on
+          // pointer-up, because the plain click event gets discarded
+          // when the card rotates out from under the press.
           tapHrefRef.current =
+            resolveHrefAt(e.clientX, e.clientY) ??
             (e.target as HTMLElement).closest?.("a")?.getAttribute("href") ??
             null;
           // No setPointerCapture here: capturing the pointer on the
@@ -522,6 +553,7 @@ function WorkStrip() {
         }}
         onPointerMove={(e) => {
           if (!draggingRef.current) return;
+          lastPosRef.current = { x: e.clientX, y: e.clientY };
           const dx = e.clientX - lastXRef.current;
           lastXRef.current = e.clientX;
           movedRef.current += Math.abs(dx);
@@ -532,7 +564,10 @@ function WorkStrip() {
         }}
         onPointerUp={(e) => {
           draggingRef.current = false;
-          const disp = Math.abs(e.clientX - downXRef.current);
+          const disp = Math.hypot(
+            e.clientX - downXRef.current,
+            e.clientY - downYRef.current
+          );
           lastDispRef.current = disp;
           lastUpAtRef.current = Date.now();
           // A tap is judged by NET displacement, not total wobble: a
@@ -558,6 +593,20 @@ function WorkStrip() {
         onPointerCancel={() => {
           draggingRef.current = false;
           velRef.current = 0;
+          // Safari can claim a touch for scrolling and cancel the
+          // pointer instead of completing it. If what it cancelled
+          // was really a tap (short, near-stationary), honour it as
+          // one; a genuine scroll travels much further first.
+          const dx = lastPosRef.current.x - downXRef.current;
+          const dy = lastPosRef.current.y - downYRef.current;
+          if (
+            tapHrefRef.current &&
+            performance.now() - downAtRef.current < 300 &&
+            Math.hypot(dx, dy) < 18
+          ) {
+            manualNavAtRef.current = Date.now();
+            navigate(tapHrefRef.current);
+          }
           tapHrefRef.current = null;
         }}
         onClickCapture={(e) => {
@@ -589,6 +638,9 @@ function WorkStrip() {
           {slots.map((item, slot) => (
             <div
               key={slot}
+              ref={(el) => {
+                faceRefs.current[slot] = el;
+              }}
               className="ring-face absolute left-1/2 top-1/2 w-[250px] h-[375px] -ml-[125px] -mt-[188px]"
               style={{
                 transform: `rotateY(${slot * step}deg) translateZ(${-radius}px)`,
