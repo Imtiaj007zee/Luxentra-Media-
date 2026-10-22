@@ -489,7 +489,7 @@ function WorkStrip() {
             if (Math.abs(momentumRef.current) < 0.05) momentumRef.current = 0;
           }
         }
-        el.style.transform = `perspective(700px) rotateY(${phiRef.current}deg)`;
+        el.style.transform = `perspective(625px) rotateY(${phiRef.current}deg)`;
       }
       raf = requestAnimationFrame(tick);
     };
