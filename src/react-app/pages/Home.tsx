@@ -270,14 +270,13 @@ function FilmCard({
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        {/* The video element only exists while this card is in the
-            front window. iPhones cap how many videos a page can keep
-            alive (older WebKit builds choked at 16 elements, and this
-            ring has 17 films), so cards outside the window render
-            only their poster image and mount their video, decoder
-            and all, as they rotate in. */}
-        {preview && (
-          <video
+        {/* Every card carries its preview video. (An earlier build
+            mounted videos only near the front, on the theory that 17
+            video elements exceed what a phone keeps alive; the real
+            freeze cause turned out to be the host answering video
+            range requests wrong, fixed at the serving layer, and the
+            owner wants all 17 live like the reference ring.) */}
+        <video
             ref={(el) => {
               previewRef.current = el;
               // iOS only honors autoplay when muted is a real property set
@@ -299,8 +298,7 @@ function FilmCard({
             playsInline
             preload="auto"
             className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-          />
-        )}
+        />
         <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
         <span className="absolute bottom-0 left-0 right-0 p-4">
           <span className="block text-[15px] font-bold tracking-tight text-white leading-tight">
@@ -405,7 +403,6 @@ function WorkStrip() {
   const step = 360 / slots.length;
   const radius = Math.round((125 * 1.22) / Math.tan(Math.PI / slots.length));
   const [stripInView, setStripInView] = useState(false);
-  const [activeSlots, setActiveSlots] = useState<ReadonlySet<number>>(new Set());
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const phiRef = useRef(0);
@@ -415,7 +412,6 @@ function WorkStrip() {
   const velRef = useRef(0);
   const lastMoveAtRef = useRef(0);
   const momentumRef = useRef(0);
-  const activeKeyRef = useRef("");
   const downXRef = useRef(0);
   const downYRef = useRef(0);
   const downAtRef = useRef(0);
@@ -480,27 +476,6 @@ function WorkStrip() {
           }
         }
         el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
-        // Only cards near the front actually play. iPhones cap how
-        // many videos a page can keep alive (older WebKit builds
-        // choked at 16 elements; we have 17 films), and simultaneous
-        // decoders are limited everywhere. Cards within ~58 degrees
-        // of the front play (5 max); the rest don't even mount a
-        // video element, just their poster image, until they rotate
-        // into the window.
-        const phi = ((phiRef.current % 360) + 360) % 360;
-        let key = "";
-        const next = new Set<number>();
-        for (let s = 0; s < slots.length; s++) {
-          const a = (phi + s * step) % 360;
-          if (Math.min(a, 360 - a) <= 58) {
-            key += s + ",";
-            next.add(s);
-          }
-        }
-        if (key !== activeKeyRef.current) {
-          activeKeyRef.current = key;
-          setActiveSlots(next);
-        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -557,7 +532,7 @@ function WorkStrip() {
               <FilmCard
                 item={item}
                 className="w-full h-full"
-                preview={stripInView && activeSlots.has(slot)}
+                preview={stripInView}
               />
             </div>
           ))}
