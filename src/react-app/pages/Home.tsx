@@ -281,19 +281,17 @@ function FilmCard({
               el.playbackRate = 1;
             }
           }}
-          src={item.src}
+          // Ring cards play a dedicated 10-second preview clip (720p,
+          // silent, a couple of MB) instead of the full film: light
+          // enough that every card actually autoplays and loops
+          // forever. The card link still opens the full film on /work.
+          src={`/work/previews/${item.slug}.mp4`}
           poster={item.poster}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          onTimeUpdate={(e) => {
-            // Preview loop: the first ten seconds at normal speed,
-            // then start over.
-            const v = e.currentTarget;
-            if (v.currentTime >= 10) v.currentTime = 0;
-          }}
           className="absolute inset-0 h-full w-full object-cover pointer-events-none"
         />
         <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
@@ -392,11 +390,12 @@ function WorkStrip() {
     );
   }, []);
   // One slot per film, all the way around the cylinder. Step and
-  // radius are derived from the slot count so the cards stay evenly
-  // spaced at about their own width apart, whatever the count is.
+  // radius are derived from the slot count. The 1.22 spacing factor
+  // keeps a Shamim-style black gap between cards (about a fifth of a
+  // card width) instead of the cards touching edge to edge.
   const slots = films;
   const step = 360 / slots.length;
-  const radius = Math.round(125 / Math.tan(Math.PI / slots.length));
+  const radius = Math.round((125 * 1.22) / Math.tan(Math.PI / slots.length));
   const [stripInView, setStripInView] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
