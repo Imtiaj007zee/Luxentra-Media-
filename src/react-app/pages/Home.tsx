@@ -415,7 +415,7 @@ function WorkStrip() {
   // card width) instead of the cards touching edge to edge.
   const slots = films;
   const step = 360 / slots.length;
-  const radius = Math.round((150 * 1.22) / Math.tan(Math.PI / slots.length));
+  const radius = Math.round((170 * 1.22) / Math.tan(Math.PI / slots.length));
   const [stripInView, setStripInView] = useState(false);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
@@ -523,13 +523,13 @@ function WorkStrip() {
       <div
         id="work-stage"
         ref={stageRef}
-        className="relative h-[340px] md:h-[420px] w-full select-none"
+        className="relative h-[380px] md:h-[480px] w-full select-none"
       >
         {/* The mark behind this ring is the ScrollDrivenLogo: it starts
             huge in the hero and shrinks down to park here on scroll. */}
         <div
           ref={ringRef}
-          className="absolute left-1/2 top-1/2 w-[1200px] h-[450px] -ml-[600px] -mt-[225px] z-10 pointer-events-none"
+          className="absolute left-1/2 top-1/2 w-[1200px] h-[510px] -ml-[600px] -mt-[255px] z-10 pointer-events-none"
           style={{ transformStyle: "preserve-3d" }}
         >
           {slots.map((item, slot) => (
@@ -538,7 +538,7 @@ function WorkStrip() {
               ref={(el) => {
                 faceRefs.current[slot] = el;
               }}
-              className="ring-face absolute left-1/2 top-1/2 w-[300px] h-[450px] -ml-[150px] -mt-[225px]"
+              className="ring-face absolute left-1/2 top-1/2 w-[340px] h-[510px] -ml-[170px] -mt-[255px]"
               style={{
                 transform: `rotateY(${slot * step}deg) translateZ(${-radius}px)`,
               }}
