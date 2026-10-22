@@ -245,16 +245,30 @@ function FilmCard({
 }) {
   const previewRef = useRef<HTMLVideoElement | null>(null);
 
-  // Previews run only while the strip is on screen.
+  // Previews run only while the strip is on screen. A keeper keeps
+  // re-asking for any card that should be playing but is paused:
+  // with 17 videos starting together, browsers defer some of them
+  // under load, and a single play() call that gets deferred is never
+  // retried on its own — the card then sits on its first frame
+  // forever even though nothing is actually wrong with it.
   useEffect(() => {
     const v = previewRef.current;
     if (!v) return;
-    if (preview) {
-      v.playbackRate = 1;
-      v.play().catch(() => {});
-    } else {
+    if (!preview) {
       v.pause();
+      return;
     }
+    v.playbackRate = 1;
+    const tryPlay = () => {
+      if (v.paused) v.play().catch(() => {});
+    };
+    tryPlay();
+    v.addEventListener("canplay", tryPlay);
+    const iv = window.setInterval(tryPlay, 2500);
+    return () => {
+      v.removeEventListener("canplay", tryPlay);
+      window.clearInterval(iv);
+    };
   }, [preview]);
 
   return (
