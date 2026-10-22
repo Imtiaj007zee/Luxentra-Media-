@@ -270,29 +270,37 @@ function FilmCard({
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <video
-          ref={(el) => {
-            previewRef.current = el;
-            // iOS only honors autoplay when muted is a real property set
-            // before playback, not just a React prop.
-            if (el) {
-              el.muted = true;
-              el.defaultMuted = true;
-              el.playbackRate = 1;
-            }
-          }}
-          // Ring cards play a dedicated 10-second preview clip (720p,
-          // silent, a couple of MB) instead of the full film: light
-          // enough that every card actually autoplays and loops
-          // forever. The card link still opens the full film on /work.
-          src={`/work/previews/${item.slug}.mp4`}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="absolute inset-0 h-full w-full object-cover pointer-events-none"
-        />
+        {/* The video element only exists while this card is in the
+            front window. iPhones cap how many videos a page can keep
+            alive (older WebKit builds choked at 16 elements, and this
+            ring has 17 films), so cards outside the window render
+            only their poster image and mount their video, decoder
+            and all, as they rotate in. */}
+        {preview && (
+          <video
+            ref={(el) => {
+              previewRef.current = el;
+              // iOS only honors autoplay when muted is a real property set
+              // before playback, not just a React prop.
+              if (el) {
+                el.muted = true;
+                el.defaultMuted = true;
+                el.playbackRate = 1;
+              }
+            }}
+            // Ring cards play a dedicated 10-second preview clip (720p,
+            // silent, a couple of MB) instead of the full film: light
+            // enough that every card actually autoplays and loops
+            // forever. The card link still opens the full film on /work.
+            src={`/work/previews/${item.slug}.mp4`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+          />
+        )}
         <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
         <span className="absolute bottom-0 left-0 right-0 p-4">
           <span className="block text-[15px] font-bold tracking-tight text-white leading-tight">
@@ -472,17 +480,19 @@ function WorkStrip() {
           }
         }
         el.style.transform = `perspective(500px) rotateY(${phiRef.current}deg)`;
-        // Only cards near the front actually play. Phones have a hard
-        // limit on simultaneous video decoders; asking 17 videos to
-        // play at once leaves most of them frozen on their posters.
-        // Cards within ~65 degrees of the front play (about 7 max);
-        // the rest hold on their poster image until they rotate in.
+        // Only cards near the front actually play. iPhones cap how
+        // many videos a page can keep alive (older WebKit builds
+        // choked at 16 elements; we have 17 films), and simultaneous
+        // decoders are limited everywhere. Cards within ~58 degrees
+        // of the front play (5 max); the rest don't even mount a
+        // video element, just their poster image, until they rotate
+        // into the window.
         const phi = ((phiRef.current % 360) + 360) % 360;
         let key = "";
         const next = new Set<number>();
         for (let s = 0; s < slots.length; s++) {
           const a = (phi + s * step) % 360;
-          if (Math.min(a, 360 - a) <= 65) {
+          if (Math.min(a, 360 - a) <= 58) {
             key += s + ",";
             next.add(s);
           }
