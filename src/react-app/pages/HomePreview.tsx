@@ -31,8 +31,8 @@ function TitleBlock() {
   return (
     <section className="bg-[#070707] text-white overflow-hidden px-4 pt-4 pb-0 md:pt-6">
       <h1 className="text-center font-extrabold uppercase leading-[0.92] tracking-[-0.01em]">
-        <span className="block text-[13vw] md:text-[116px]">LuxEntra</span>
-        <span className="block text-[13vw] md:text-[116px]">Media</span>
+        <span className="block text-[12vw] md:text-[96px]">LuxEntra</span>
+        <span className="block text-[12vw] md:text-[96px]">Media</span>
       </h1>
     </section>
   );
@@ -49,7 +49,7 @@ export default function HomePreviewPage() {
       <LeadCapturePopup />
 
       {/* ── First screen: one composed viewport, Shamim-style ── */}
-      <div className="bg-[#070707] flex flex-col justify-between min-h-[calc(100vh-104px)]">
+      <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100vh-104px)]">
         <TitleBlock />
         <WorkStrip bare />
         <ScrollDrivenLogo />
