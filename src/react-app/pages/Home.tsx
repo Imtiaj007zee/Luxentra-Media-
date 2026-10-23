@@ -344,29 +344,21 @@ export function ScrollDrivenLogo() {
     let raf = 0;
     const update = () => {
       raf = 0;
-      const hero = document.getElementById("hero");
       const stage = document.getElementById("work-stage");
-      if (!hero || !stage) return;
+      if (!stage) return;
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const heroRect = hero.getBoundingClientRect();
       const stageRect = stage.getBoundingClientRect();
-      // Dock progress: 0 while the strip is still almost a full screen
-      // away, 1 once its top has risen to a third of the viewport.
-      const raw = (vh * 0.95 - stageRect.top) / (vh * 0.95 - vh * 0.35);
-      const p = Math.min(1, Math.max(0, raw));
-      const ease = p * p * (3 - 2 * p);
+      // The ring is the first screen now, so the mark lives docked:
+      // always centered exactly on the ring's stage at its calm size,
+      // on every viewport. (The old hero-first layout interpolated
+      // toward this state, which left the mark low and oversized on
+      // tablet and phone sizes.)
       const heroSize = 1.35 * Math.min(vw, vh);
-      const dockSize = vw >= 768 ? 392 : 300;
-      const size = heroSize + (dockSize - heroSize) * ease;
-      const heroCenter = heroRect.top + heroRect.height / 2;
-      const stageCenter = stageRect.top + stageRect.height / 2;
-      const centerY = heroCenter + (stageCenter - heroCenter) * ease;
-      // True neon at low strength: faint in the hero, a calm tint behind
-      // the ring, and dipped mid-journey so it never fights what it
-      // passes over. The color itself is never muted, only its weight.
-      let opacity = 0.06 + (0.15 - 0.06) * ease;
-      opacity *= 1 - 0.5 * Math.sin(Math.PI * ease);
+      const size = vw >= 768 ? 392 : 300;
+      const centerY = stageRect.top + stageRect.height / 2;
+      // True neon at low strength: a calm tint behind the ring.
+      let opacity = 0.15;
       // Once the strip has scrolled away above, fade out for good.
       if (stageRect.bottom < vh * 0.2) {
         opacity *= Math.max(0, stageRect.bottom / (vh * 0.2));
