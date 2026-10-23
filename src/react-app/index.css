@@ -207,6 +207,9 @@
   .link-dark {
     @apply inline-flex items-center gap-1 text-black font-medium hover:underline underline-offset-4;
   }
+  .link-light {
+    @apply inline-flex items-center gap-1 text-white font-medium hover:underline underline-offset-4;
+  }
 
   /* ── Service picker modal entrance ── */
   @keyframes spm-overlay-in {

@@ -41,7 +41,22 @@ export default function HomePreviewPage() {
   const t = useT();
 
   return (
-    <div className="min-h-screen bg-white text-black pt-[64px]">
+    <div className="min-h-screen bg-[#0b0b0b] text-white pt-[64px] relative">
+      {/* Ambient canvas, same as the Branding page: soft lime glows
+          bleeding across the whole scroll behind every section. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 55% 22% at 50% 16%, rgba(199,255,0,0.05), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 36%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 55% 20% at 50% 56%, rgba(199,255,0,0.035), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 76%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 60% 22% at 50% 94%, rgba(199,255,0,0.05), transparent 70%)",
+          ].join(","),
+        }}
+      />
       <SiteNav topOffset={0} />
       <ServicePickerModal />
       <LeadCapturePopup />
@@ -86,7 +101,7 @@ export default function HomePreviewPage() {
 
       <FaqSection />
 
-      <section id="about" className="bg-[#0b0b0b] text-white py-24 md:py-32 scroll-mt-16">
+      <section id="about" className="relative bg-transparent text-white py-24 md:py-32 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img src="/brand/symbol-lime.png" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">

@@ -22,18 +22,18 @@ export default function FaqSection() {
   );
 
   return (
-    <section className="bg-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-20 md:py-28">
       <div className="max-w-[900px] mx-auto px-6">
-        <p className="eyebrow text-black/40 mb-4">{t("faq.eyebrow")}</p>
+        <p className="eyebrow text-[#c7ff00] mb-4">{t("faq.eyebrow")}</p>
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
           {t("faq.h2")}
         </h2>
 
-        <div className="border-t border-black/10">
+        <div className="border-t border-white/10">
           {faqs.map((f, i) => {
             const isOpen = open === i;
             return (
-              <div key={f.q} className="border-b border-black/10">
+              <div key={f.q} className="border-b border-white/10">
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
@@ -44,7 +44,7 @@ export default function FaqSection() {
                   </span>
                   <span
                     className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
-                      isOpen ? "bg-[#c7ff00] text-black" : "bg-black/5 text-black"
+                      isOpen ? "bg-[#c7ff00] text-black" : "bg-white/10 text-white"
                     }`}
                   >
                     <Plus
@@ -60,7 +60,7 @@ export default function FaqSection() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="text-[16px] text-black/60 leading-relaxed pb-6 pr-10">
+                    <p className="text-[16px] text-white/60 leading-relaxed pb-6 pr-10">
                       {f.a}
                     </p>
                   </div>
@@ -70,7 +70,7 @@ export default function FaqSection() {
           })}
         </div>
 
-        <p className="mt-10 text-[16px] text-black/60">{t("faq.outro")}</p>
+        <p className="mt-10 text-[16px] text-white/60">{t("faq.outro")}</p>
         <Link
           to="/order?package=consultation"
           className="btn-lime mt-5 inline-flex items-center gap-2"

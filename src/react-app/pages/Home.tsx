@@ -48,7 +48,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section id="hero" className="relative bg-[#070707] text-white overflow-hidden">
+    <section id="hero" className="relative bg-transparent text-white overflow-hidden">
       {/* Cinematic backdrop */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         {/* The logo watermark lives in ScrollDrivenLogo now: one mark
@@ -711,7 +711,7 @@ export function ProofTicker() {
     </>
   );
   return (
-    <div className="ticker bg-[#0b0b0b] border-y border-white/10 overflow-hidden py-4">
+    <div className="ticker relative bg-transparent border-y border-white/10 overflow-hidden py-4">
       <div className="ticker-track flex w-max">
         {renderRow(false)}
         <div className="flex" aria-hidden="true">
@@ -766,7 +766,7 @@ export function ServicesGrid() {
   const t = useT();
   const SERVICES = useServices(t);
   return (
-    <section id="services" className="bg-[#f4f4f4] py-20 md:py-28 scroll-mt-16">
+    <section id="services" className="relative bg-transparent text-white py-20 md:py-28 scroll-mt-16">
       <div className="max-w-[1200px] mx-auto px-6">
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
           {t("home.services_h2a")}
@@ -778,14 +778,14 @@ export function ServicesGrid() {
             <div
               key={s.n}
               className={`rounded-md p-8 flex flex-col ${
-                s.dark ? "bg-[#0b0b0b] text-white" : "bg-white text-black"
+                s.dark ? "bg-white/10 text-white" : "bg-white/5 text-white border border-white/10"
               }`}
             >
-              <p className={`eyebrow mb-8 ${s.dark ? "text-[#c7ff00]" : "text-black/40"}`}>
+              <p className={`eyebrow mb-8 ${s.dark ? "text-[#c7ff00]" : "text-white/40"}`}>
                 {s.n} / {s.label}
               </p>
               <h3 className="text-[28px] font-bold tracking-tight leading-tight mb-3">{s.title}</h3>
-              <p className={`text-[15px] leading-relaxed mb-8 ${s.dark ? "text-white/60" : "text-black/60"}`}>
+              <p className={`text-[15px] leading-relaxed mb-8 text-white/60`}>
                 {s.copy}
               </p>
               <div className="mt-auto">
@@ -802,7 +802,7 @@ export function ServicesGrid() {
                     )}
                   </Link>
                 ) : (
-                  <Link to={s.href} className="link-dark text-[15px]">
+                  <Link to={s.href} className="link-light text-[15px]">
                     {s.cta} <ArrowUpRight className="w-4 h-4" />
                   </Link>
                 )}
@@ -827,7 +827,7 @@ export function ListingEssentials() {
     [t]
   );
   return (
-    <section id="pricing" className="bg-white py-20 md:py-28 scroll-mt-16">
+    <section id="pricing" className="relative bg-transparent text-white py-20 md:py-28 scroll-mt-16">
       <div className="max-w-[1200px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
         <div>
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-6">
@@ -835,31 +835,31 @@ export function ListingEssentials() {
             <br />
             {t("home.pkg_h2b")}
           </h2>
-          <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-md">
+          <p className="text-[17px] text-white/60 leading-relaxed mb-10 max-w-md">
             {t("home.pkg_copy")}
           </p>
           <p className="price-num text-[64px] md:text-[80px] font-bold tracking-[-0.03em] leading-none mb-1">
             ${standardPrice}
           </p>
-          <p className="text-[15px] text-black/50 mb-10">{t("home.pkg_per")}</p>
-          <Link to="/order" className="btn-dark">
+          <p className="text-[15px] text-white/50 mb-10">{t("home.pkg_per")}</p>
+          <Link to="/order" className="btn-lime">
             {t("home.pkg_cta")}
           </Link>
         </div>
 
-        <div className="bg-[#f4f4f4] rounded-md p-8 md:p-10">
+        <div className="bg-white/5 border border-white/10 rounded-md p-8 md:p-10">
           <h3 className="text-[24px] font-bold tracking-tight mb-8">{t("home.pkg_card_title")}</h3>
           <ul className="space-y-4 mb-8">
             {pkgFeatures.map((f) => (
               <li key={f} className="flex items-start gap-3 text-[16px]">
-                <span className="mt-0.5 w-5 h-5 rounded-full bg-black flex items-center justify-center shrink-0">
-                  <Check className="w-3 h-3 text-[#c7ff00]" strokeWidth={3} />
+                <span className="mt-0.5 w-5 h-5 rounded-full bg-[#c7ff00] flex items-center justify-center shrink-0">
+                  <Check className="w-3 h-3 text-black" strokeWidth={3} />
                 </span>
                 <span>{f}</span>
               </li>
             ))}
           </ul>
-          <p className="text-[13px] text-black/50 leading-relaxed">
+          <p className="text-[13px] text-white/50 leading-relaxed">
             {t("home.pkg_fineprint")}
           </p>
         </div>
@@ -877,7 +877,7 @@ export function Bundles() {
   const [activePackage, setActivePackage] = useState(defaultPackage);
   return (
     <section
-      className="bg-black text-white py-20 md:py-28"
+      className="relative bg-transparent text-white py-20 md:py-28"
       onMouseLeave={() => setActivePackage(defaultPackage)}
     >
       <div className="max-w-[1200px] mx-auto px-6">
@@ -960,12 +960,12 @@ export function Bundles() {
 export function CustomCTA() {
   const t = useT();
   return (
-    <section className="bg-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-20 md:py-28">
       <div className="max-w-[1200px] mx-auto px-6 text-center">
         <h2 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] leading-tight mb-5">
           {t("home.custom_h2")}
         </h2>
-        <p className="text-[17px] text-black/60 leading-relaxed mb-10 max-w-2xl mx-auto">
+        <p className="text-[17px] text-white/60 leading-relaxed mb-10 max-w-2xl mx-auto">
           {t("home.custom_copy")
             .split("\n")
             .map((l, i, arr) => (
@@ -975,7 +975,7 @@ export function CustomCTA() {
               </span>
             ))}
         </p>
-        <Link to="/order?package=consultation" className="btn-dark">
+        <Link to="/order?package=consultation" className="btn-lime">
           {t("home.custom_cta")}
         </Link>
       </div>
@@ -987,14 +987,14 @@ export function AddOns() {
   const t = useT();
   const addOns = useAddOns();
   return (
-    <section className="bg-[#f4f4f4] py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-20 md:py-28">
       <div className="max-w-[1200px] mx-auto px-6">
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
           {t("home.addons_h2a")}
           <br />
           {t("home.addons_h2b")}
         </h2>
-        <p className="text-[17px] md:text-[19px] text-black/60 leading-relaxed mb-12">
+        <p className="text-[17px] md:text-[19px] text-white/60 leading-relaxed mb-12">
           {t("home.addons_copy")
             .split("\n")
             .map((l, i, arr) => (
@@ -1010,14 +1010,14 @@ export function AddOns() {
             <Link
               key={a.id}
               to="/order"
-              className="group bg-white rounded-md p-7 flex flex-col hover:shadow-lg transition-shadow"
+              className="group bg-white/5 border border-white/10 rounded-md p-7 flex flex-col hover:bg-white/10 transition-colors"
             >
               <span className="flex items-start justify-between mb-6">
                 <span className="price-num text-[26px] font-bold tracking-tight">{a.price}</span>
-                <ArrowUpRight className="w-5 h-5 text-black/30 group-hover:text-[#a8cc00] transition-colors" />
+                <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[#c7ff00] transition-colors" />
               </span>
               <span className="text-[17px] font-bold tracking-tight">{a.name}</span>
-              <span className="text-[14px] text-black/50 mt-1">{a.note}</span>
+              <span className="text-[14px] text-white/50 mt-1">{a.note}</span>
             </Link>
           ))}
         </div>
@@ -1031,7 +1031,7 @@ export function AddOns() {
 export function WhyLuxEntra() {
   const t = useT();
   return (
-    <section className="bg-[#0b0b0b] text-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-20 md:py-28">
       <div className="max-w-[1200px] mx-auto px-6">
         <p className="eyebrow text-[#c7ff00] mb-6">{t("home.why_eyebrow")}</p>
         <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.08] mb-10 max-w-4xl">
@@ -1068,15 +1068,15 @@ export function ProcessSteps() {
   const t = useT();
   const steps = useProcessSteps(t);
   return (
-    <section className="bg-[#f4f4f4] py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-20 md:py-28">
       <div className="max-w-[1200px] mx-auto px-6">
-        <p className="eyebrow text-black/40 mb-4">{t("home.process_eyebrow")}</p>
+        <p className="eyebrow text-[#c7ff00] mb-4">{t("home.process_eyebrow")}</p>
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
           {t("home.process_h2")}
         </h2>
         <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
           <div
-            className="hidden lg:block absolute top-5 left-[12%] right-[12%] h-px bg-black/15"
+            className="hidden lg:block absolute top-5 left-[12%] right-[12%] h-px bg-white/15"
             aria-hidden="true"
           />
           {steps.map((s) => (
@@ -1085,12 +1085,12 @@ export function ProcessSteps() {
                 {s.n}
               </p>
               <h3 className="text-[22px] font-bold tracking-tight mb-3">{s.title}</h3>
-              <p className="text-[15px] text-black/60 leading-relaxed">{s.copy}</p>
+              <p className="text-[15px] text-white/60 leading-relaxed">{s.copy}</p>
             </div>
           ))}
         </div>
         <div className="mt-14">
-          <Link to="/order" className="btn-dark">
+          <Link to="/order" className="btn-lime">
             {t("nav.cta_book")}
           </Link>
         </div>
@@ -1282,7 +1282,7 @@ export function ImpactStats() {
   }, []);
 
   return (
-    <section className="relative bg-[#070707] text-white overflow-hidden border-t border-white/10">
+    <section className="relative bg-transparent text-white overflow-hidden border-t border-white/10">
       <div className="relative max-w-[1200px] mx-auto px-6 py-20 md:py-28">
         <div ref={dashboardRef}>
           <div
