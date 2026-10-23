@@ -62,12 +62,12 @@ export default function HomePreviewPage() {
       <LeadCapturePopup />
 
       {/* ── First screen: one composed viewport, Shamim-style ── */}
-      <div className="relative overflow-hidden bg-transparent flex flex-col justify-center min-h-[calc(100dvh-64px)]">
+      <div className="relative bg-transparent flex flex-col justify-center min-h-[calc(100dvh-64px)]">
         {/* Same ambient background as the Branding page: base #0b0b0b
             with soft lime glows breathing behind the content. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[135%]"
           style={{
             background: [
               "radial-gradient(ellipse 70% 55% at 50% 30%, rgba(199,255,0,0.10), transparent 70%)",
