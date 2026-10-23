@@ -29,14 +29,14 @@ import {
 
 function TitleBlock() {
   return (
-    <section className="bg-[#070707] text-white overflow-hidden px-6 pt-14 pb-2 md:pt-20 md:pb-4">
+    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-8 pb-0 md:pt-12">
       <h1 className="mx-auto w-fit">
         <span className="sr-only">LuxEntra Media</span>
         <img
           src="/brand/wordmark-lime.png"
           alt=""
           aria-hidden
-          className="w-[min(86vw,860px)] h-auto object-contain"
+          className="w-[min(95vw,1240px)] h-auto object-contain"
         />
       </h1>
     </section>
@@ -55,7 +55,7 @@ export default function HomePreviewPage() {
 
       {/* ── First screen ── */}
       <TitleBlock />
-      <WorkStrip />
+      <WorkStrip bare />
       <ScrollDrivenLogo />
       <TypedRotator />
 

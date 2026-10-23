@@ -403,7 +403,7 @@ export function ScrollDrivenLogo() {
   );
 }
 
-export function WorkStrip() {
+export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
   const t = useT();
   const navigate = useNavigate();
   const films = useMemo(() => {
@@ -514,6 +514,7 @@ export function WorkStrip() {
 
   return (
     <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
+      {!bare && (
       <div className="relative z-20 max-w-[1200px] mx-auto px-6 pt-14 md:pt-20 pb-8 flex items-end justify-between gap-4">
         <p className="eyebrow text-white/50">{t("home.work_eyebrow")}</p>
         <Link
@@ -523,6 +524,7 @@ export function WorkStrip() {
           {t("home.work_link")} <ArrowUpRight className="w-4 h-4" />
         </Link>
       </div>
+      )}
       <div
         id="work-stage"
         ref={stageRef}
