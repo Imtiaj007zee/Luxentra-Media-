@@ -528,7 +528,7 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
       <div
         id="work-stage"
         ref={stageRef}
-        className="relative h-[380px] md:h-[480px] w-full select-none"
+        className={`relative h-[380px] md:h-[480px] w-full select-none ${bare ? "z-[5] scale-[0.88]" : ""}`}
       >
         {/* The mark behind this ring is the ScrollDrivenLogo: it starts
             huge in the hero and shrinks down to park here on scroll. */}

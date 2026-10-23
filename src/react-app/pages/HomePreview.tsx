@@ -9,6 +9,7 @@ import { useT } from "@/react-app/lib/siteContent";
 import {
   ScarcityBar,
   Hero,
+  ScrollDrivenLogo,
   WorkStrip,
   TypedRotator,
   ProofTicker,
@@ -50,9 +51,10 @@ export default function HomePreviewPage() {
       {/* ── First screen: one composed viewport, Shamim-style ── */}
       <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100dvh-104px)]">
         <TitleBlock />
-        <div className="scale-[0.88] -mt-12 -mb-6 md:-mt-16 md:-mb-7">
+        <div className="-mt-6 -mb-10 md:-mt-7 md:-mb-12">
           <WorkStrip bare />
         </div>
+        <ScrollDrivenLogo />
         <TypedRotator tight />
       </div>
 
