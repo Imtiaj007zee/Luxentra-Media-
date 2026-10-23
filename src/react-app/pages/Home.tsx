@@ -201,9 +201,12 @@ function TypedRotator() {
       aria-label={`${prefix} ${words[0]} ${suffix}`}
       className="bg-[#070707] text-white px-6 py-10 md:py-14 overflow-hidden"
     >
-      <p className="typed-line text-center text-[26px] md:text-[42px] font-bold tracking-[-0.02em] leading-[1.2]">
-        {prefix} <span className="text-[#c7ff00]">{visible}</span>
-        <span className="typed-cursor" aria-hidden="true" /> {suffix}
+      <p className="typed-line mx-auto w-fit text-left text-[26px] md:text-[42px] font-bold tracking-[-0.02em] leading-[1.25]">
+        <span className="block">
+          {prefix} <span className="text-[#c7ff00]">{visible}</span>
+          <span className="typed-cursor" aria-hidden="true" />
+        </span>
+        <span className="block">{suffix}</span>
       </p>
     </section>
   );
