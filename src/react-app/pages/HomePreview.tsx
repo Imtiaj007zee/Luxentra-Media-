@@ -29,12 +29,15 @@ import {
 
 function TitleBlock() {
   return (
-    <section className="bg-[#070707] text-white overflow-hidden px-6 pt-14 pb-2 md:pt-20 md:pb-4 text-center">
-      <h1 className="font-bold tracking-[-0.03em] leading-[0.95]">
-        <span className="block text-[58px] md:text-[112px]">LuxEntra</span>
-        <span className="block text-[#c7ff00] text-[19px] md:text-[32px] font-semibold tracking-[0.45em] mt-3 pl-[0.45em]">
-          MEDIA
-        </span>
+    <section className="bg-[#070707] text-white overflow-hidden px-6 pt-14 pb-2 md:pt-20 md:pb-4">
+      <h1 className="mx-auto w-fit">
+        <span className="sr-only">LuxEntra Media</span>
+        <img
+          src="/brand/wordmark-lime.png"
+          alt=""
+          aria-hidden
+          className="w-[min(86vw,860px)] h-auto object-contain"
+        />
       </h1>
     </section>
   );
