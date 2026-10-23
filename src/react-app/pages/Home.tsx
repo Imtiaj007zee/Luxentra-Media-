@@ -199,7 +199,7 @@ export function TypedRotator({ tight = false }: { tight?: boolean } = {}) {
   return (
     <section
       aria-label={`${prefix} ${words[0]} ${suffix}`}
-      className={`bg-[#070707] text-white px-4 sm:px-6 overflow-hidden ${tight ? "py-5 md:py-6" : "py-10 md:py-14"}`}
+      className={`text-white px-4 sm:px-6 overflow-hidden ${tight ? "relative bg-transparent py-5 md:py-6" : "bg-[#070707] py-10 md:py-14"}`}
     >
       <p className={`typed-line mx-auto w-fit text-left font-bold tracking-[-0.02em] leading-[1.25] ${tight ? "text-[4.8vw] sm:text-[24px] md:text-[36px]" : "text-[4.8vw] sm:text-[26px] md:text-[42px]"}`}>
         <span className="block whitespace-nowrap">
@@ -505,7 +505,7 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
   }, []);
 
   return (
-    <section aria-label={t("home.work_eyebrow")} className="bg-[#070707] text-white overflow-hidden">
+    <section aria-label={t("home.work_eyebrow")} className={`text-white overflow-hidden ${bare ? "relative bg-transparent" : "bg-[#070707]"}`}>
       {!bare && (
       <div className="relative z-20 max-w-[1200px] mx-auto px-6 pt-14 md:pt-20 pb-8 flex items-end justify-between gap-4">
         <p className="eyebrow text-white/50">{t("home.work_eyebrow")}</p>

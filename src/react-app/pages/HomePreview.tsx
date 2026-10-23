@@ -28,7 +28,7 @@ import {
 
 function TitleBlock() {
   return (
-    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-2 pb-7 md:pt-3 md:pb-8">
+    <section className="relative bg-transparent text-white overflow-hidden px-4 pt-2 pb-7 md:pt-3 md:pb-8">
       <h1 className="text-center font-extrabold uppercase leading-[0.92] tracking-[-0.01em]">
         <span className="block text-[min(9.7vw,84px)]">LuxEntra</span>
         <span className="block text-[min(9.7vw,84px)]">Media</span>
@@ -47,7 +47,23 @@ export default function HomePreviewPage() {
       <LeadCapturePopup />
 
       {/* ── First screen: one composed viewport, Shamim-style ── */}
-      <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100dvh-64px)]">
+      <div className="relative overflow-hidden bg-[#0b0b0b] flex flex-col justify-center min-h-[calc(100dvh-64px)]">
+        {/* Same ambient background as the Branding page: base #0b0b0b
+            with soft lime glows breathing behind the content. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: [
+              "radial-gradient(ellipse 70% 55% at 50% 30%, rgba(199,255,0,0.10), transparent 70%)",
+              "radial-gradient(ellipse 55% 22% at 50% 16%, rgba(199,255,0,0.05), transparent 70%)",
+              "radial-gradient(ellipse 50% 20% at 50% 36%, rgba(199,255,0,0.028), transparent 70%)",
+              "radial-gradient(ellipse 55% 20% at 50% 56%, rgba(199,255,0,0.035), transparent 70%)",
+              "radial-gradient(ellipse 50% 20% at 50% 76%, rgba(199,255,0,0.028), transparent 70%)",
+              "radial-gradient(ellipse 60% 22% at 50% 94%, rgba(199,255,0,0.05), transparent 70%)",
+            ].join(","),
+          }}
+        />
         <TitleBlock />
         <div className="-mt-6 -mb-10 md:-mt-7 md:-mb-12">
           <WorkStrip bare />
