@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router";
 import AboutPage from "./pages/About";
 import HomePage from "@/react-app/pages/Home";
+import HomePreviewPage from "@/react-app/pages/HomePreview";
 import OrderPage from "@/react-app/pages/Order";
 import WorkPage from "@/react-app/pages/Work";
 import BrandingPage from "./pages/Branding";
@@ -40,6 +41,7 @@ export default function App() {
       <ScrollToHash />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/preview-home" element={<HomePreviewPage />} />
         <Route path="/book" element={<Navigate to="/order" replace />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/order" element={<OrderPage />} />

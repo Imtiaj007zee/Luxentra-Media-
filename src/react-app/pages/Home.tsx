@@ -13,7 +13,7 @@ import { useSiteSettings } from "@/react-app/lib/siteSettings";
 // ── Scarcity bar ─────────────────────────────────────────────────────────
 // Thin fixed bar above the nav. Copy is backstage-editable (home.scarcity_bar).
 
-function ScarcityBar() {
+export function ScarcityBar() {
   const t = useT();
   return (
     <Link
@@ -30,7 +30,7 @@ function ScarcityBar() {
 // ── Hero ─────────────────────────────────────────────────────────────────
 // UNTOUCHED: headline, sub-copy and buttons stay exactly as they were.
 
-function Hero() {
+export function Hero() {
   const t = useT();
   // Entrance choreography: flip on after first paint, CSS does the rest.
   // Content, keys, classes and layout below are unchanged; only animation
@@ -141,7 +141,7 @@ function Hero() {
 // Shamim-style kinetic line between the hero and the proof ticker.
 // Words are backstage-editable (home.typed_words, one per line).
 
-function TypedRotator() {
+export function TypedRotator() {
   const t = useT();
   const prefix = t("home.typed_prefix");
   const suffix = t("home.typed_suffix");
@@ -335,7 +335,7 @@ function FilmCard({
 // the page, and parks at ring size behind the Selected Work films, then
 // leaves with the strip. It is a pure function of scroll position, so
 // scrolling back up reverses the whole journey exactly.
-function ScrollDrivenLogo() {
+export function ScrollDrivenLogo() {
   const imgRef = useRef<HTMLImageElement | null>(null);
 
   useEffect(() => {
@@ -403,7 +403,7 @@ function ScrollDrivenLogo() {
   );
 }
 
-function WorkStrip() {
+export function WorkStrip() {
   const t = useT();
   const navigate = useNavigate();
   const films = useMemo(() => {
@@ -691,7 +691,7 @@ function WorkStrip() {
 // ── Proof ticker ─────────────────────────────────────────────────────────
 // Infinite scrolling strip of real proof points. Numbers bind to live settings.
 
-function ProofTicker() {
+export function ProofTicker() {
   const t = useT();
   const { settings } = useSiteSettings();
   const items = useMemo(
@@ -768,7 +768,7 @@ function useServices(t: ReturnType<typeof useT>) {
   );
 }
 
-function ServicesGrid() {
+export function ServicesGrid() {
   const t = useT();
   const SERVICES = useServices(t);
   return (
@@ -821,7 +821,7 @@ function ServicesGrid() {
   );
 }
 
-function ListingEssentials() {
+export function ListingEssentials() {
   const t = useT();
   const { standardPrice } = useLiveCatalog();
   const pkgFeatures = useMemo(
@@ -874,7 +874,7 @@ function ListingEssentials() {
   );
 }
 
-function Bundles() {
+export function Bundles() {
   const t = useT();
   const { bundles } = useLiveCatalog();
   // Hovered / focused / tapped package card. Defaults to the featured
@@ -963,7 +963,7 @@ function Bundles() {
   );
 }
 
-function CustomCTA() {
+export function CustomCTA() {
   const t = useT();
   return (
     <section className="bg-white py-20 md:py-28">
@@ -989,7 +989,7 @@ function CustomCTA() {
   );
 }
 
-function AddOns() {
+export function AddOns() {
   const t = useT();
   const addOns = useAddOns();
   return (
@@ -1034,7 +1034,7 @@ function AddOns() {
 
 // ── Why LuxEntra ─────────────────────────────────────────────────────────
 
-function WhyLuxEntra() {
+export function WhyLuxEntra() {
   const t = useT();
   return (
     <section className="bg-[#0b0b0b] text-white py-20 md:py-28">
@@ -1070,7 +1070,7 @@ function useProcessSteps(t: ReturnType<typeof useT>) {
   );
 }
 
-function ProcessSteps() {
+export function ProcessSteps() {
   const t = useT();
   const steps = useProcessSteps(t);
   return (
@@ -1267,7 +1267,7 @@ function ImpactCard({
   );
 }
 
-function ImpactStats() {
+export function ImpactStats() {
   const t = useT();
   const metrics = useImpactMetrics();
   const dashboardRef = useRef<HTMLDivElement>(null);
