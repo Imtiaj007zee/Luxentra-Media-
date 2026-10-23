@@ -614,7 +614,7 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
               performance.now() - downAtRef.current < 600
             ) {
               manualNavAtRef.current = Date.now();
-              navigate(tapHrefRef.current);
+              if (!bare) navigate(tapHrefRef.current);
             } else if (movedRef.current > 8) {
               const boost = Math.max(-35, Math.min(35, velRef.current * 0.03));
               momentumRef.current = -boost;
@@ -638,7 +638,7 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
               Math.hypot(dx, dy) < 18
             ) {
               manualNavAtRef.current = Date.now();
-              navigate(tapHrefRef.current);
+              if (!bare) navigate(tapHrefRef.current);
             }
             tapHrefRef.current = null;
           }}
@@ -673,7 +673,7 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
               Date.now() - manualNavAtRef.current > 700
             ) {
               manualNavAtRef.current = Date.now();
-              navigate(tapHrefRef.current);
+              if (!bare) navigate(tapHrefRef.current);
             }
           }}
         />

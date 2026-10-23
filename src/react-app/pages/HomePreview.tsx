@@ -7,7 +7,6 @@ import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal from "@/react-app/components/ServicePickerModal";
 import { useT } from "@/react-app/lib/siteContent";
 import {
-  ScarcityBar,
   Hero,
   ScrollDrivenLogo,
   WorkStrip,
@@ -42,14 +41,13 @@ export default function HomePreviewPage() {
   const t = useT();
 
   return (
-    <div className="min-h-screen bg-white text-black pt-[104px]">
-      <ScarcityBar />
-      <SiteNav topOffset={40} />
+    <div className="min-h-screen bg-white text-black pt-[64px]">
+      <SiteNav topOffset={0} />
       <ServicePickerModal />
       <LeadCapturePopup />
 
       {/* ── First screen: one composed viewport, Shamim-style ── */}
-      <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100dvh-104px)]">
+      <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100dvh-64px)]">
         <TitleBlock />
         <div className="-mt-6 -mb-10 md:-mt-7 md:-mb-12">
           <WorkStrip bare />
