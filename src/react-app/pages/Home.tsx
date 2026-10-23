@@ -49,8 +49,19 @@ export function Hero() {
 
   return (
     <section id="hero" className="relative bg-transparent text-white overflow-hidden">
-      {/* Cinematic backdrop */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      {/* Cinematic backdrop. The vertical melt mask fades the whole
+          backdrop in and out at the section edges so the page reads as
+          one continuous field, never stacked boxes. */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          maskImage:
+            "linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%)",
+        }}
+      >
         {/* The logo watermark lives in ScrollDrivenLogo now: one mark
             that starts here, huge and faint, and shrinks down to park
             behind the Selected Work ring as you scroll. */}
