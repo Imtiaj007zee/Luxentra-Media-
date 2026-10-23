@@ -29,10 +29,10 @@ import {
 
 function TitleBlock() {
   return (
-    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-6 pb-1 md:pt-10">
-      <h1 className="text-center font-extrabold uppercase leading-[0.95] tracking-[-0.01em]">
-        <span className="block text-[13vw] md:text-[104px]">LuxEntra</span>
-        <span className="block text-[13vw] md:text-[104px]">Media</span>
+    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-4 pb-0 md:pt-6">
+      <h1 className="text-center font-extrabold uppercase leading-[0.92] tracking-[-0.01em]">
+        <span className="block text-[13vw] md:text-[116px]">LuxEntra</span>
+        <span className="block text-[13vw] md:text-[116px]">Media</span>
       </h1>
     </section>
   );
@@ -48,11 +48,13 @@ export default function HomePreviewPage() {
       <ServicePickerModal />
       <LeadCapturePopup />
 
-      {/* ── First screen ── */}
-      <TitleBlock />
-      <WorkStrip bare />
-      <ScrollDrivenLogo />
-      <TypedRotator />
+      {/* ── First screen: one composed viewport, Shamim-style ── */}
+      <div className="bg-[#070707] flex flex-col justify-between min-h-[calc(100vh-104px)]">
+        <TitleBlock />
+        <WorkStrip bare />
+        <ScrollDrivenLogo />
+        <TypedRotator tight />
+      </div>
 
       {/* ── Second page: the current homepage, in its own order ── */}
       <Hero />

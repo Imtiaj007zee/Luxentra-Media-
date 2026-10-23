@@ -141,7 +141,7 @@ export function Hero() {
 // Shamim-style kinetic line between the hero and the proof ticker.
 // Words are backstage-editable (home.typed_words, one per line).
 
-export function TypedRotator() {
+export function TypedRotator({ tight = false }: { tight?: boolean } = {}) {
   const t = useT();
   const prefix = t("home.typed_prefix");
   const suffix = t("home.typed_suffix");
@@ -199,7 +199,7 @@ export function TypedRotator() {
   return (
     <section
       aria-label={`${prefix} ${words[0]} ${suffix}`}
-      className="bg-[#070707] text-white px-4 sm:px-6 py-10 md:py-14 overflow-hidden"
+      className={`bg-[#070707] text-white px-4 sm:px-6 overflow-hidden ${tight ? "py-6 md:py-8" : "py-10 md:py-14"}`}
     >
       <p className="typed-line mx-auto w-fit text-left text-[4.8vw] sm:text-[26px] md:text-[42px] font-bold tracking-[-0.02em] leading-[1.25]">
         <span className="block whitespace-nowrap">
