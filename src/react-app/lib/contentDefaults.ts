@@ -118,9 +118,9 @@ export const DEFAULT_COPY: CopyEntry[] = [
   // ── Homepage: scarcity bar ──
   { key: "home.scarcity_bar", group: "Homepage", label: "Scarcity bar line", value: "November is almost booked out. Only 7 shoot days left, grab yours before another agent does." },
   // ── Homepage: typed rotator ──
-  { key: "home.typed_prefix", group: "Homepage", label: "Typed line prefix", value: "We turn" },
-  { key: "home.typed_words", group: "Homepage", label: "Typed rotating words (one per line)", value: "listing films\nscroll-stopping reels\npersonal brands\nfirst impressions" },
-  { key: "home.typed_suffix", group: "Homepage", label: "Typed line suffix", value: "into clients." },
+  { key: "home.typed_prefix", group: "Homepage", label: "Typed line prefix", value: "With our" },
+  { key: "home.typed_words", group: "Homepage", label: "Typed rotating words (one per line)", value: "listing films,\nlisting photos,\nbranding,\npersonal branding," },
+  { key: "home.typed_suffix", group: "Homepage", label: "Typed line suffix", value: "your viewers turn into your clients." },
   // ── Homepage: selected work strip ──
   { key: "home.work_eyebrow", group: "Homepage", label: "Work strip eyebrow", value: "Selected work" },
   { key: "home.work_link", group: "Homepage", label: "Work strip link label", value: "See all work" },
