@@ -29,7 +29,7 @@ import {
 
 function TitleBlock() {
   return (
-    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-2 pb-0 md:pt-3">
+    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-2 pb-7 md:pt-3 md:pb-8">
       <h1 className="text-center font-extrabold uppercase leading-[0.92] tracking-[-0.01em]">
         <span className="block text-[12vw] md:text-[84px]">LuxEntra</span>
         <span className="block text-[12vw] md:text-[84px]">Media</span>
