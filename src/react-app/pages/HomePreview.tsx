@@ -29,10 +29,10 @@ import {
 
 function TitleBlock() {
   return (
-    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-4 pb-0 md:pt-6">
+    <section className="bg-[#070707] text-white overflow-hidden px-4 pt-2 pb-0 md:pt-3">
       <h1 className="text-center font-extrabold uppercase leading-[0.92] tracking-[-0.01em]">
-        <span className="block text-[12vw] md:text-[96px]">LuxEntra</span>
-        <span className="block text-[12vw] md:text-[96px]">Media</span>
+        <span className="block text-[12vw] md:text-[84px]">LuxEntra</span>
+        <span className="block text-[12vw] md:text-[84px]">Media</span>
       </h1>
     </section>
   );
@@ -49,9 +49,11 @@ export default function HomePreviewPage() {
       <LeadCapturePopup />
 
       {/* ── First screen: one composed viewport, Shamim-style ── */}
-      <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100vh-104px)]">
+      <div className="bg-[#070707] flex flex-col justify-center min-h-[calc(100dvh-104px)]">
         <TitleBlock />
-        <WorkStrip bare />
+        <div className="scale-[0.88] -my-6 md:-my-7">
+          <WorkStrip bare />
+        </div>
         <ScrollDrivenLogo />
         <TypedRotator tight />
       </div>
