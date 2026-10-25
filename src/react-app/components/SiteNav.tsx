@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
+import { ArrowUpRight } from "lucide-react";
 import { useT } from "@/react-app/lib/siteContent";
 
 /**
- * LuxEntra global navigation: solid black sticky bar, lime brand lockup,
- * centered links, lime pill CTA, full-screen black overlay menu on mobile.
+ * LuxEntra global navigation: floating glass pill, centered at the top,
+ * lime brand lockup, white pill CTA and a round hamburger that opens
+ * the full-screen menu on every screen size.
  */
 export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   const [open, setOpen] = useState(false);
@@ -36,8 +38,11 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
 
   return (
     <>
-      <header className="fixed left-0 right-0 z-50 bg-[#0b0b0b]" style={{ top: topOffset }}>
-        <nav className="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
+      <header
+        className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] max-w-[1200px]"
+        style={{ top: topOffset + 12 }}
+      >
+        <nav className="flex items-center justify-between h-14 md:h-16 pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
           <Link
             to="/"
             onClick={() => {
@@ -53,42 +58,36 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
             <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
           </Link>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-10">
-            {LINKS.map((l) =>
-              renderLink(
-                l,
-                "text-[14px] font-medium text-white/80 hover:text-white transition-colors"
-              )
-            )}
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link to="/order" className="btn-lime-sm hidden md:inline-flex">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
+            <Link
+              to="/order"
+              className="inline-flex items-center gap-1 rounded-full bg-white text-black text-[13px] md:text-sm font-semibold px-4 md:px-5 py-2.5 hover:bg-white/85 transition-colors"
+            >
               {t("nav.cta_book")}
+              <ArrowUpRight className="w-4 h-4" />
             </Link>
-            {/* Mobile hamburger */}
+            {/* Hamburger, round outline button, every screen size */}
             <button
-              className="md:hidden flex flex-col justify-center gap-[7px] w-8 h-8"
+              className="flex flex-col items-center justify-center gap-[6px] w-10 h-10 md:w-11 md:h-11 rounded-full border border-white/20 hover:border-white/40 transition-colors"
               onClick={() => setOpen(!open)}
               aria-label={t("nav.menu_aria")}
             >
               <span
-                className="block h-[2px] w-6 bg-white transition-all duration-300"
-                style={{ transform: open ? "rotate(45deg) translateY(4.5px)" : "none" }}
+                className="block h-[2px] w-4 bg-white transition-all duration-300"
+                style={{ transform: open ? "rotate(45deg) translateY(4px)" : "none" }}
               />
               <span
-                className="block h-[2px] w-6 bg-white transition-all duration-300"
-                style={{ transform: open ? "rotate(-45deg) translateY(-4.5px)" : "none" }}
+                className="block h-[2px] w-4 bg-white transition-all duration-300"
+                style={{ transform: open ? "rotate(-45deg) translateY(-4px)" : "none" }}
               />
             </button>
           </div>
         </nav>
       </header>
 
-      {/* Mobile full-screen menu */}
+      {/* Full-screen menu, every screen size */}
       <div
-        className={`fixed inset-0 z-40 bg-[#0b0b0b] md:hidden transition-all duration-300 ${
+        className={`fixed inset-0 z-40 bg-[#0b0b0b] transition-all duration-300 ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
