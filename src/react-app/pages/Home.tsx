@@ -27,110 +27,8 @@ export function ScarcityBar() {
   );
 }
 
-// ── Hero ─────────────────────────────────────────────────────────────────
-// UNTOUCHED: headline, sub-copy and buttons stay exactly as they were.
-
-export function Hero() {
-  const t = useT();
-  // Entrance choreography: flip on after first paint, CSS does the rest.
-  // Content, keys, classes and layout below are unchanged; only animation
-  // wrappers/classes were added.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setMounted(true));
-    });
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-    };
-  }, []);
-
-  return (
-    <section id="hero" className="relative bg-transparent text-white overflow-hidden">
-      {/* Cinematic backdrop. The vertical melt mask fades the whole
-          backdrop in and out at the section edges so the page reads as
-          one continuous field, never stacked boxes. */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          maskImage:
-            "linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0, black 160px, black calc(100% - 160px), transparent 100%)",
-        }}
-      >
-        {/* The logo watermark lives in ScrollDrivenLogo now: one mark
-            that starts here, huge and faint, and shrinks down to park
-            behind the Selected Work ring as you scroll. */}
-        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-[#c7ff00]/[0.07] blur-[130px]" />
-        <div className="absolute bottom-0 -left-32 w-[520px] h-[420px] rounded-full bg-white/[0.03] blur-[110px]" />
-        <div
-          className="absolute inset-0 opacity-60"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
-            backgroundSize: "56px 56px",
-            maskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
-            WebkitMaskImage: "radial-gradient(ellipse 85% 65% at 50% 38%, black 25%, transparent 78%)",
-          }}
-        />
-      </div>
-
-      <div
-        className={`relative z-10 max-w-[1200px] mx-auto px-6 pt-24 md:pt-32 pb-20 md:pb-28${
-          mounted ? " hero-in" : ""
-        }`}
-      >
-        <p
-          className="eyebrow text-white/50 mb-6 text-center hero-fade"
-          style={{ transitionDelay: "300ms" }}
-        >
-          {t("home.eyebrow")}
-        </p>
-        <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6 text-center">
-          <span className="hero-mask">
-            <span className="hero-rise" style={{ transitionDelay: "0ms" }}>
-              {t("home.hero_h1a")}
-            </span>
-          </span>
-          <br />
-          <span className="hero-mask">
-            <span className="hero-rise" style={{ transitionDelay: "120ms" }}>
-              {t("home.hero_h1b")}
-            </span>
-          </span>
-        </h1>
-        <p
-          className="text-[18px] md:text-[21px] leading-snug text-white/70 mb-10 text-center hero-fade"
-          style={{ transitionDelay: "420ms" }}
-        >
-          {t("home.hero_sub1")}
-          <br className="hidden md:block" /> {t("home.hero_sub2")}
-        </p>
-        <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 hero-fade"
-          style={{ transitionDelay: "540ms" }}
-        >
-          <PackageButton to="/order" dark={false}>
-            {t("home.cta_book")}
-          </PackageButton>
-          <Link
-            to="/work"
-            className="inline-flex items-center gap-1 text-white font-medium text-[17px] hover:text-[#c7ff00] transition-colors"
-          >
-            {t("home.cta_work")} <ArrowUpRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ── Typed rotator strip ──────────────────────────────────────────────────
-// Shamim-style kinetic line between the hero and the trusted-by strip.
+// Shamim-style kinetic line between the work strip and the trusted-by strip.
 // Words are backstage-editable (home.typed_words, one per line).
 
 export function TypedRotator({ tight = false }: { tight?: boolean } = {}) {
@@ -1428,7 +1326,6 @@ export default function HomePage() {
       <ServicePickerModal />
       <LeadCapturePopup />
 
-      <Hero />
       <WorkStrip />
       <ScrollDrivenLogo />
       <TypedRotator />

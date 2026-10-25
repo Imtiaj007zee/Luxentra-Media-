@@ -7,7 +7,6 @@ import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
 import ServicePickerModal from "@/react-app/components/ServicePickerModal";
 import { useT } from "@/react-app/lib/siteContent";
 import {
-  Hero,
   ScrollDrivenLogo,
   WorkStrip,
   TypedRotator,
@@ -88,7 +87,6 @@ export default function HomePreviewPage() {
       </div>
 
       {/* ── Second page: the current homepage, in its own order ── */}
-      <Hero />
       <TrustedBy />
       <ServicesGrid />
       <ListingEssentials />
