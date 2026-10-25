@@ -244,10 +244,26 @@ export default function OrderPage() {
   const expectBullets = t("order.expect_bullets").split("\n").map((b) => b.trim()).filter(Boolean);
 
   return (
-    <div className="dark min-h-screen bg-[#0b0b0b] text-white pt-16">
+    <div className="dark min-h-screen bg-[#0b0b0b] text-white pt-16 relative">
       <SiteNav />
 
-      <section className="py-24 md:py-32">
+      {/* Ambient canvas, same as the home page: soft lime glows bleeding
+          across the whole scroll behind every section. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 55% 22% at 50% 16%, rgba(199,255,0,0.05), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 36%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 55% 20% at 50% 56%, rgba(199,255,0,0.035), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 76%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 60% 22% at 50% 94%, rgba(199,255,0,0.05), transparent 70%)",
+          ].join(","),
+        }}
+      />
+
+      <section className="relative py-24 md:py-32">
         <div className="max-w-4xl mx-auto px-6">
           <Link to="/" className="link-lime !text-[15px] mb-10">
             <ArrowLeft className="w-4 h-4" /> {t("order.back")}

@@ -368,11 +368,27 @@ export default function WorkPage() {
   );
 
   return (
-    <div className="min-h-screen bg-white text-black pt-16">
+    <div className="min-h-screen bg-[#0b0b0b] text-white pt-16 relative">
       <SiteNav />
 
+      {/* Ambient canvas, same as the home page: soft lime glows bleeding
+          across the whole scroll behind every section. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 55% 22% at 50% 16%, rgba(199,255,0,0.05), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 36%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 55% 20% at 50% 56%, rgba(199,255,0,0.035), transparent 70%)",
+            "radial-gradient(ellipse 50% 20% at 50% 76%, rgba(199,255,0,0.028), transparent 70%)",
+            "radial-gradient(ellipse 60% 22% at 50% 94%, rgba(199,255,0,0.05), transparent 70%)",
+          ].join(","),
+        }}
+      />
+
       {/* Hero */}
-      <section className="bg-[#0b0b0b] text-white">
+      <section className="relative text-white">
         <div className="max-w-[1200px] mx-auto px-6 pt-20 md:pt-28 pb-16 md:pb-20">
           <p className="eyebrow text-white/50 mb-6">{t("work.hero_eyebrow")}</p>
           <h1 className="text-[52px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] mb-6">
@@ -387,7 +403,7 @@ export default function WorkPage() {
       </section>
 
       {/* Gallery */}
-      <section id="films" className="bg-white py-16 md:py-24 scroll-mt-16">
+      <section id="films" className="relative py-16 md:py-24 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           {/* Tabs */}
           <div className="flex items-center gap-3 mb-8">
@@ -397,8 +413,8 @@ export default function WorkPage() {
                 onClick={() => setTab(tb)}
                 className={`px-6 py-2.5 rounded-full text-[15px] font-semibold transition-colors ${
                   tab === tb
-                    ? "bg-black text-white"
-                    : "bg-black/5 text-black/60 hover:bg-black/10"
+                    ? "bg-[#c7ff00] text-black"
+                    : "bg-white/5 text-white/60 hover:bg-white/10"
                 }`}
               >
                 {tb === "films"
@@ -425,7 +441,7 @@ export default function WorkPage() {
                       <h3 className="text-[26px] md:text-[32px] font-bold tracking-[-0.02em]">
                         {group}
                       </h3>
-                      <span className="text-black/40 text-[14px] tabular-nums">
+                      <span className="text-white/40 text-[14px] tabular-nums">
                         {items.length} {items.length === 1 ? "film" : "films"}
                       </span>
                     </div>
@@ -480,7 +496,7 @@ export default function WorkPage() {
                       className={`px-5 py-2 rounded-full text-[14px] font-medium border transition-colors ${
                         photoFilter === f.id
                           ? "bg-[#c7ff00] text-black border-[#c7ff00]"
-                          : "bg-transparent text-black/60 border-black/15 hover:border-black/40"
+                          : "bg-transparent text-white/60 border-white/15 hover:border-white/40"
                       }`}
                     >
                       {f.label} ({count})
@@ -494,12 +510,12 @@ export default function WorkPage() {
                 <div className="mb-14">
                   <div className="flex items-baseline justify-between mb-6">
                     <div>
-                      <p className="eyebrow text-black/40 mb-2">{t("work.showcase_eyebrow")}</p>
+                      <p className="eyebrow text-white/40 mb-2">{t("work.showcase_eyebrow")}</p>
                       <h3 className="text-[26px] md:text-[32px] font-bold tracking-[-0.02em]">
                         {t("work.showcase_h2")}
                       </h3>
                     </div>
-                    <span className="text-black/40 text-[14px] tabular-nums">
+                    <span className="text-white/40 text-[14px] tabular-nums">
                       {t("work.showcase_count", { n: showcase.length, m: photos.length })}
                     </span>
                   </div>
@@ -569,7 +585,7 @@ export default function WorkPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#0b0b0b] text-white py-24 md:py-32">
+      <section className="relative text-white py-24 md:py-32">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img
             src="/brand/symbol-lime.png"
