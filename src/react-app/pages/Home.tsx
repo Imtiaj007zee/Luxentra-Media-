@@ -642,7 +642,7 @@ export function TrustedBy() {
     </>
   );
   return (
-    <section aria-label={t("home.trusted_by_label")} className="relative bg-[#070707] text-white overflow-hidden py-10 md:py-14">
+    <section aria-label={t("home.trusted_by_label")} className="relative bg-transparent text-white overflow-hidden py-10 md:py-14">
       <p className="eyebrow text-white/50 text-center mb-8 md:mb-10">
         {t("home.trusted_by_label")}
       </p>
