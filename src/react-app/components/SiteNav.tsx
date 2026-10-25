@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { ArrowUpRight } from "lucide-react";
 import { useT } from "@/react-app/lib/siteContent";
 
 /**
- * LuxEntra global navigation: floating glass pill, centered at the top,
- * lime brand lockup, white pill CTA and a round hamburger that opens
- * the full-screen menu on every screen size.
+ * LuxEntra global navigation: the usual bar (logo, Branding / Work /
+ * About, Book a Shoot) plus a Free Consultation button, rendered as a
+ * floating glass pill: translucent white, backdrop blur, soft border
+ * and shadow. Mobile keeps the round hamburger and full-screen menu.
  */
 export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   const [open, setOpen] = useState(false);
@@ -58,17 +58,29 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
             <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
           </Link>
 
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-10">
+            {LINKS.map((l) =>
+              renderLink(
+                l,
+                "text-[14px] font-medium text-white/80 hover:text-white transition-colors"
+              )
+            )}
+          </div>
+
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
             <Link
-              to="/order"
-              className="inline-flex items-center gap-1 rounded-full bg-white text-black text-[13px] md:text-sm font-semibold px-4 md:px-5 py-2.5 hover:bg-white/85 transition-colors"
+              to="/consultation"
+              className="hidden md:inline-flex items-center rounded-full border border-white/25 px-4 py-2 text-[14px] font-medium text-white hover:bg-white/10 transition-colors"
             >
-              {t("nav.cta_book")}
-              <ArrowUpRight className="w-4 h-4" />
+              {t("nav.cta_consult")}
             </Link>
-            {/* Hamburger, round outline button, every screen size */}
+            <Link to="/order" className="btn-lime-sm hidden md:inline-flex">
+              {t("nav.cta_book")}
+            </Link>
+            {/* Mobile hamburger, round outline button */}
             <button
-              className="flex flex-col items-center justify-center gap-[6px] w-10 h-10 md:w-11 md:h-11 rounded-full border border-white/20 hover:border-white/40 transition-colors"
+              className="md:hidden flex flex-col items-center justify-center gap-[6px] w-10 h-10 rounded-full border border-white/20 hover:border-white/40 transition-colors"
               onClick={() => setOpen(!open)}
               aria-label={t("nav.menu_aria")}
             >
@@ -85,9 +97,9 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
         </nav>
       </header>
 
-      {/* Full-screen menu, every screen size */}
+      {/* Mobile full-screen menu */}
       <div
-        className={`fixed inset-0 z-40 bg-[#0b0b0b] transition-all duration-300 ${
+        className={`fixed inset-0 z-40 bg-[#0b0b0b] md:hidden transition-all duration-300 ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
@@ -105,6 +117,13 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
           <div className="flex flex-wrap items-center gap-4 mt-8">
             <Link to="/order" onClick={() => setOpen(false)} className="btn-lime self-start">
               {t("nav.cta_book")}
+            </Link>
+            <Link
+              to="/consultation"
+              onClick={() => setOpen(false)}
+              className="self-start inline-flex items-center rounded-full border border-white/25 px-5 py-2.5 text-[15px] font-medium text-white"
+            >
+              {t("nav.cta_consult")}
             </Link>
           </div>
         </div>

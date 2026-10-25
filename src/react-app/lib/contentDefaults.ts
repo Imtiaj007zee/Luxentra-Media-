@@ -15,6 +15,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "nav.link_work", group: "Navigation", label: "Link: Work", value: "Work" },
   { key: "nav.link_about", group: "Navigation", label: "Link: About", value: "About" },
   { key: "nav.cta_book", group: "Navigation", label: "Button: Book a Shoot", value: "Book a Shoot" },
+  { key: "nav.cta_consult", group: "Navigation", label: "Button: Free Consultation", value: "Free Consultation" },
   { key: "nav.menu_aria", group: "Navigation", label: "Mobile menu aria-label", value: "Menu" },
   { key: "nav.home_aria", group: "Navigation", label: "Home link aria-label", value: "LuxEntra Media home" },
 
