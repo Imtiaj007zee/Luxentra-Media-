@@ -7,9 +7,10 @@ import { useT } from "@/react-app/lib/siteContent";
  * About, Free Consultation, Let's work together) rendered as a floating
  * glass pill that stays fixed at the top while scrolling, on every
  * screen size. The pill shrinks with the screen: on iPhone and narrow
- * widths it shows just the logo and the round menu button, on iPad and
- * wider the links and buttons appear. The menu button sits at the
- * right corner of the pill and opens the full-screen menu.
+ * widths it shows just the logo and a plain three-line menu button,
+ * on iPad and wider the links and buttons appear and no menu button
+ * is needed. The menu button sits at the right corner of the pill
+ * and opens the full-screen menu.
  */
 export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   const [open, setOpen] = useState(false);
@@ -81,28 +82,32 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
             <Link to="/order" className="btn-lime-sm hidden md:inline-flex whitespace-nowrap">
               {t("nav.cta_work")}
             </Link>
-            {/* Menu button, round outline, right corner, every screen size */}
+            {/* Mobile menu button: plain three lines, right corner */}
             <button
-              className="flex flex-col items-center justify-center gap-[6px] w-10 h-10 md:w-11 md:h-11 rounded-full border border-white/20 hover:border-white/40 transition-colors shrink-0"
+              className="md:hidden flex flex-col items-center justify-center gap-[6px] w-8 h-8"
               onClick={() => setOpen(!open)}
               aria-label={t("nav.menu_aria")}
             >
               <span
-                className="block h-[2px] w-4 bg-white transition-all duration-300"
-                style={{ transform: open ? "rotate(45deg) translateY(4px)" : "none" }}
+                className="block h-[2px] w-6 bg-white transition-all duration-300"
+                style={{ transform: open ? "rotate(45deg) translateY(8px)" : "none" }}
               />
               <span
-                className="block h-[2px] w-4 bg-white transition-all duration-300"
-                style={{ transform: open ? "rotate(-45deg) translateY(-4px)" : "none" }}
+                className="block h-[2px] w-6 bg-white transition-all duration-300"
+                style={{ opacity: open ? 0 : 1 }}
+              />
+              <span
+                className="block h-[2px] w-6 bg-white transition-all duration-300"
+                style={{ transform: open ? "rotate(-45deg) translateY(-8px)" : "none" }}
               />
             </button>
           </div>
         </nav>
       </header>
 
-      {/* Full-screen menu, every screen size */}
+      {/* Mobile full-screen menu */}
       <div
-        className={`fixed inset-0 z-40 bg-[#0b0b0b] transition-all duration-300 ${
+        className={`fixed inset-0 z-40 bg-[#0b0b0b] md:hidden transition-all duration-300 ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
