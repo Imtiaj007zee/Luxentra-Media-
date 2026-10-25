@@ -128,6 +128,8 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "home.ticker_reel1", group: "Homepage", label: "Ticker item: reel 1", value: "3M views — Why Suffer, My Dear Realtors?" },
   { key: "home.ticker_reel2", group: "Homepage", label: "Ticker item: reel 2", value: "2.1M views — Parking Features Reel" },
   { key: "home.ticker_delivery", group: "Homepage", label: "Ticker item: delivery", value: "24-hour delivery" },
+  // ── Homepage: trusted-by strip ──
+  { key: "home.trusted_by_label", group: "Homepage", label: "Trusted by label", value: "Trusted by" },
   // ── Homepage: service cards ──
   { key: "home.cards_eyebrow", group: "Homepage", label: "Service cards eyebrow", value: "What we do" },
   { key: "home.cards_h2a", group: "Homepage", label: "Service cards heading 1", value: "Three services." },

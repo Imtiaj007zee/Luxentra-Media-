@@ -12,6 +12,7 @@ import {
   WorkStrip,
   TypedRotator,
   ProofTicker,
+  TrustedBy,
   ServicesGrid,
   ListingEssentials,
   Bundles,
@@ -90,6 +91,7 @@ export default function HomePreviewPage() {
       {/* ── Second page: the current homepage, in its own order ── */}
       <Hero />
       <ProofTicker />
+      <TrustedBy />
       <ServicesGrid />
       <ListingEssentials />
       <Bundles />

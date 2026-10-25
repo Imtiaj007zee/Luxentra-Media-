@@ -733,6 +733,92 @@ export function ProofTicker() {
   );
 }
 
+// ── Trusted by ───────────────────────────────────────────────────────────
+// Infinite scrolling strip of the agents who trust LuxEntra, in the order
+// of Zee's notebook list. Style is agent name, brokerage. Every agent is
+// their own entry, even when two share a brand: Exit Realty Prime and
+// Exit Realty Dkc are different brokerages, and so are the two Keller
+// Williams offices, so nothing is merged down. Logos are Zee's own files
+// (Archive.zip, Oct 25, 2026) in public/trusted-by/, processed for the
+// black strip: black text whitened where it would vanish on black
+// (EXIT Prime, MAX/IT), the KW Greater Nassau checkerboard background
+// removed. Coldwell Banker is the researched white SVG (no file sent).
+// Atlas One Capital is still text-only, no logo file yet.
+
+type TrustedByEntry = {
+  agent: string;
+  brokerage: string;
+  logo?: string;
+};
+
+const TRUSTED_BY: TrustedByEntry[] = [
+  { agent: "Imam Hassan", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
+  { agent: "Kathleen Collins", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
+  { agent: "Kazi Hussain", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.png" },
+  { agent: "Andy Singh", brokerage: "Atlas One Capital" },
+  { agent: "Towhid Islam", brokerage: "Keller Williams Legendary", logo: "/trusted-by/kw-legendary.png" },
+  { agent: "Mohammad Kamal", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.png" },
+  { agent: "Maruf Rahman", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
+  { agent: "Kabir H Munshi", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
+  { agent: "MB Chowdhury", brokerage: "Coldwell Banker American Homes", logo: "/trusted-by/coldwell-banker.svg" },
+  { agent: "Chironjit Ghosh", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.png" },
+  { agent: "Najmus Sakib Salam", brokerage: "Better Homes", logo: "/trusted-by/better-homes.png" },
+  { agent: "Mahtab Bhuiyan", brokerage: "Max/It Realty", logo: "/trusted-by/max-it-realty.png" },
+  { agent: "Niloy Dash", brokerage: "Express Realty Prime", logo: "/trusted-by/express-realty-prime.png" },
+  { agent: "Nazmus Sakib", brokerage: "Keller Williams Realty of Greater Nassau", logo: "/trusted-by/kw-greater-nassau.png" },
+  { agent: "Wasif Richard", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
+  { agent: "Tahmid Rahman", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
+  { agent: "Shenu Zaman", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
+  { agent: "Mofizul Chowdhury", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.png" },
+];
+
+export function TrustedBy() {
+  const t = useT();
+  const renderRow = (hidden: boolean) => (
+    <>
+      {TRUSTED_BY.map((entry) => (
+        <div
+          key={entry.agent}
+          className="flex items-center gap-3 shrink-0 mx-7 md:mx-10"
+          aria-hidden={hidden || undefined}
+        >
+          {entry.logo && (
+            <img
+              src={entry.logo}
+              alt={entry.brokerage}
+              className="h-8 md:h-10 w-auto object-contain opacity-90"
+              draggable={false}
+            />
+          )}
+          <span className="flex flex-col leading-tight">
+            <span className="text-[15px] md:text-base font-bold text-white whitespace-nowrap">
+              {entry.agent}
+            </span>
+            <span className="text-[11px] md:text-xs font-medium text-white/55 whitespace-nowrap">
+              {entry.brokerage}
+            </span>
+          </span>
+        </div>
+      ))}
+    </>
+  );
+  return (
+    <section aria-label={t("home.trusted_by_label")} className="relative bg-[#070707] text-white overflow-hidden py-10 md:py-14">
+      <p className="eyebrow text-white/50 text-center mb-8 md:mb-10">
+        {t("home.trusted_by_label")}
+      </p>
+      <div className="ticker relative overflow-hidden">
+        <div className="ticker-track flex w-max items-center" style={{ animationDuration: "45s" }}>
+          {renderRow(false)}
+          <div className="flex items-center" aria-hidden="true">
+            {renderRow(true)}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Services + pricing (original structure, restored) ────────────────────
 // Zee's original homepage layout: services grid (no prices), then his
 // pricing sections: Listing Essentials, launch bundles, custom, add-ons.
@@ -1406,6 +1492,7 @@ export default function HomePage() {
       <ScrollDrivenLogo />
       <TypedRotator />
       <ProofTicker />
+      <TrustedBy />
       <ServicesGrid />
       <ListingEssentials />
       <Bundles />
