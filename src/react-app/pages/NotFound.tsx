@@ -25,6 +25,18 @@ export default function NotFoundPage() {
           ].join(","),
         }}
       />
+
+      {/* Strong top glow, same as the home screen's first screen: the
+          olive wash behind the hero. The faint canvas below is the same
+          as home; this is what makes the top read olive, not flat black. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[900px]"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 50% 30%, rgba(199,255,0,0.10), transparent 70%)",
+        }}
+      />
       <main className="relative flex-1 flex flex-col items-center justify-center px-6 text-center">
         <p className="text-[15px] tracking-[0.2em] uppercase text-white/40 mb-4">
           {t("notfound.eyebrow")}

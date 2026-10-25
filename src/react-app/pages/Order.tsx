@@ -263,6 +263,18 @@ export default function OrderPage() {
         }}
       />
 
+      {/* Strong top glow, same as the home screen's first screen: the
+          olive wash behind the hero. The faint canvas below is the same
+          as home; this is what makes the top read olive, not flat black. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[900px]"
+        style={{
+          background:
+            "radial-gradient(ellipse 70% 55% at 50% 30%, rgba(199,255,0,0.10), transparent 70%)",
+        }}
+      />
+
       <section className="relative py-24 md:py-32">
         <div className="max-w-4xl mx-auto px-6">
           <Link to="/" className="link-lime !text-[15px] mb-10">
