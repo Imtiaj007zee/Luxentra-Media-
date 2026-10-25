@@ -4,9 +4,12 @@ import { useT } from "@/react-app/lib/siteContent";
 
 /**
  * LuxEntra global navigation: the usual bar (logo, Branding / Work /
- * About, Book a Shoot) plus a Free Consultation button, rendered as a
- * floating glass pill: translucent white, backdrop blur, soft border
- * and shadow. Mobile keeps the round hamburger and full-screen menu.
+ * About, Free Consultation, Let's work together) rendered as a floating
+ * glass pill that stays fixed at the top while scrolling, on every
+ * screen size. The pill shrinks with the screen: on iPhone and narrow
+ * widths it shows just the logo and the round menu button, on iPad and
+ * wider the links and buttons appear. The menu button sits at the
+ * right corner of the pill and opens the full-screen menu.
  */
 export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   const [open, setOpen] = useState(false);
@@ -52,14 +55,14 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
               if (isHome) window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             aria-label={t("nav.home_aria")}
-            className="flex items-center gap-3 shrink-0"
+            className="flex items-center gap-2 md:gap-3 shrink-0"
           >
-            <img src="/brand/symbol-lime.png" alt={t("nav.brand_alt")} className="h-9 w-9 object-contain" />
-            <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
+            <img src="/brand/symbol-lime.png" alt={t("nav.brand_alt")} className="h-8 w-8 md:h-9 md:w-9 object-contain" />
+            <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-5 md:h-6 object-contain" />
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-6 lg:gap-10">
             {LINKS.map((l) =>
               renderLink(
                 l,
@@ -71,16 +74,16 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
             <Link
               to="/consultation"
-              className="hidden md:inline-flex items-center rounded-full border border-white/25 px-4 py-2 text-[14px] font-medium text-white hover:bg-white/10 transition-colors"
+              className="hidden md:inline-flex items-center rounded-full border border-white/25 px-3.5 lg:px-4 py-2 text-[13px] lg:text-[14px] font-medium text-white hover:bg-white/10 transition-colors whitespace-nowrap"
             >
               {t("nav.cta_consult")}
             </Link>
-            <Link to="/order" className="btn-lime-sm hidden md:inline-flex">
-              {t("nav.cta_book")}
+            <Link to="/order" className="btn-lime-sm hidden md:inline-flex whitespace-nowrap">
+              {t("nav.cta_work")}
             </Link>
-            {/* Mobile hamburger, round outline button */}
+            {/* Menu button, round outline, right corner, every screen size */}
             <button
-              className="md:hidden flex flex-col items-center justify-center gap-[6px] w-10 h-10 rounded-full border border-white/20 hover:border-white/40 transition-colors"
+              className="flex flex-col items-center justify-center gap-[6px] w-10 h-10 md:w-11 md:h-11 rounded-full border border-white/20 hover:border-white/40 transition-colors shrink-0"
               onClick={() => setOpen(!open)}
               aria-label={t("nav.menu_aria")}
             >
@@ -97,9 +100,9 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
         </nav>
       </header>
 
-      {/* Mobile full-screen menu */}
+      {/* Full-screen menu, every screen size */}
       <div
-        className={`fixed inset-0 z-40 bg-[#0b0b0b] md:hidden transition-all duration-300 ${
+        className={`fixed inset-0 z-40 bg-[#0b0b0b] transition-all duration-300 ${
           open ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
       >
@@ -116,7 +119,7 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
           )}
           <div className="flex flex-wrap items-center gap-4 mt-8">
             <Link to="/order" onClick={() => setOpen(false)} className="btn-lime self-start">
-              {t("nav.cta_book")}
+              {t("nav.cta_work")}
             </Link>
             <Link
               to="/consultation"
