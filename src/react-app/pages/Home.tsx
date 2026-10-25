@@ -160,22 +160,22 @@ export function TypedRotator({ tight = false }: { tight?: boolean } = {}) {
     let delay: number;
     let next: () => void;
     if (phase === "idle") {
-      delay = 900;
+      delay = 1000;
       next = () => setPhase("typing");
     } else if (phase === "typing") {
       if (charCount < word.length) {
-        delay = 55;
+        delay = 90;
         next = () => setCharCount((c) => c + 1);
       } else {
-        delay = 1600;
+        delay = 2600;
         next = () => setPhase("deleting");
       }
     } else {
       if (charCount > 0) {
-        delay = 28;
+        delay = 45;
         next = () => setCharCount((c) => c - 1);
       } else {
-        delay = 350;
+        delay = 500;
         next = () => {
           setWordIndex((i) => (i + 1) % words.length);
           setPhase("typing");
@@ -749,7 +749,7 @@ export function TrustedBy() {
         {t("home.trusted_by_label")}
       </p>
       <div className="ticker relative overflow-hidden">
-        <div className="ticker-track flex w-max items-center" style={{ animationDuration: "45s" }}>
+        <div className="ticker-track flex w-max items-center" style={{ animationDuration: "75s" }}>
           {renderRow(false)}
           <div className="flex items-center" aria-hidden="true">
             {renderRow(true)}
