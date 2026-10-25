@@ -11,7 +11,6 @@ import {
   ScrollDrivenLogo,
   WorkStrip,
   TypedRotator,
-  ProofTicker,
   TrustedBy,
   ServicesGrid,
   ListingEssentials,
@@ -90,7 +89,6 @@ export default function HomePreviewPage() {
 
       {/* ── Second page: the current homepage, in its own order ── */}
       <Hero />
-      <ProofTicker />
       <TrustedBy />
       <ServicesGrid />
       <ListingEssentials />

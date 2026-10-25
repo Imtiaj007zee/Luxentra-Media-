@@ -5,7 +5,7 @@ import SiteNav from "@/react-app/components/SiteNav";
 import SiteFooter from "@/react-app/components/SiteFooter";
 import FaqSection from "@/react-app/components/FaqSection";
 import LeadCapturePopup from "@/react-app/components/LeadCapturePopup";
-import ServicePickerModal, { openServicePicker } from "@/react-app/components/ServicePickerModal";
+import ServicePickerModal from "@/react-app/components/ServicePickerModal";
 import { PORTFOLIO, type PortfolioItem } from "@/react-app/data/portfolio";
 import { useAddOns, useLiveCatalog, useT } from "@/react-app/lib/siteContent";
 import { useSiteSettings } from "@/react-app/lib/siteSettings";
@@ -111,7 +111,7 @@ export function Hero() {
           <br className="hidden md:block" /> {t("home.hero_sub2")}
         </p>
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-24 md:mb-32 hero-fade"
+          className="flex flex-col sm:flex-row items-center justify-center gap-6 hero-fade"
           style={{ transitionDelay: "540ms" }}
         >
           <PackageButton to="/order" dark={false}>
@@ -124,32 +124,13 @@ export function Hero() {
             {t("home.cta_work")} <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
-        <div
-          className="flex flex-col items-center text-center -mt-16 md:-mt-24 mb-20 md:mb-28 px-6 hero-fade"
-          style={{ transitionDelay: "680ms" }}
-        >
-          <p className="eyebrow text-white/50 mb-4">{t("home.picker_eyebrow")}</p>
-          <h2 className="text-[30px] md:text-[44px] font-bold tracking-[-0.03em] leading-[1.05] mb-4">
-            {t("home.picker_h2")}
-          </h2>
-          <p className="text-[16px] md:text-[18px] text-white/60 leading-relaxed mb-8 max-w-xl">
-            {t("home.picker_copy")}
-          </p>
-          <button
-            type="button"
-            onClick={openServicePicker}
-            className="btn-lime breathe-attention gap-2"
-          >
-            {t("home.picker_button")} <ArrowUpRight className="w-4 h-4" />
-          </button>
-        </div>
       </div>
     </section>
   );
 }
 
 // ── Typed rotator strip ──────────────────────────────────────────────────
-// Shamim-style kinetic line between the hero and the proof ticker.
+// Shamim-style kinetic line between the hero and the trusted-by strip.
 // Words are backstage-editable (home.typed_words, one per line).
 
 export function TypedRotator({ tight = false }: { tight?: boolean } = {}) {
@@ -690,46 +671,6 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
         />
       </div>
     </section>
-  );
-}
-
-// ── Proof ticker ─────────────────────────────────────────────────────────
-// Infinite scrolling strip of real proof points. Numbers bind to live settings.
-
-export function ProofTicker() {
-  const t = useT();
-  const { settings } = useSiteSettings();
-  const items = useMemo(
-    () => [
-      t("home.ticker_reel1"),
-      `${settings.stat_properties}+ properties covered`,
-      `$${settings.stat_value_m}M+ in listing value`,
-      t("home.ticker_reel2"),
-      t("home.ticker_delivery"),
-    ],
-    [t, settings]
-  );
-  const renderRow = (hidden: boolean) => (
-    <>
-      {items.map((item, i) => (
-        <span key={i} className="flex items-center shrink-0" aria-hidden={hidden || undefined}>
-          <span className="text-[14px] md:text-[15px] font-medium text-white/85 whitespace-nowrap">
-            {item}
-          </span>
-          <span className="mx-8 w-1.5 h-1.5 rounded-full bg-[#c7ff00] shrink-0" aria-hidden="true" />
-        </span>
-      ))}
-    </>
-  );
-  return (
-    <div className="ticker relative bg-transparent border-y border-white/10 overflow-hidden py-4">
-      <div className="ticker-track flex w-max">
-        {renderRow(false)}
-        <div className="flex" aria-hidden="true">
-          {renderRow(true)}
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -1491,7 +1432,6 @@ export default function HomePage() {
       <WorkStrip />
       <ScrollDrivenLogo />
       <TypedRotator />
-      <ProofTicker />
       <TrustedBy />
       <ServicesGrid />
       <ListingEssentials />

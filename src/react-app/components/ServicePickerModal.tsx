@@ -132,8 +132,7 @@ export default function ServicePickerModal() {
   ];
 
   // Auto-popup: once per visitor, after the visitor scrolls ~50% past the hero.
-  // The hero button (openServicePicker) opens on demand and never counts
-  // against the auto-popup budget.
+  // A manual open (openServicePicker) never counts against the auto-popup budget.
   useEffect(() => {
     let triggered = false;
     const onScroll = () => {
@@ -148,7 +147,7 @@ export default function ServicePickerModal() {
         setOpen(true);
       }
     };
-    // Manual opens (hero button) never consume the auto-popup's
+    // Manual opens never consume the auto-popup's
     // once-per-visitor budget — the scroll trigger stays alive.
     const onManualOpen = () => {
       setOpen(true);
