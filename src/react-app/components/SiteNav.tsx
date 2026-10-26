@@ -46,7 +46,7 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
         className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] max-w-[1200px]"
         style={{ top: topOffset + 12 }}
       >
-        <nav className="flex items-center justify-between h-14 md:h-16 pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+        <nav className="flex items-center justify-between h-12 md:h-14 pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
           <Link
             to="/"
             onClick={() => {
