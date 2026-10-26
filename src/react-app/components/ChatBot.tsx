@@ -371,7 +371,7 @@ export default function ChatBot() {
   return (
     <>
       {open && (
-        <div className="fixed bottom-24 right-4 z-[100] flex h-[520px] max-h-[calc(100vh-120px)] w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b0b] shadow-2xl shadow-black/60 sm:right-5">
+        <div className="fixed bottom-24 right-4 z-[100] flex h-[520px] max-h-[calc(100dvh-120px)] w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b0b] shadow-2xl shadow-black/60 sm:right-5">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div className="flex items-center gap-2.5">
               <img
@@ -432,27 +432,33 @@ export default function ChatBot() {
                   value={leadName}
                   onChange={(e) => setLeadName(e.target.value)}
                   placeholder="Your name"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                  type="text"
+                  autoComplete="name"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-base text-white placeholder:text-white/40 sm:text-sm focus:border-[#c7ff00] focus:outline-none"
                 />
                 <input
                   value={leadPhone}
                   onChange={(e) => setLeadPhone(e.target.value)}
                   placeholder="Phone number"
+                  type="tel"
+                  autoComplete="tel"
                   inputMode="tel"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-base text-white placeholder:text-white/40 sm:text-sm focus:border-[#c7ff00] focus:outline-none"
                 />
                 <input
                   value={leadEmail}
                   onChange={(e) => setLeadEmail(e.target.value)}
                   placeholder="Email"
+                  type="email"
+                  autoComplete="email"
                   inputMode="email"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-base text-white placeholder:text-white/40 sm:text-sm focus:border-[#c7ff00] focus:outline-none"
                 />
                 <input
                   value={leadNeed}
                   onChange={(e) => setLeadNeed(e.target.value)}
                   placeholder="What do you need? (optional)"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-base text-white placeholder:text-white/40 sm:text-sm focus:border-[#c7ff00] focus:outline-none"
                 />
                 {leadError && <p className="text-xs text-red-400">{leadError}</p>}
                 <div className="flex gap-2">
@@ -507,9 +513,19 @@ export default function ChatBot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={collectPlaceholder}
+                  type={collectStage === "email" ? "email" : collectStage === "phone" ? "tel" : "text"}
                   inputMode={collectInputMode}
+                  autoComplete={
+                    collectStage === "name"
+                      ? "name"
+                      : collectStage === "email"
+                        ? "email"
+                        : collectStage === "phone"
+                          ? "tel"
+                          : "off"
+                  }
                   aria-label="Message LuxEntra"
-                  className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                  className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/5 px-3.5 py-2.5 text-base text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none sm:text-sm"
                 />
                 <button
                   type="submit"
