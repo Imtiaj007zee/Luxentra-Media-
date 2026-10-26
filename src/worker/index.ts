@@ -218,7 +218,7 @@ Shoot bookings need at least 5 days of lead time before the shoot date.
 Photos are delivered within 24 hours of the shoot.
 We shoot across New York City and Long Island.
 The free one-on-one consultation is also booked through /order. It is open to anyone.
-When a visitor wants to book, be called back, or share their details, ask for their name and phone number and tell them to tap Leave my number below the chat. We will call them back.
+When a visitor wants to book, be called back, or share their details, ask for their name, phone number, and email and tell them to tap Leave my number below the chat. We will call them back.
 
 How to talk.
 Write plainly, like a person. Keep replies short, two or three sentences, unless the visitor asks for detail. Never use dashes. Use we, never I.
@@ -235,16 +235,12 @@ const chatSchema = z.object({
   messages: z.array(chatMessageSchema).min(1).max(12),
 });
 
-const chatLeadSchema = z
-  .object({
-    name: z.string().min(1, "Name is required").max(100),
-    phone: z.string().max(30).optional(),
-    email: z.string().max(150).optional(),
-    message: z.string().max(1000).optional(),
-  })
-  .refine((d) => (d.phone && d.phone.trim()) || (d.email && d.email.trim()), {
-    message: "A phone number or an email is required",
-  });
+const chatLeadSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100),
+  phone: z.string().min(1, "Phone is required").max(30),
+  email: z.string().email("Valid email is required").max(150),
+  message: z.string().max(1000).optional(),
+});
 
 // Light per-IP throttle so one visitor cannot burn the free AI allowance.
 const chatHits = new Map<string, { count: number; resetAt: number }>();
@@ -317,8 +313,8 @@ app.post("/api/chat/lead", zValidator("json", chatLeadSchema), async (c) => {
     )
       .bind(
         data.name,
-        data.email || "",
-        data.phone || null,
+        data.email,
+        data.phone,
         "Not given",
         "Chatbot lead",
         data.message || ""
@@ -329,8 +325,8 @@ app.post("/api/chat/lead", zValidator("json", chatLeadSchema), async (c) => {
     // still returns success to the visitor and is only logged here.
     const emailContent = `
       <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Name:</strong> ${data.name}</p>
-      ${data.phone ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Phone:</strong> ${data.phone}</p>` : ""}
-      ${data.email ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Email:</strong> ${data.email}</p>` : ""}
+      <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Phone:</strong> ${data.phone}</p>
+      <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Email:</strong> ${data.email}</p>
       ${data.message ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>What they need:</strong></p><p style="margin: 0; font-size: 16px; line-height: 24px; color: #3f3f46;">${data.message}</p>` : ""}
     `;
 
@@ -342,7 +338,7 @@ app.post("/api/chat/lead", zValidator("json", chatLeadSchema), async (c) => {
         ${emailBody(emailContent)}
         ${emailFooter("LuxEntra Media | Luxury Real Estate Media")}
       `),
-      text_body: `New Chatbot Lead\n\nName: ${data.name}${data.phone ? `\nPhone: ${data.phone}` : ""}${data.email ? `\nEmail: ${data.email}` : ""}${data.message ? `\nWhat they need: ${data.message}` : ""}`,
+      text_body: `New Chatbot Lead\n\nName: ${data.name}\nPhone: ${data.phone}\nEmail: ${data.email}${data.message ? `\nWhat they need: ${data.message}` : ""}`,
     });
 
     if (!emailResult.success) {

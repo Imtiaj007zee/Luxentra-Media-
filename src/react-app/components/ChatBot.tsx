@@ -138,8 +138,8 @@ export default function ChatBot() {
     const name = leadName.trim();
     const phone = leadPhone.trim();
     const email = leadEmail.trim();
-    if (!name || (!phone && !email)) {
-      setLeadError("Add your name and a phone number or an email.");
+    if (!name || !phone || !email) {
+      setLeadError("Add your name, phone number, and email.");
       return;
     }
     setLeadError("");
@@ -150,8 +150,8 @@ export default function ChatBot() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
-          phone: phone || undefined,
-          email: email || undefined,
+          phone,
+          email,
           message: leadNeed.trim() || undefined,
         }),
       });
@@ -250,7 +250,7 @@ export default function ChatBot() {
                 <input
                   value={leadEmail}
                   onChange={(e) => setLeadEmail(e.target.value)}
-                  placeholder="Email (optional)"
+                  placeholder="Email"
                   inputMode="email"
                   className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
                 />
