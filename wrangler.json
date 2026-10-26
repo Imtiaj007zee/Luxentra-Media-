@@ -1,1 +1,1 @@
-{"$schema":"node_modules/wrangler/config-schema.json","ai":{"binding":"AI"},"assets":{"binding":"ASSETS","directory":"./dist","not_found_handling":"single-page-application","run_worker_first":["/work/*"]},"compatibility_date":"2025-06-17","main":"worker.js","name":"luxentra-media"}
+{"$schema":"node_modules/wrangler/config-schema.json","ai":{"binding":"AI"},"assets":{"binding":"ASSETS","directory":"./dist","not_found_handling":"single-page-application","run_worker_first":["/work/*","/api/*"]},"compatibility_date":"2025-06-17","main":"worker.js","name":"luxentra-media"}

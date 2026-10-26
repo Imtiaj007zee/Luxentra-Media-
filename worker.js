@@ -9,9 +9,19 @@
 // through untouched when it already honours the range, otherwise
 // slice the file here and answer with a correct 206. Everything that
 // is not a ranged .mp4 request is served exactly as before.
+//
+// API routes (/api/*, also in run_worker_first) are served by the Hono
+// app in src/worker/index.ts: bookings, orders, and the website chatbot.
+// The Hono app is never reached through static assets, so it must be
+// delegated to here.
+import app from "./src/worker/index.ts";
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/api/")) {
+      return app.fetch(request, env);
+    }
     const res = await env.ASSETS.fetch(request);
     try {
       if (request.method !== "GET" || res.status !== 200) return res;
