@@ -196,4 +196,164 @@ app.post("/api/orders", zValidator("json", orderSchema), async (c) => {
   }
 });
 
+// ---- Website chatbot (Cloudflare Workers AI, free tier) ----
+
+const CHAT_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const CHAT_FALLBACK_MODEL = "@cf/meta/llama-3.1-8b-instruct";
+
+const CHAT_SYSTEM_PROMPT = `You are the website assistant for LuxEntra Media, a real estate photography, film, and personal branding company in New York City and Long Island. You talk to visitors on luxentramedia.com. Answer their questions and help them book or get a call back.
+
+Our services and prices. Use only these. Never invent a price, a feature, or a service.
+Listing Essentials, our standard package, $175: 25 to 45 MLS-ready photos, 1 twilight photo, 24-hour delivery, a private branded gallery, and free revisions.
+Market Launch bundle, $399: premium interior and exterior photography, aerial drone photography, whole-property virtual staging, professionally edited listing-ready visuals, delivered ready for MLS, web, and social. Photography only, no film.
+Listing Premiere bundle, $699: everything in Market Launch, plus a cinematic property film with professional editing, color, and music, interior, exterior, and aerial storytelling, optimized for websites and social media.
+Agent Authority bundle, $899, our most chosen: everything in Listing Premiere, plus a personal branding video, so two films in total, plus complete creative production, a custom agent script, and guided on-camera direction.
+Personal branding plans, monthly, 3-month minimum. Essential $3,999 a month: 10 short-form videos, 5 carousels, 15 stories, strategy, filming, editing, posting, and Instagram, Facebook, and TikTok management, with a monthly performance summary. Growth $5,999 a month: 15 videos, 10 carousels, 30 stories, everything in Essential, plus a lead-generation funnel, a lead-capture page, and paid-ad strategy and management. Premium $7,999 a month: 20 videos, 15 carousels, 60 stories, everything in Growth, plus advanced funnel and retargeting, continuous testing, lead nurturing, priority support, and a 50 percent money-back guarantee if the agreed performance benchmark is not achieved, subject to campaign terms. Brand Content $1,800 a month: 4 branding videos a month, strategy, scripting, filming, and editing, with 1 complimentary video in the first month.
+We also do drone photos and video, 3D virtual tours, custom listing flyers, and virtual staging.
+The public offer is WELCOME25, which gives $25 off a booking. Never mention any other discount code.
+
+Booking and practical details.
+Booking happens on the booking page at /order. There is no payment today. We confirm every booking by email within 24 hours.
+Shoot bookings need at least 5 days of lead time before the shoot date.
+Photos are delivered within 24 hours of the shoot.
+We shoot across New York City and Long Island.
+The free one-on-one consultation is also booked through /order. It is open to anyone.
+When a visitor wants to book, be called back, or share their details, ask for their name and phone number and tell them to tap Leave my number below the chat. We will call them back.
+
+How to talk.
+Write plainly, like a person. Keep replies short, two or three sentences, unless the visitor asks for detail. Never use dashes. Use we, never I.
+Answer in the language the visitor writes in. If they write in Bangla, answer in Bangla.
+If a visitor asks about a price or service that is not listed here, say you do not know, and offer the free one-on-one consultation or a callback.
+Never make up prices, features, availability, or promises.`;
+
+const chatMessageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().min(1).max(1000),
+});
+
+const chatSchema = z.object({
+  messages: z.array(chatMessageSchema).min(1).max(12),
+});
+
+const chatLeadSchema = z
+  .object({
+    name: z.string().min(1, "Name is required").max(100),
+    phone: z.string().max(30).optional(),
+    email: z.string().max(150).optional(),
+    message: z.string().max(1000).optional(),
+  })
+  .refine((d) => (d.phone && d.phone.trim()) || (d.email && d.email.trim()), {
+    message: "A phone number or an email is required",
+  });
+
+// Light per-IP throttle so one visitor cannot burn the free AI allowance.
+const chatHits = new Map<string, { count: number; resetAt: number }>();
+function chatRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = chatHits.get(ip);
+  if (!entry || now > entry.resetAt) {
+    chatHits.set(ip, { count: 1, resetAt: now + 60_000 });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > 20;
+}
+
+app.post("/api/chat", zValidator("json", chatSchema), async (c) => {
+  const ip =
+    c.req.header("CF-Connecting-IP") ||
+    c.req.header("x-forwarded-for") ||
+    "unknown";
+  if (chatRateLimited(ip)) {
+    return c.json(
+      {
+        reply:
+          "We are getting a lot of messages right now. Please try again in a minute, or leave your number below and we will call you back.",
+      },
+      429
+    );
+  }
+
+  const { messages } = c.req.valid("json");
+  const fullMessages = [
+    { role: "system", content: CHAT_SYSTEM_PROMPT },
+    ...messages,
+  ] as { role: "system" | "user" | "assistant"; content: string }[];
+
+  const ask = async (model: string) => {
+    const result = (await c.env.AI.run(model as never, {
+      messages: fullMessages,
+      max_tokens: 400,
+      temperature: 0.3,
+    })) as { response?: string };
+    const reply = (result.response || "").trim();
+    if (!reply) throw new Error("empty reply");
+    return reply;
+  };
+
+  try {
+    return c.json({ reply: await ask(CHAT_MODEL) });
+  } catch (error) {
+    console.error("Chat AI error (primary model):", error);
+    try {
+      return c.json({ reply: await ask(CHAT_FALLBACK_MODEL) });
+    } catch (fallbackError) {
+      console.error("Chat AI error (fallback model):", fallbackError);
+      return c.json({
+        reply:
+          "Sorry, I am having trouble right now. You can book directly on the booking page, or leave your number below and we will call you back.",
+      });
+    }
+  }
+});
+
+app.post("/api/chat/lead", zValidator("json", chatLeadSchema), async (c) => {
+  const data = c.req.valid("json");
+
+  try {
+    await c.env.DB.prepare(
+      `INSERT INTO leads (name, email, phone, borough, listing_type, request_details)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    )
+      .bind(
+        data.name,
+        data.email || "",
+        data.phone || null,
+        "Not given",
+        "Chatbot lead",
+        data.message || ""
+      )
+      .run();
+
+    // Email notification. The lead is already saved, so a failed email
+    // still returns success to the visitor and is only logged here.
+    const emailContent = `
+      <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Name:</strong> ${data.name}</p>
+      ${data.phone ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Phone:</strong> ${data.phone}</p>` : ""}
+      ${data.email ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Email:</strong> ${data.email}</p>` : ""}
+      ${data.message ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>What they need:</strong></p><p style="margin: 0; font-size: 16px; line-height: 24px; color: #3f3f46;">${data.message}</p>` : ""}
+    `;
+
+    const emailResult = await c.env.EMAILS.send({
+      to: "luxentra.holdings@gmail.com",
+      subject: `New chatbot lead from ${data.name}`,
+      html_body: emailTemplate(`
+        ${emailHeader("New Chatbot Lead")}
+        ${emailBody(emailContent)}
+        ${emailFooter("LuxEntra Media | Luxury Real Estate Media")}
+      `),
+      text_body: `New Chatbot Lead\n\nName: ${data.name}${data.phone ? `\nPhone: ${data.phone}` : ""}${data.email ? `\nEmail: ${data.email}` : ""}${data.message ? `\nWhat they need: ${data.message}` : ""}`,
+    });
+
+    if (!emailResult.success) {
+      console.error("Chat lead email failed:", emailResult.error);
+    }
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.error("Chat lead error:", error);
+    return c.json({ success: false, error: "server_error" }, 500);
+  }
+});
+
 export default app;

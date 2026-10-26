@@ -9,6 +9,7 @@ import PrivacyPage from "./pages/Privacy";
 import NotFoundPage from "./pages/NotFound";
 import AdminPage from "./pages/Admin";
 import PageMeta from "@/react-app/components/PageMeta";
+import ChatBot from "@/react-app/components/ChatBot";
 import { SiteSettingsProvider } from "@/react-app/lib/siteSettings";
 import { ContentProvider } from "@/react-app/lib/siteContent";
 
@@ -52,6 +53,7 @@ export default function App() {
         <Route path="/backstage" element={<AdminPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <ChatBot />
     </Router>
     </ContentProvider>
     </SiteSettingsProvider>
