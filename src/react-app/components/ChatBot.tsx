@@ -10,7 +10,7 @@ const STORAGE_KEY = "luxentra-chat-v1";
 const GREETING: ChatMessage = {
   role: "assistant",
   content:
-    "Hey, I'm Lux AI. Ask me anything about our packages, pricing, or booking a shoot. Want us to call you back? Tap Leave my number below.",
+    "Hey, I'm Lux AI. Quick one before we get into it, are you an agent with a listing to sell, or building your personal brand?",
 };
 
 const QUICK_CHIPS: { label: string; message?: string; action?: "lead" }[] = [
@@ -153,6 +153,16 @@ export default function ChatBot() {
     }
     setLeadError("");
     setLeadSending(true);
+    // Attach what the visitor said in the chat, so their problem lands in
+    // the sheet with their contact info and can be studied later.
+    const chatSummary = messages
+      .filter((m) => m.role === "user")
+      .map((m) => m.content)
+      .slice(-8)
+      .join(" | ");
+    const needParts = [leadNeed.trim()];
+    if (chatSummary) needParts.push(`What they said in chat: ${chatSummary}`);
+    const need = needParts.filter(Boolean).join(" ").slice(0, 1000);
     try {
       const res = await fetch("/api/chat/lead", {
         method: "POST",
@@ -161,7 +171,7 @@ export default function ChatBot() {
           name,
           phone,
           email,
-          message: leadNeed.trim() || undefined,
+          message: need || undefined,
         }),
       });
       const data = (await res.json()) as { success?: boolean };
