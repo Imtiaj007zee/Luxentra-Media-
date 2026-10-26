@@ -291,7 +291,7 @@ export default function ChatBot() {
             </div>
           ) : (
             <>
-              <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex flex-wrap gap-2 px-4 pb-2">
                 {QUICK_CHIPS.map((chip) => (
                   <button
                     key={chip.label}
