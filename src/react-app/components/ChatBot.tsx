@@ -6,6 +6,7 @@ type ChatRole = "user" | "assistant";
 type ChatMessage = { role: ChatRole; content: string };
 
 const STORAGE_KEY = "luxentra-chat-v1";
+const HINT_KEY = "luxentra-chat-hint-seen";
 
 const GREETING: ChatMessage = {
   role: "assistant",
@@ -76,7 +77,31 @@ export default function ChatBot() {
   const [leadNeed, setLeadNeed] = useState("");
   const [leadSending, setLeadSending] = useState(false);
   const [leadError, setLeadError] = useState("");
+  const [hintVisible, setHintVisible] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // "Ask anything" pop-up above the chat button, once per visitor until
+  // they open the chat or dismiss it.
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = localStorage.getItem(HINT_KEY) === "1";
+    } catch {
+      // Storage unavailable, still show the hint.
+    }
+    if (seen) return;
+    const tmr = window.setTimeout(() => setHintVisible(true), 2500);
+    return () => window.clearTimeout(tmr);
+  }, []);
+
+  function dismissHint() {
+    setHintVisible(false);
+    try {
+      localStorage.setItem(HINT_KEY, "1");
+    } catch {
+      // Storage unavailable, the hint just hides for this visit.
+    }
+  }
 
   useEffect(() => {
     try {
@@ -328,10 +353,48 @@ export default function ChatBot() {
         </div>
       )}
 
+      {hintVisible && !open && (
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="Open chat"
+          onClick={() => {
+            dismissHint();
+            setOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              dismissHint();
+              setOpen(true);
+            }
+          }}
+          className="fixed bottom-[92px] right-4 z-[100] animate-in cursor-pointer fade-in zoom-in slide-in-from-bottom-2 duration-300 sm:right-5"
+        >
+          <div className="flex items-center gap-2 rounded-full border border-white/15 bg-[#1a1a1a] py-2 pl-4 pr-2 text-sm font-medium text-white shadow-xl shadow-black/50">
+            Ask anything
+            <button
+              type="button"
+              aria-label="Dismiss"
+              onClick={(e) => {
+                e.stopPropagation();
+                dismissHint();
+              }}
+              className="flex h-5 w-5 items-center justify-center rounded-full text-white/50 transition hover:bg-white/10 hover:text-white"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <span className="absolute -bottom-[5px] right-6 h-2.5 w-2.5 rotate-45 border-b border-r border-white/15 bg-[#1a1a1a]" />
+        </div>
+      )}
+
       <button
         type="button"
         aria-label={open ? "Close chat" : "Chat with LuxEntra"}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (!open) dismissHint();
+          setOpen((v) => !v);
+        }}
         className="fixed bottom-5 right-4 z-[100] flex h-14 w-14 items-center justify-center rounded-full bg-[#c7ff00] text-black shadow-lg shadow-black/40 transition hover:brightness-110 sm:right-5"
       >
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
