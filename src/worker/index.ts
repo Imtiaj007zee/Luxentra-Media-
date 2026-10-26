@@ -230,6 +230,7 @@ Then, Problem: what is not working for them right now. Listings sitting, photos 
 Then, Implication: what is that costing them. A listing sitting means carrying costs and price cuts. No presence means competitors get the call.
 Then, Need-payoff: what would it be worth to them if it were fixed. A faster sale, more leads, being the name people remember.
 Only after you know their situation and problem, answer their question, and tie the answer to their problem.
+Always end a recommendation with 2 or 3 numbered options matched to what they told you, each with its price, and ask them to pick one. The options must come from the catalog only. When they pick one, help them take the next step: booking at /order, the free consultation, or a callback.
 If a visitor types their phone number or email in the chat, thank them and ask them to also leave it through Leave my number below so we have it saved.
 
 How to talk.
@@ -245,6 +246,13 @@ const chatMessageSchema = z.object({
 
 const chatSchema = z.object({
   messages: z.array(chatMessageSchema).min(1).max(12),
+  visitor: z
+    .object({
+      name: z.string().min(1).max(100),
+      email: z.string().max(150),
+      phone: z.string().max(30),
+    })
+    .optional(),
 });
 
 const chatLeadSchema = z.object({
@@ -282,9 +290,12 @@ app.post("/api/chat", zValidator("json", chatSchema), async (c) => {
     );
   }
 
-  const { messages } = c.req.valid("json");
+  const { messages, visitor } = c.req.valid("json");
+  const visitorNote = visitor
+    ? `The visitor is ${visitor.name}. You already have their email (${visitor.email}) and phone number (${visitor.phone}). Use their first name naturally. Never ask for their contact info again.`
+    : "You do not have the visitor's contact info yet.";
   const fullMessages = [
-    { role: "system", content: CHAT_SYSTEM_PROMPT },
+    { role: "system", content: `${CHAT_SYSTEM_PROMPT}\n\n${visitorNote}` },
     ...messages,
   ] as { role: "system" | "user" | "assistant"; content: string }[];
 

@@ -4,8 +4,11 @@ import { MessageCircle, Send, X } from "lucide-react";
 
 type ChatRole = "user" | "assistant";
 type ChatMessage = { role: ChatRole; content: string };
+type Visitor = { name: string; email: string; phone: string };
 
 const STORAGE_KEY = "luxentra-chat-v1";
+const VISITOR_KEY = "luxentra-chat-visitor-v1";
+const VISITOR_SKIPPED_KEY = "luxentra-chat-visitor-skipped-v1";
 
 const GREETING: ChatMessage = {
   role: "assistant",
@@ -30,6 +33,26 @@ function loadMessages(): ChatMessage[] {
     return parsed.slice(-20);
   } catch {
     return [GREETING];
+  }
+}
+
+function loadVisitor(): Visitor | null {
+  try {
+    const raw = localStorage.getItem(VISITOR_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Visitor;
+    if (!parsed.name || !parsed.email || !parsed.phone) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function loadSkipped(): boolean {
+  try {
+    return localStorage.getItem(VISITOR_SKIPPED_KEY) === "1";
+  } catch {
+    return false;
   }
 }
 
@@ -77,7 +100,18 @@ export default function ChatBot() {
   const [leadSending, setLeadSending] = useState(false);
   const [leadError, setLeadError] = useState("");
   const [hintVisible, setHintVisible] = useState(false);
+  const [visitor, setVisitor] = useState<Visitor | null>(() => loadVisitor());
+  const [visitorSkipped, setVisitorSkipped] = useState<boolean>(() => loadSkipped());
+  const [detailsName, setDetailsName] = useState("");
+  const [detailsPhone, setDetailsPhone] = useState("");
+  const [detailsEmail, setDetailsEmail] = useState("");
+  const [detailsSending, setDetailsSending] = useState(false);
+  const [detailsError, setDetailsError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Details come first: until the visitor shares their name, email, and
+  // phone (or skips), the chat opens on the details form, not the messages.
+  const showDetailsForm = open && !visitor && !visitorSkipped;
 
   // "Ask anything" pop-up above the chat button. It is permanent: it pops
   // in a few seconds after the page loads and stays there whenever the
@@ -108,7 +142,10 @@ export default function ChatBot() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-12) }),
+        body: JSON.stringify({
+          messages: history.slice(-12),
+          visitor: visitor || undefined,
+        }),
       });
       const data = (await res.json()) as { reply?: string };
       setMessages((prev) => [
@@ -141,6 +178,62 @@ export default function ChatBot() {
     setMessages(next);
     setInput("");
     void sendChat(next);
+  }
+
+  async function submitDetails() {
+    const name = detailsName.trim();
+    const phone = detailsPhone.trim();
+    const email = detailsEmail.trim();
+    if (!name || !phone || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setDetailsError("Add your name, phone number, and a valid email.");
+      return;
+    }
+    setDetailsError("");
+    setDetailsSending(true);
+    try {
+      const res = await fetch("/api/chat/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          phone,
+          email,
+          message: "Shared details before chatting.",
+        }),
+      });
+      const data = (await res.json()) as { success?: boolean };
+      if (!res.ok || !data.success) throw new Error("details failed");
+      const next: Visitor = { name, email, phone };
+      try {
+        localStorage.setItem(VISITOR_KEY, JSON.stringify(next));
+      } catch {
+        // Storage unavailable, details still work for this visit.
+      }
+      setVisitor(next);
+      setDetailsName("");
+      setDetailsPhone("");
+      setDetailsEmail("");
+      const firstName = name.split(" ")[0];
+      setMessages([
+        {
+          role: "assistant",
+          content: `Hey ${firstName}, I'm Lux AI. Quick one before we get into it, are you an agent with a listing to sell, or building your personal brand?`,
+        },
+      ]);
+    } catch {
+      setDetailsError("Something went wrong. Please try again.");
+    } finally {
+      setDetailsSending(false);
+    }
+  }
+
+  function skipDetails() {
+    try {
+      localStorage.setItem(VISITOR_SKIPPED_KEY, "1");
+    } catch {
+      // Storage unavailable, the form just hides for this visit.
+    }
+    setVisitorSkipped(true);
   }
 
   async function submitLead() {
@@ -201,9 +294,11 @@ export default function ChatBot() {
         <div className="fixed bottom-24 right-4 z-[100] flex h-[520px] max-h-[calc(100vh-120px)] w-[calc(100vw-2rem)] max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b0b] shadow-2xl shadow-black/60 sm:right-5">
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#c7ff00] text-sm font-bold text-black">
-                L
-              </span>
+              <img
+                src="/brand/symbol-lime.png"
+                alt="LuxEntra logo"
+                className="h-8 w-8 object-contain"
+              />
               <div>
                 <p className="text-sm font-semibold text-white">Lux AI</p>
                 <p className="flex items-center gap-1.5 text-xs text-white/50">
@@ -222,6 +317,53 @@ export default function ChatBot() {
             </button>
           </div>
 
+          {showDetailsForm ? (
+            <div className="flex flex-1 flex-col justify-center overflow-y-auto px-4 py-6">
+              <p className="mb-1 text-lg font-semibold text-white">Before we start</p>
+              <p className="mb-4 text-sm leading-relaxed text-white/60">
+                Leave your name, email, and number so Lux AI can help you properly.
+              </p>
+              <div className="flex flex-col gap-2">
+                <input
+                  value={detailsName}
+                  onChange={(e) => setDetailsName(e.target.value)}
+                  placeholder="Your name"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                />
+                <input
+                  value={detailsEmail}
+                  onChange={(e) => setDetailsEmail(e.target.value)}
+                  placeholder="Email"
+                  inputMode="email"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                />
+                <input
+                  value={detailsPhone}
+                  onChange={(e) => setDetailsPhone(e.target.value)}
+                  placeholder="Phone number"
+                  inputMode="tel"
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
+                />
+                {detailsError && <p className="text-xs text-red-400">{detailsError}</p>}
+                <button
+                  type="button"
+                  onClick={() => void submitDetails()}
+                  disabled={detailsSending}
+                  className="mt-1 rounded-lg bg-[#c7ff00] px-3 py-2.5 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-50"
+                >
+                  {detailsSending ? "Saving..." : "Start chatting"}
+                </button>
+                <button
+                  type="button"
+                  onClick={skipDetails}
+                  className="py-1 text-xs text-white/50 transition hover:text-white"
+                >
+                  Chat without sharing details
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
           <div className="flex-1 overflow-y-auto px-4 py-4">
             <div className="flex flex-col gap-3">
               {messages.map((m, i) => (
@@ -302,7 +444,7 @@ export default function ChatBot() {
           ) : (
             <>
               <div className="flex flex-wrap gap-2 px-4 pb-2">
-                {QUICK_CHIPS.map((chip) => (
+                {QUICK_CHIPS.filter((chip) => !(visitor && chip.action === "lead")).map((chip) => (
                   <button
                     key={chip.label}
                     type="button"
@@ -344,6 +486,8 @@ export default function ChatBot() {
               </form>
             </>
           )}
+          </>
+        )}
         </div>
       )}
 
