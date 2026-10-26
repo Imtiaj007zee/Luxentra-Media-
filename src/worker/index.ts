@@ -306,45 +306,30 @@ app.post("/api/chat", zValidator("json", chatSchema), async (c) => {
 app.post("/api/chat/lead", zValidator("json", chatLeadSchema), async (c) => {
   const data = c.req.valid("json");
 
+  // Leads go to the same orders sheet as every other lead on the site,
+  // through the Google Apps Script endpoint the booking page and the
+  // lead-capture popup already use. (The D1 database and email bindings
+  // this file's bookings/orders endpoints expect were never connected in
+  // the deployed worker, so this handler does not touch them.)
+  // Mirrors ORDERS_ENDPOINT in src/react-app/lib/siteSettings.tsx.
+  const ORDERS_ENDPOINT =
+    "https://script.google.com/macros/s/AKfycbynyupNugdxjc7EAAUK1e9c9JS79VccnuwHc8ar81Q6-v_ug8EOhbDgNZXeqhFyRcM46A/exec";
+
   try {
-    await c.env.DB.prepare(
-      `INSERT INTO leads (name, email, phone, borough, listing_type, request_details)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    )
-      .bind(
-        data.name,
-        data.email,
-        data.phone,
-        "Not given",
-        "Chatbot lead",
-        data.message || ""
-      )
-      .run();
-
-    // Email notification. The lead is already saved, so a failed email
-    // still returns success to the visitor and is only logged here.
-    const emailContent = `
-      <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Name:</strong> ${data.name}</p>
-      <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Phone:</strong> ${data.phone}</p>
-      <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>Email:</strong> ${data.email}</p>
-      ${data.message ? `<p style="margin: 0 0 16px 0; font-size: 16px; line-height: 24px; color: #3f3f46;"><strong>What they need:</strong></p><p style="margin: 0; font-size: 16px; line-height: 24px; color: #3f3f46;">${data.message}</p>` : ""}
-    `;
-
-    const emailResult = await c.env.EMAILS.send({
-      to: "luxentra.holdings@gmail.com",
-      subject: `New chatbot lead from ${data.name}`,
-      html_body: emailTemplate(`
-        ${emailHeader("New Chatbot Lead")}
-        ${emailBody(emailContent)}
-        ${emailFooter("LuxEntra Media | Luxury Real Estate Media")}
-      `),
-      text_body: `New Chatbot Lead\n\nName: ${data.name}\nPhone: ${data.phone}\nEmail: ${data.email}${data.message ? `\nWhat they need: ${data.message}` : ""}`,
+    const res = await fetch(ORDERS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        form_type: "lead",
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        brokerage: "Chatbot",
+        discount_code: "WELCOME25",
+        request_details: data.message || "",
+      }),
     });
-
-    if (!emailResult.success) {
-      console.error("Chat lead email failed:", emailResult.error);
-    }
-
+    if (!res.ok) throw new Error(`orders endpoint ${res.status}`);
     return c.json({ success: true });
   } catch (error) {
     console.error("Chat lead error:", error);
