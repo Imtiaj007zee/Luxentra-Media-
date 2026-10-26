@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useT } from "@/react-app/lib/siteContent";
 
@@ -10,13 +10,24 @@ import { useT } from "@/react-app/lib/siteContent";
  * widths it shows just the logo and a plain three-line menu button,
  * on iPad and wider the links and buttons appear and no menu button
  * is needed. The menu button sits at the right corner of the pill
- * and opens the full-screen menu.
+ * and opens the full-screen menu. Like shamimridha.com, the pill also
+ * compacts once the page is scrolled (narrower, a touch shorter, a
+ * little closer to the top) and grows back at the very top; it never
+ * hides and its background and contents never change.
  */
 export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
   const t = useT();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const LINKS = [
     { label: t("nav.link_branding"), to: "/branding" },
@@ -43,10 +54,16 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
   return (
     <>
       <header
-        className="fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] max-w-[1200px]"
-        style={{ top: topOffset + 12 }}
+        className={`fixed left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] transition-all duration-300 ${
+          scrolled ? "max-w-[1000px]" : "max-w-[1200px]"
+        }`}
+        style={{ top: topOffset + (scrolled ? 8 : 12) }}
       >
-        <nav className="flex items-center justify-between h-12 md:h-14 pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
+        <nav
+          className={`flex items-center justify-between pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)] transition-all duration-300 ${
+            scrolled ? "h-11 md:h-12" : "h-12 md:h-14"
+          }`}
+        >
           <Link
             to="/"
             onClick={() => {
