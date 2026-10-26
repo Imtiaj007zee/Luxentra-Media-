@@ -9,7 +9,7 @@ type CollectStage = "name" | "email" | "phone";
 
 const STORAGE_KEY = "luxentra-chat-v1";
 const VISITOR_KEY = "luxentra-chat-visitor-v1";
-const VISITOR_SKIPPED_KEY = "luxentra-chat-visitor-skipped-v1";
+const COLLECT_SESSION_KEY = "luxentra-chat-collect-asked-v1";
 
 const GREETING: ChatMessage = {
   role: "assistant",
@@ -51,11 +51,19 @@ function loadVisitor(): Visitor | null {
   }
 }
 
-function loadSkipped(): boolean {
+function loadCollectAsked(): boolean {
   try {
-    return localStorage.getItem(VISITOR_SKIPPED_KEY) === "1";
+    return sessionStorage.getItem(COLLECT_SESSION_KEY) === "1";
   } catch {
     return false;
+  }
+}
+
+function saveCollectAsked() {
+  try {
+    sessionStorage.setItem(COLLECT_SESSION_KEY, "1");
+  } catch {
+    // Storage unavailable, the ask just repeats next visit.
   }
 }
 
@@ -104,14 +112,26 @@ export default function ChatBot() {
   const [leadError, setLeadError] = useState("");
   const [hintVisible, setHintVisible] = useState(false);
   const [visitor, setVisitor] = useState<Visitor | null>(() => loadVisitor());
-  const [visitorSkipped, setVisitorSkipped] = useState<boolean>(() => loadSkipped());
-  // Details are collected inside the chat, after the visitor's first
-  // message, one question at a time, never as a wall before chatting.
+  // Whether details were already asked for this visit. A skip only lasts
+  // the visit, so a visitor who skipped gets asked again next time.
+  const [collectAsked, setCollectAsked] = useState<boolean>(() => loadCollectAsked());
+  // Details are collected inside the chat, after the visitor engages, one
+  // question at a time, never as a wall before chatting.
   const [collectStage, setCollectStage] = useState<CollectStage | null>(null);
   const [collectName, setCollectName] = useState("");
   const [collectEmail, setCollectEmail] = useState("");
   const [pendingFirst, setPendingFirst] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // The old details form saved a permanent skip in localStorage. Clear it
+  // once, so visitors who skipped that form get asked again in the flow.
+  useEffect(() => {
+    try {
+      localStorage.removeItem("luxentra-chat-visitor-skipped-v1");
+    } catch {
+      // Storage unavailable, nothing to clear.
+    }
+  }, []);
 
   // "Ask anything" pop-up above the chat button. It is permanent: it pops
   // in a few seconds after the page loads and stays there whenever the
@@ -165,6 +185,11 @@ export default function ChatBot() {
     }
   }
 
+  function markCollectAsked() {
+    saveCollectAsked();
+    setCollectAsked(true);
+  }
+
   function sendUserMessage(text: string) {
     const trimmed = text.trim();
     if (!trimmed || sending) return;
@@ -176,13 +201,15 @@ export default function ChatBot() {
     }
     const next = [...messages, { role: "user" as const, content: trimmed }];
     setMessages(next);
-    // A new visitor's first message: let them chat first, then collect
-    // their details inside the flow, one question at a time.
-    const isFirstUserMessage = !messages.some((m) => m.role === "user");
-    if (!visitor && !visitorSkipped && isFirstUserMessage) {
+    // Details are asked the moment a visitor engages, a message or a
+    // quick option, if we do not have them yet and have not asked this visit.
+    if (!visitor && !collectAsked) {
       setPendingFirst(trimmed);
       setCollectStage("name");
-      appendAssistant("Got it. Quick one so I can help you properly, what's your name?");
+      markCollectAsked();
+      appendAssistant(
+        "Got it. For the better service, we just need your name, phone number, and email. What's your name?"
+      );
       return;
     }
     void sendChat(next);
@@ -228,7 +255,7 @@ export default function ChatBot() {
           name: nextVisitor.name,
           phone: nextVisitor.phone,
           email: nextVisitor.email,
-          message: `Shared details after first message: ${pendingFirst || ""}`,
+          message: `Shared details during chat: ${pendingFirst || ""}`,
         }),
       });
       const data = (await res.json()) as { success?: boolean };
@@ -252,12 +279,7 @@ export default function ChatBot() {
   }
 
   function skipCollect() {
-    try {
-      localStorage.setItem(VISITOR_SKIPPED_KEY, "1");
-    } catch {
-      // Storage unavailable, the form just hides for this visit.
-    }
-    setVisitorSkipped(true);
+    markCollectAsked();
     setCollectStage(null);
     setPendingFirst(null);
     const history: ChatMessage[] = [
@@ -308,6 +330,7 @@ export default function ChatBot() {
         // Storage unavailable, details still work for this visit.
       }
       setVisitor(nextVisitor);
+      markCollectAsked();
       const hadPending = pendingFirst !== null;
       setCollectStage(null);
       setPendingFirst(null);
