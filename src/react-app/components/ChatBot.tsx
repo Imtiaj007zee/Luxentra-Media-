@@ -5,6 +5,7 @@ import { MessageCircle, Send, X } from "lucide-react";
 type ChatRole = "user" | "assistant";
 type ChatMessage = { role: ChatRole; content: string };
 type Visitor = { name: string; email: string; phone: string };
+type CollectStage = "name" | "email" | "phone";
 
 const STORAGE_KEY = "luxentra-chat-v1";
 const VISITOR_KEY = "luxentra-chat-visitor-v1";
@@ -23,6 +24,8 @@ const QUICK_CHIPS: { label: string; message?: string; action?: "lead" }[] = [
   { label: "Personal branding", message: "Tell me about personal branding" },
   { label: "Leave my number", action: "lead" },
 ];
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function loadMessages(): ChatMessage[] {
   try {
@@ -102,16 +105,13 @@ export default function ChatBot() {
   const [hintVisible, setHintVisible] = useState(false);
   const [visitor, setVisitor] = useState<Visitor | null>(() => loadVisitor());
   const [visitorSkipped, setVisitorSkipped] = useState<boolean>(() => loadSkipped());
-  const [detailsName, setDetailsName] = useState("");
-  const [detailsPhone, setDetailsPhone] = useState("");
-  const [detailsEmail, setDetailsEmail] = useState("");
-  const [detailsSending, setDetailsSending] = useState(false);
-  const [detailsError, setDetailsError] = useState("");
+  // Details are collected inside the chat, after the visitor's first
+  // message, one question at a time, never as a wall before chatting.
+  const [collectStage, setCollectStage] = useState<CollectStage | null>(null);
+  const [collectName, setCollectName] = useState("");
+  const [collectEmail, setCollectEmail] = useState("");
+  const [pendingFirst, setPendingFirst] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  // Details come first: until the visitor shares their name, email, and
-  // phone (or skips), the chat opens on the details form, not the messages.
-  const showDetailsForm = open && !visitor && !visitorSkipped;
 
   // "Ask anything" pop-up above the chat button. It is permanent: it pops
   // in a few seconds after the page loads and stays there whenever the
@@ -136,7 +136,11 @@ export default function ChatBot() {
   // Hidden on the backstage admin page.
   if (pathname.startsWith("/backstage")) return null;
 
-  async function sendChat(history: ChatMessage[]) {
+  function appendAssistant(content: string) {
+    setMessages((prev) => [...prev, { role: "assistant", content }]);
+  }
+
+  async function sendChat(history: ChatMessage[], visitorOverride?: Visitor) {
     setSending(true);
     try {
       const res = await fetch("/api/chat", {
@@ -144,28 +148,18 @@ export default function ChatBot() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages: history.slice(-12),
-          visitor: visitor || undefined,
+          visitor: visitorOverride || visitor || undefined,
         }),
       });
       const data = (await res.json()) as { reply?: string };
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            data.reply ||
-            "Sorry, I am having trouble right now. You can book directly on the booking page, or leave your number below and we will call you back.",
-        },
-      ]);
+      appendAssistant(
+        data.reply ||
+          "Sorry, I am having trouble right now. You can book directly on the booking page, or leave your number below and we will call you back."
+      );
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            "Sorry, I am having trouble right now. You can book directly on the booking page, or leave your number below and we will call you back.",
-        },
-      ]);
+      appendAssistant(
+        "Sorry, I am having trouble right now. You can book directly on the booking page, or leave your number below and we will call you back."
+      );
     } finally {
       setSending(false);
     }
@@ -174,66 +168,104 @@ export default function ChatBot() {
   function sendUserMessage(text: string) {
     const trimmed = text.trim();
     if (!trimmed || sending) return;
+    setInput("");
+    // Mid-collection: this message answers the detail just asked for.
+    if (collectStage) {
+      void handleCollectAnswer(trimmed);
+      return;
+    }
     const next = [...messages, { role: "user" as const, content: trimmed }];
     setMessages(next);
-    setInput("");
+    // A new visitor's first message: let them chat first, then collect
+    // their details inside the flow, one question at a time.
+    const isFirstUserMessage = !messages.some((m) => m.role === "user");
+    if (!visitor && !visitorSkipped && isFirstUserMessage) {
+      setPendingFirst(trimmed);
+      setCollectStage("name");
+      appendAssistant("Got it. Quick one so I can help you properly, what's your name?");
+      return;
+    }
     void sendChat(next);
   }
 
-  async function submitDetails() {
-    const name = detailsName.trim();
-    const phone = detailsPhone.trim();
-    const email = detailsEmail.trim();
-    if (!name || !phone || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setDetailsError("Add your name, phone number, and a valid email.");
+  async function handleCollectAnswer(answer: string) {
+    const next = [...messages, { role: "user" as const, content: answer }];
+    setMessages(next);
+    if (collectStage === "name") {
+      if (answer.length > 60) {
+        appendAssistant("That's a long one, just your first name is fine, what's your name?");
+        return;
+      }
+      setCollectName(answer);
+      setCollectStage("email");
+      appendAssistant(`Thanks ${answer.split(" ")[0]}. What's your email?`);
       return;
     }
-    setDetailsError("");
-    setDetailsSending(true);
+    if (collectStage === "email") {
+      if (!EMAIL_RE.test(answer)) {
+        appendAssistant("That email doesn't look right, can you double check it?");
+        return;
+      }
+      setCollectEmail(answer);
+      setCollectStage("phone");
+      appendAssistant("And your phone number?");
+      return;
+    }
+    // Phone is the last detail. Save it, then answer their first message.
+    const digits = answer.replace(/\D/g, "");
+    if (digits.length < 7) {
+      appendAssistant("That number looks short, can you type the full number?");
+      return;
+    }
+    const nextVisitor: Visitor = { name: collectName, email: collectEmail, phone: answer };
+    setCollectStage(null);
+    setPendingFirst(null);
     try {
       const res = await fetch("/api/chat/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name,
-          phone,
-          email,
-          message: "Shared details before chatting.",
+          name: nextVisitor.name,
+          phone: nextVisitor.phone,
+          email: nextVisitor.email,
+          message: `Shared details after first message: ${pendingFirst || ""}`,
         }),
       });
       const data = (await res.json()) as { success?: boolean };
-      if (!res.ok || !data.success) throw new Error("details failed");
-      const next: Visitor = { name, email, phone };
+      if (!res.ok || !data.success) throw new Error("lead failed");
       try {
-        localStorage.setItem(VISITOR_KEY, JSON.stringify(next));
+        localStorage.setItem(VISITOR_KEY, JSON.stringify(nextVisitor));
       } catch {
         // Storage unavailable, details still work for this visit.
       }
-      setVisitor(next);
-      setDetailsName("");
-      setDetailsPhone("");
-      setDetailsEmail("");
-      const firstName = name.split(" ")[0];
-      setMessages([
-        {
-          role: "assistant",
-          content: `Hey ${firstName}, I'm Lux AI. Quick one before we get into it, are you an agent with a listing to sell, or building your personal brand?`,
-        },
-      ]);
+      setVisitor(nextVisitor);
     } catch {
-      setDetailsError("Something went wrong. Please try again.");
-    } finally {
-      setDetailsSending(false);
+      // Details failed to save, keep chatting anyway.
     }
+    const firstName = nextVisitor.name.split(" ")[0];
+    const history: ChatMessage[] = [
+      ...next,
+      { role: "assistant", content: `Thanks ${firstName}, got it. Now let's get into it.` },
+    ];
+    setMessages(history);
+    void sendChat(history, nextVisitor);
   }
 
-  function skipDetails() {
+  function skipCollect() {
     try {
       localStorage.setItem(VISITOR_SKIPPED_KEY, "1");
     } catch {
       // Storage unavailable, the form just hides for this visit.
     }
     setVisitorSkipped(true);
+    setCollectStage(null);
+    setPendingFirst(null);
+    const history: ChatMessage[] = [
+      ...messages,
+      { role: "assistant", content: "No worries, let's get into it." },
+    ];
+    setMessages(history);
+    void sendChat(history);
   }
 
   async function submitLead() {
@@ -269,24 +301,49 @@ export default function ChatBot() {
       });
       const data = (await res.json()) as { success?: boolean };
       if (!res.ok || !data.success) throw new Error("lead failed");
+      const nextVisitor: Visitor = { name, phone, email };
+      try {
+        localStorage.setItem(VISITOR_KEY, JSON.stringify(nextVisitor));
+      } catch {
+        // Storage unavailable, details still work for this visit.
+      }
+      setVisitor(nextVisitor);
+      const hadPending = pendingFirst !== null;
+      setCollectStage(null);
+      setPendingFirst(null);
       setShowLeadForm(false);
       setLeadName("");
       setLeadPhone("");
       setLeadEmail("");
       setLeadNeed("");
-      setMessages((prev) => [
-        ...prev,
+      const history: ChatMessage[] = [
+        ...messages,
         {
           role: "assistant",
           content: `Thanks ${name}, we have your details. We will call you back shortly.`,
         },
-      ]);
+      ];
+      setMessages(history);
+      // If they left details mid-collection, their first question still
+      // needs an answer.
+      if (hadPending) void sendChat(history, nextVisitor);
     } catch {
       setLeadError("Something went wrong. Please try again.");
     } finally {
       setLeadSending(false);
     }
   }
+
+  const collectPlaceholder =
+    collectStage === "name"
+      ? "Your name"
+      : collectStage === "email"
+        ? "Your email"
+        : collectStage === "phone"
+          ? "Your phone number"
+          : "Ask about packages, pricing, booking...";
+  const collectInputMode =
+    collectStage === "email" ? "email" : collectStage === "phone" ? "tel" : undefined;
 
   return (
     <>
@@ -317,53 +374,6 @@ export default function ChatBot() {
             </button>
           </div>
 
-          {showDetailsForm ? (
-            <div className="flex flex-1 flex-col justify-center overflow-y-auto px-4 py-6">
-              <p className="mb-1 text-lg font-semibold text-white">Before we start</p>
-              <p className="mb-4 text-sm leading-relaxed text-white/60">
-                Leave your name, email, and number so Lux AI can help you properly.
-              </p>
-              <div className="flex flex-col gap-2">
-                <input
-                  value={detailsName}
-                  onChange={(e) => setDetailsName(e.target.value)}
-                  placeholder="Your name"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
-                />
-                <input
-                  value={detailsEmail}
-                  onChange={(e) => setDetailsEmail(e.target.value)}
-                  placeholder="Email"
-                  inputMode="email"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
-                />
-                <input
-                  value={detailsPhone}
-                  onChange={(e) => setDetailsPhone(e.target.value)}
-                  placeholder="Phone number"
-                  inputMode="tel"
-                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
-                />
-                {detailsError && <p className="text-xs text-red-400">{detailsError}</p>}
-                <button
-                  type="button"
-                  onClick={() => void submitDetails()}
-                  disabled={detailsSending}
-                  className="mt-1 rounded-lg bg-[#c7ff00] px-3 py-2.5 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-50"
-                >
-                  {detailsSending ? "Saving..." : "Start chatting"}
-                </button>
-                <button
-                  type="button"
-                  onClick={skipDetails}
-                  className="py-1 text-xs text-white/50 transition hover:text-white"
-                >
-                  Chat without sharing details
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
           <div className="flex-1 overflow-y-auto px-4 py-4">
             <div className="flex flex-col gap-3">
               {messages.map((m, i) => (
@@ -443,24 +453,26 @@ export default function ChatBot() {
             </div>
           ) : (
             <>
-              <div className="flex flex-wrap gap-2 px-4 pb-2">
-                {QUICK_CHIPS.filter((chip) => !(visitor && chip.action === "lead")).map((chip) => (
-                  <button
-                    key={chip.label}
-                    type="button"
-                    onClick={() => {
-                      if (chip.action === "lead") {
-                        setShowLeadForm(true);
-                      } else if (chip.message) {
-                        sendUserMessage(chip.message);
-                      }
-                    }}
-                    className="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white/80 transition hover:border-[#c7ff00]/60 hover:text-white"
-                  >
-                    {chip.label}
-                  </button>
-                ))}
-              </div>
+              {!collectStage && (
+                <div className="flex flex-wrap gap-2 px-4 pb-2">
+                  {QUICK_CHIPS.filter((chip) => !(visitor && chip.action === "lead")).map((chip) => (
+                    <button
+                      key={chip.label}
+                      type="button"
+                      onClick={() => {
+                        if (chip.action === "lead") {
+                          setShowLeadForm(true);
+                        } else if (chip.message) {
+                          sendUserMessage(chip.message);
+                        }
+                      }}
+                      className="shrink-0 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white/80 transition hover:border-[#c7ff00]/60 hover:text-white"
+                    >
+                      {chip.label}
+                    </button>
+                  ))}
+                </div>
+              )}
               <form
                 className="flex items-center gap-2 border-t border-white/10 px-3 py-3"
                 onSubmit={(e) => {
@@ -471,7 +483,8 @@ export default function ChatBot() {
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about packages, pricing, booking..."
+                  placeholder={collectPlaceholder}
+                  inputMode={collectInputMode}
                   aria-label="Message LuxEntra"
                   className="min-w-0 flex-1 rounded-full border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-[#c7ff00] focus:outline-none"
                 />
@@ -484,10 +497,17 @@ export default function ChatBot() {
                   <Send className="h-4 w-4" />
                 </button>
               </form>
+              {collectStage && (
+                <button
+                  type="button"
+                  onClick={skipCollect}
+                  className="pb-3 text-center text-xs text-white/50 transition hover:text-white"
+                >
+                  Skip for now
+                </button>
+              )}
             </>
           )}
-          </>
-        )}
         </div>
       )}
 
