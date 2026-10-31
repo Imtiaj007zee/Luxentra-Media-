@@ -603,7 +603,7 @@ const TRUSTED_BY: TrustedByEntry[] = [
   { agent: "Chironjit Ghosh", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.png" },
   { agent: "Najmus Sakib Salam", brokerage: "Better Homes", logo: "/trusted-by/better-homes.png" },
   { agent: "Mahtab Bhuiyan", brokerage: "Max/It Realty", logo: "/trusted-by/max-it-realty.png" },
-  { agent: "Niloy Dash", brokerage: "Express Realty Prime", logo: "/trusted-by/express-realty-prime.png" },
+  { agent: "Niloy Das", brokerage: "Express Realty Prime", logo: "/trusted-by/express-realty-prime.png" },
   { agent: "Nazmus Sakib", brokerage: "Keller Williams Realty of Greater Nassau", logo: "/trusted-by/kw-greater-nassau.png" },
   { agent: "Wasif Richard", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
   { agent: "Tahmid Rahman", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
