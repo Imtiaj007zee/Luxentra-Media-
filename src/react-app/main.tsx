@@ -34,7 +34,7 @@ window.addEventListener(
 window.addEventListener(
   "pointerup",
   () => {
-    pressingTimer = window.setTimeout(endPress, 220);
+    pressingTimer = window.setTimeout(endPress, 350);
   },
   true
 );
