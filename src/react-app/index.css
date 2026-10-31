@@ -532,3 +532,13 @@
   transform: translateZ(0);
   filter: drop-shadow(0 30px 55px rgba(0, 0, 0, 0.6));
 }
+
+/* ── Rounder shapes for clickable options ────────────────────────────────
+   Unlayered on purpose, so it wins over per-component radius utilities.
+   26px turns anything up to 52px tall into a full pill and gives taller
+   options generous Apple-style corners, at rest, on hover, and on press. */
+button,
+[role="button"],
+a[class*="rounded"] {
+  border-radius: 26px;
+}
