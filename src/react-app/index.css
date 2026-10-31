@@ -181,22 +181,19 @@
       background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1),
       background-image 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
   }
+  /* Hover and press wear the Free Consultation button's own style: a
+     dark translucent pill with a thin light outline. Zee pointed at
+     that button as the reference, so the effect copies it exactly
+     instead of inventing a new glass look. */
   @media (hover: hover) {
     button:not(:disabled):hover,
     [role="button"]:hover,
     a[class*="rounded"]:not(:has(img)):hover,
     nav a:not(:has(img)):hover {
-      background-image: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.1),
-        rgba(255, 255, 255, 0.04)
-      );
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-        0 8px 28px -10px rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
     }
     /* Plain text links in the nav get a glass pill shape on hover;
        padding is balanced by negative margins so the layout never moves. */
@@ -210,17 +207,10 @@
   button:not(:disabled):active,
   [role="button"]:active {
     scale: 0.92;
-    background-image: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.04)
-    );
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-      0 8px 28px -10px rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
     transition:
       scale 0.12s ease-out,
       box-shadow 0.12s ease-out,
@@ -557,22 +547,15 @@ a[class*="rounded"] {
   border-radius: 26px;
 }
 
-/* ── Pressed glass ─────────────────────────────────────────────────────────
+/* ── Pressed state ─────────────────────────────────────────────────────────
    Added by the pointer handler in main.tsx while an option is pressed,
-   and kept for a beat after release. Unlayered so the glass always wins.
-   The sheen is a background image layered over the option's own color,
-   so a lime CTA stays lime under the glass. */
+   and kept for a beat after release. Unlayered so the style always wins.
+   Same Free Consultation look as the hover, with a brighter outline and
+   the press-in, so a tap reads as a click on touch devices too. */
 .is-pressing {
   scale: 0.92;
-  background-image: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.04)
-  );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-    0 8px 28px -10px rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background-color: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
 }
