@@ -173,7 +173,7 @@ function FilmCard({
       >
         <img
           src={item.poster}
-          alt=""
+          alt={`${item.title}, real estate film by LuxEntra Media`}
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
