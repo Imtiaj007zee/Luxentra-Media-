@@ -165,6 +165,58 @@
     }
   }
 
+  /* ── Glass hover + pressed feel for clickable options (site-wide) ──
+     On hover, clickable options get a frosted glass wash with a bright
+     top edge and a soft shadow. On click they press in, so the click
+     visibly lands. Components that set their own hover colors keep them
+     (lime CTAs stay lime); the glass sheen and the press still apply. */
+  a,
+  button,
+  [role="button"] {
+    transition:
+      transform 0.15s ease-out,
+      box-shadow 0.22s ease-out,
+      background-color 0.18s ease-out;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    button:not(:disabled):hover,
+    [role="button"]:hover,
+    a[class*="rounded"]:hover,
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 10px 28px -12px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px) saturate(1.4);
+      -webkit-backdrop-filter: blur(10px) saturate(1.4);
+    }
+    /* Plain text links in the nav get a glass pill shape on hover;
+       padding is balanced by negative margins so the layout never moves. */
+    nav a:not([class*="rounded"]):not([class*="btn-"]) {
+      border-radius: 9999px;
+      padding: 6px 12px;
+      margin: -6px -4px;
+    }
+  }
+  a:active,
+  button:not(:disabled):active,
+  [role="button"]:active {
+    transform: scale(0.96);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    a,
+    button,
+    [role="button"] {
+      transition: none !important;
+    }
+    a:active,
+    button:active,
+    [role="button"]:active {
+      transform: none;
+    }
+  }
+
   /* ── Continuous attention blink (e.g. guarantee badge) ── */
   @keyframes brand-blink {
     0%,
