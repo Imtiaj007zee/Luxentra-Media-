@@ -24,6 +24,9 @@ window.addEventListener(
       PRESS_SELECTOR
     );
     if (!el || el.hasAttribute("disabled")) return;
+    // Image links (the logo lockup, photo cards) never wear the glass;
+    // a box around the logo reads as a selection, not a press.
+    if (el instanceof HTMLAnchorElement && el.querySelector("img")) return;
     window.clearTimeout(pressingTimer);
     endPress();
     pressingEl = el;
