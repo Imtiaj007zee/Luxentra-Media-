@@ -176,22 +176,30 @@
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.08);
     transition:
       transform 0.38s cubic-bezier(0.34, 1.3, 0.64, 1),
+      scale 0.38s cubic-bezier(0.34, 1.3, 0.64, 1),
       box-shadow 0.3s cubic-bezier(0.28, 0.11, 0.32, 1),
-      background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
+      background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1),
+      background-image 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
   }
   @media (hover: hover) {
     button:not(:disabled):hover,
     [role="button"]:hover,
     a[class*="rounded"]:hover,
     nav a:hover {
-      background-color: rgba(255, 255, 255, 0.11);
+      background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.22),
+        rgba(255, 255, 255, 0.08)
+      );
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-        0 0 18px rgba(199, 255, 0, 0.16),
-        0 12px 32px -12px rgba(0, 0, 0, 0.45);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+        0 0 24px rgba(199, 255, 0, 0.35),
+        0 14px 34px -12px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      transform: translateY(-1px);
     }
     /* Plain text links in the nav get a glass pill shape on hover;
        padding is balanced by negative margins so the layout never moves. */
@@ -204,19 +212,25 @@
   a:active,
   button:not(:disabled):active,
   [role="button"]:active {
-    transform: scale(0.97);
-    background-color: rgba(255, 255, 255, 0.11);
+    scale: 0.94;
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.08)
+    );
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-      0 0 18px rgba(199, 255, 0, 0.16),
-      0 12px 32px -12px rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+      0 0 24px rgba(199, 255, 0, 0.35),
+      0 14px 34px -12px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
     transition:
-      transform 0.12s ease-out,
+      scale 0.12s ease-out,
       box-shadow 0.12s ease-out,
-      background-color 0.12s ease-out;
+      background-color 0.12s ease-out,
+      background-image 0.12s ease-out;
   }
   @media (prefers-reduced-motion: reduce) {
     a,
@@ -546,4 +560,26 @@ button,
 [role="button"],
 a[class*="rounded"] {
   border-radius: 26px;
+}
+
+/* ── Pressed glass ─────────────────────────────────────────────────────────
+   Added by the pointer handler in main.tsx while an option is pressed,
+   and kept for a beat after release. Unlayered so the glass always wins.
+   The sheen is a background image layered over the option's own color,
+   so a lime CTA stays lime under the glass. */
+.is-pressing {
+  scale: 0.94;
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.08)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 0 24px rgba(199, 255, 0, 0.35),
+    0 14px 34px -12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
 }
