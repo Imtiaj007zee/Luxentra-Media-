@@ -78,6 +78,14 @@ export default function BrandingPage() {
         .filter(Boolean),
     [t]
   );
+  const AREAS = useMemo(
+    () =>
+      t("branding.local_areas")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean),
+    [t]
+  );
 
   return (
     <div className="bg-[#0b0b0b] text-white min-h-screen relative">
@@ -226,6 +234,36 @@ export default function BrandingPage() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── Personal branding for realtors, NYC & Long Island ── */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <Reveal>
+            <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.local_eyebrow")}</p>
+            <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05] max-w-3xl">
+              {t("branding.local_h2a")} <span className="text-[#c7ff00]">{t("branding.local_h2b")}</span>
+            </h2>
+            <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-6">
+              {t("branding.local_copy")}
+            </p>
+            <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-4">
+              {t("branding.local_copy2")}
+            </p>
+          </Reveal>
+          <Reveal delay={140}>
+            <div className="flex flex-wrap gap-3 mt-10">
+              {AREAS.map((a) => (
+                <span
+                  key={a}
+                  className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-[15px] font-medium text-white/85"
+                >
+                  {a}
+                </span>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 

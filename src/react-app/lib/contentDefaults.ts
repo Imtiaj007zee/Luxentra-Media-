@@ -253,6 +253,12 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "branding.final_h2a", group: "Branding page", label: "Final CTA line 1", value: "Your competitors are posting." },
   { key: "branding.final_h2b", group: "Branding page", label: "Final CTA line 2", value: "Are you being remembered?" },
   { key: "branding.final_cta", group: "Branding page", label: "Final CTA button", value: "Build my brand" },
+  { key: "branding.local_eyebrow", group: "Branding page", label: "Local eyebrow", value: "Personal branding for realtors" },
+  { key: "branding.local_h2a", group: "Branding page", label: "Local heading 1", value: "Built for real estate agents in New York City" },
+  { key: "branding.local_h2b", group: "Branding page", label: "Local heading 2 (lime)", value: "& Long Island." },
+  { key: "branding.local_copy", group: "Branding page", label: "Local copy", value: "LuxEntra is a personal branding studio for realtors, not a general marketing agency. We plan, film, edit, and post your content every month, so buyers and sellers in your market know your face before the first call." },
+  { key: "branding.local_copy2", group: "Branding page", label: "Local copy 2", value: "A listing agent in Queens, a broker in the Bronx, a luxury name out on Long Island: whoever you are, your personal brand is why a seller picks you over the agent down the street. We make sure it is you they remember." },
+  { key: "branding.local_areas", group: "Branding page", label: "Local areas (one per line)", value: "Queens\nBrooklyn\nThe Bronx\nManhattan\nStaten Island\nNassau County\nSuffolk County" },
 
   // ── Work page ──
   { key: "photo.eyebrow", group: "Photography page", label: "Eyebrow", value: "Real estate photography · NYC & Long Island" },
@@ -276,6 +282,10 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "photo.bundles_h2", group: "Photography page", label: "Bundles heading", value: "Photos plus the extras that move listings faster." },
   { key: "photo.bundles_copy", group: "Photography page", label: "Bundles copy", value: "Bundle the shoot with film, drone, and launch content and save against booking each piece on its own." },
   { key: "photo.bundle_cta", group: "Photography page", label: "Bundle button", value: "Book this bundle" },
+  { key: "photo.branding_eyebrow", group: "Photography page", label: "Branding eyebrow", value: "Our main craft" },
+  { key: "photo.branding_h2", group: "Photography page", label: "Branding heading", value: "Photos sell this listing. Personal branding sells you." },
+  { key: "photo.branding_copy", group: "Photography page", label: "Branding copy", value: "Most of what we do is monthly personal branding for realtors: strategy, filming, editing, and posting handled for you, so your market knows your face before the first call." },
+  { key: "photo.branding_cta", group: "Photography page", label: "Branding button", value: "See personal branding plans" },
   { key: "photo.areas_eyebrow", group: "Photography page", label: "Areas eyebrow", value: "Where we shoot" },
   { key: "photo.areas_h2", group: "Photography page", label: "Areas heading", value: "Real estate photography across NYC & Long Island." },
   { key: "photo.areas_copy", group: "Photography page", label: "Areas copy", value: "From Bronx multifamily buildings to Suffolk County colonials, we come to the listing. If your property is in the five boroughs or out on the island, we shoot it." },

@@ -242,6 +242,24 @@ export default function PhotographyPage() {
         </div>
       </section>
 
+      {/* ── Personal branding (the main craft) ───────────── */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <Reveal>
+            <p className="eyebrow text-[#c7ff00] mb-6">{t("photo.branding_eyebrow")}</p>
+            <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05] max-w-3xl">
+              {t("photo.branding_h2")}
+            </h2>
+            <p className="text-[17px] text-white/60 leading-relaxed max-w-2xl mt-6">
+              {t("photo.branding_copy")}
+            </p>
+            <Link to="/branding" className="btn-lime mt-10 inline-flex">
+              {t("photo.branding_cta")} <ArrowRight className="w-4 h-4 ml-1" />
+            </Link>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ── Areas served ─────────────────────────────────── */}
       <section className="py-20 md:py-28">
         <div className="max-w-[1200px] mx-auto px-6">
