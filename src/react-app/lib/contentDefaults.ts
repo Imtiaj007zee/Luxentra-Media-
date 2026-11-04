@@ -443,10 +443,10 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "notfound.cta", group: "404 page", label: "Button", value: "Back home" },
 
   // ── SEO ──
-  { key: "seo.home_title", group: "SEO", label: "Home title", value: "Real Estate Branding, Films & Photography in NYC | LuxEntra Media" },
-  { key: "seo.home_desc", group: "SEO", label: "Home description", value: "Real estate branding, cinematic listing films, photography, and personal branding for realtors in NYC and Long Island. LuxEntra Media turns your viewers into clients." },
-  { key: "seo.work_title", group: "SEO", label: "Work title", value: "Real Estate Films & Photography Portfolio | LuxEntra Media" },
-  { key: "seo.work_desc", group: "SEO", label: "Work description", value: "Watch LuxEntra Media's real estate films and browse listing photography shot across NYC and Long Island, plus personal branding films for top realtors." },
+  { key: "seo.home_title", group: "SEO", label: "Home title", value: "Personal Branding & Real Estate Film in NYC | LuxEntra Media" },
+  { key: "seo.home_desc", group: "SEO", label: "Home description", value: "Personal branding for realtors in NYC and Long Island, planned, filmed, edited and posted for you, plus cinematic listing films and photography by LuxEntra Media." },
+  { key: "seo.work_title", group: "SEO", label: "Work title", value: "Real Estate Films, Photography & Personal Branding | LuxEntra Media" },
+  { key: "seo.work_desc", group: "SEO", label: "Work description", value: "Personal branding films, real estate listing films, and photography by LuxEntra Media, shot for realtors across New York City and Long Island." },
   { key: "seo.about_title", group: "SEO", label: "About title", value: "About LuxEntra Media | Real Estate Branding Studio in New York" },
   { key: "seo.about_desc", group: "SEO", label: "About description", value: "Meet the team behind LuxEntra Media, a real estate branding and media studio crafting listing films, photography, and personal branding in NYC and Long Island." },
   { key: "seo.branding_title", group: "SEO", label: "Branding title", value: "Personal Branding for Realtors in NYC | LuxEntra Media" },
