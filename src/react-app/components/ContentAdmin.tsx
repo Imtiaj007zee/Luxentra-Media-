@@ -47,6 +47,7 @@ const GROUP_ORDER = [
   "Navigation",
   "Homepage",
   "Branding page",
+  "Photography page",
   "Booking page",
   "Work page",
   "About page",
