@@ -24,7 +24,7 @@ type Group = { title: string; hint?: string; fields: Field[] };
 
 const GROUPS: Group[] = [
   {
-    title: "Your numbers",
+    title: "Homepage: your numbers",
     hint: "The stats shown on the homepage.",
     fields: [
       { key: "stat_properties", label: "Properties covered" },
@@ -33,8 +33,27 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    title: "Package prices",
-    hint: "Standard package, add-ons, and virtual staging on the booking page.",
+    title: "Homepage: launch bundles",
+    hint: "The three package cards on the homepage. The booking page uses the same prices.",
+    fields: [
+      { key: "price_bundle_market_launch", label: "Market Launch ($)" },
+      { key: "price_bundle_listing_premiere", label: "Listing Premiere ($)" },
+      { key: "price_bundle_agent_authority", label: "Agent Authority ($)" },
+    ],
+  },
+  {
+    title: "Branding page: monthly plans",
+    hint: "The plans on the branding page. The booking page uses the same prices.",
+    fields: [
+      { key: "price_branding_essential", label: "Essential ($/mo)" },
+      { key: "price_branding_growth", label: "Growth ($/mo)" },
+      { key: "price_branding_premium", label: "Premium ($/mo)" },
+      { key: "price_branding_content", label: "Brand Content ($/mo)" },
+    ],
+  },
+  {
+    title: "Booking page: package, add-ons, staging",
+    hint: "The standard package and the extras on the booking page.",
     fields: [
       { key: "price_standard", label: "Standard Listing Media Package ($)" },
       { key: "price_addon_flyer", label: "Custom Listing Flyer ($)" },
@@ -45,25 +64,6 @@ const GROUPS: Group[] = [
       { key: "price_staging_1", label: "Virtual Staging, 1 room ($)" },
       { key: "price_staging_3", label: "Virtual Staging, 3 rooms ($)" },
       { key: "price_staging_5", label: "Virtual Staging, 5 rooms ($)" },
-    ],
-  },
-  {
-    title: "Launch bundles",
-    hint: "The three package cards on the homepage and booking page.",
-    fields: [
-      { key: "price_bundle_market_launch", label: "Market Launch ($)" },
-      { key: "price_bundle_listing_premiere", label: "Listing Premiere ($)" },
-      { key: "price_bundle_agent_authority", label: "Agent Authority ($)" },
-    ],
-  },
-  {
-    title: "Branding plans",
-    hint: "Monthly plans on the branding page and booking page.",
-    fields: [
-      { key: "price_branding_essential", label: "Essential ($/mo)" },
-      { key: "price_branding_growth", label: "Growth ($/mo)" },
-      { key: "price_branding_premium", label: "Premium ($/mo)" },
-      { key: "price_branding_content", label: "Brand Content ($/mo)" },
     ],
   },
 ];
@@ -262,7 +262,7 @@ export default function AdminPage() {
           <div>
             <h1 className="text-[32px] md:text-[40px] font-bold tracking-[-0.02em]">Control panel</h1>
             <p className="text-[14px] text-white/50 mt-1">
-              Change any number below and hit save. Every page updates.
+              Arranged page by page, the same way visitors move through the site. Change any number below and hit save. Every page updates.
               {who && (
                 <span className="ml-2 inline-block text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-[#c7ff00]/15 text-[#c7ff00] align-middle">
                   Logged in as {who}

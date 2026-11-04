@@ -34,12 +34,32 @@ import {
 const TABS = [
   { id: "words", label: "Words", icon: Type },
   { id: "packages", label: "Packages", icon: Package },
-  { id: "team", label: "Team", icon: Users },
   { id: "films", label: "Films", icon: Clapperboard },
   { id: "photos", label: "Photos", icon: Image },
+  { id: "team", label: "Team", icon: Users },
   { id: "terms", label: "Numbers & terms", icon: SlidersHorizontal },
   { id: "discounts", label: "Discount codes", icon: Ticket },
 ] as const;
+
+// Word groups in the order a visitor meets them on the site:
+// shared chrome first, then page by page, backstage and SEO last.
+const GROUP_ORDER = [
+  "Navigation",
+  "Homepage",
+  "Branding page",
+  "Booking page",
+  "Work page",
+  "About page",
+  "Proof section",
+  "Service picker",
+  "Lead popup",
+  "FAQ",
+  "Footer",
+  "Privacy page",
+  "404 page",
+  "SEO",
+  "Admin login",
+];
 
 type TabId = (typeof TABS)[number]["id"];
 
@@ -102,7 +122,11 @@ export default function ContentAdmin({
   const groups = useMemo(() => {
     const seen: string[] = [];
     for (const c of DEFAULT_COPY) if (!seen.includes(c.group)) seen.push(c.group);
-    return seen;
+    const rank = (g: string) => {
+      const i = GROUP_ORDER.indexOf(g);
+      return i === -1 ? GROUP_ORDER.length : i;
+    };
+    return seen.sort((a, b) => rank(a) - rank(b));
   }, []);
 
   if (!draft) {
@@ -224,8 +248,9 @@ export default function ContentAdmin({
     <section className="mt-14">
       <h2 className="text-[19px] font-bold tracking-tight mb-1">Site content</h2>
       <p className="text-[13px] text-white/40 mb-4">
-        Every word, package, team member, film, photo, number, and discount code. Save
-        a section and the live site updates.
+        Everything on the live site, arranged the way the site is put together:
+        words, packages, films, photos, team, numbers and terms, discount codes.
+        Save a section and the live site updates.
       </p>
 
       <div className="flex flex-wrap gap-2 mb-8">

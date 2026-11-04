@@ -38,9 +38,9 @@ export type SiteSettings = {
 // Hardcoded fallbacks. The live values come from the "Site Settings" tab of
 // the LuxEntra Orders spreadsheet and can be changed from /backstage.
 export const DEFAULT_SETTINGS: SiteSettings = {
-  stat_properties: 27,
-  stat_value_m: 18.3,
-  stat_success_rate: 92,
+  stat_properties: 30,
+  stat_value_m: 21.2,
+  stat_success_rate: 92.6,
   price_standard: 175,
   price_addon_flyer: 39,
   price_addon_drone: 99,
@@ -53,9 +53,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   price_bundle_market_launch: 399,
   price_bundle_listing_premiere: 699,
   price_bundle_agent_authority: 899,
-  price_branding_essential: 5999,
-  price_branding_growth: 7999,
-  price_branding_premium: 10999,
+  price_branding_essential: 3999,
+  price_branding_growth: 5999,
+  price_branding_premium: 7999,
   price_branding_content: 1800,
 };
 
