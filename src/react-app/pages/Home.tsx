@@ -611,11 +611,44 @@ const TRUSTED_BY: TrustedByEntry[] = [
   { agent: "Mofizul Chowdhury", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.png" },
 ];
 
+// The strip list itself is editable in the backstage (Homepage words,
+// "Trusted by agents", one line per agent as "Name | Brokerage"). Logos
+// stay matched to the brokerage name here in code. If the backstage list
+// is ever empty or unreadable, the notebook list above is the fallback.
+const BROKERAGE_LOGOS: Record<string, string> = {
+  "Exit Realty Dkc": "/trusted-by/exit-realty-dkc.png",
+  "RE/MAX Luxe": "/trusted-by/remax-luxe.png",
+  "Keller Williams Legendary": "/trusted-by/kw-legendary.png",
+  "Home Central Capital": "/trusted-by/home-central-capital.png",
+  "Exit Realty Prime": "/trusted-by/exit-realty-prime.png",
+  "Coldwell Banker American Homes": "/trusted-by/coldwell-banker.svg",
+  "Better Homes": "/trusted-by/better-homes.png",
+  "Max/It Realty": "/trusted-by/max-it-realty.png",
+  "Express Realty Prime": "/trusted-by/express-realty-prime.png",
+  "Keller Williams Realty of Greater Nassau": "/trusted-by/kw-greater-nassau.png",
+};
+
+function parseTrustedBy(raw: string): TrustedByEntry[] {
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const parts = line.split("|").map((s) => s.trim());
+      const agent = parts[0] ?? "";
+      const brokerage = parts[1] ?? "";
+      return { agent, brokerage, logo: BROKERAGE_LOGOS[brokerage] };
+    })
+    .filter((e) => e.agent);
+}
+
 export function TrustedBy() {
   const t = useT();
+  const parsed = parseTrustedBy(t("home.trusted_by_list"));
+  const entries = parsed.length ? parsed : TRUSTED_BY;
   const renderRow = (hidden: boolean) => (
     <>
-      {TRUSTED_BY.map((entry) => (
+      {entries.map((entry) => (
         <div
           key={entry.agent}
           className="flex items-center gap-3 shrink-0 mx-7 md:mx-10"
