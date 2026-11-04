@@ -7,6 +7,7 @@ const ROUTE_KEYS: Record<string, { title: string; description: string }> = {
   "/work": { title: "seo.work_title", description: "seo.work_desc" },
   "/branding": { title: "seo.branding_title", description: "seo.branding_desc" },
   "/real-estate-photography": { title: "seo.photo_title", description: "seo.photo_desc" },
+  "/real-estate-film": { title: "seo.film_title", description: "seo.film_desc" },
   "/about": { title: "seo.about_title", description: "seo.about_desc" },
   "/order": { title: "seo.order_title", description: "seo.order_desc" },
   "/privacy": { title: "seo.privacy_title", description: "seo.privacy_desc" },

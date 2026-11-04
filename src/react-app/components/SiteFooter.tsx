@@ -49,6 +49,9 @@ export default function SiteFooter() {
             <Link to="/real-estate-photography" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
               {t("footer.link_photography")}
             </Link>
+            <Link to="/real-estate-film" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
+              {t("footer.link_film")}
+            </Link>
             <Link to="/privacy" className="text-[13px] text-white/70 hover:text-[#c7ff00] transition-colors">
               {t("footer.link_privacy")}
             </Link>
