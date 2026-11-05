@@ -7,6 +7,7 @@ import WorkPage from "@/react-app/pages/Work";
 import BrandingPage from "./pages/Branding";
 import PhotographyPage from "./pages/Photography";
 import FilmPage from "./pages/Film";
+import { QueensPage, LongIslandPage } from "./pages/Locations";
 import PrivacyPage from "./pages/Privacy";
 import NotFoundPage from "./pages/NotFound";
 import AdminPage from "./pages/Admin";
@@ -51,6 +52,8 @@ export default function App() {
         <Route path="/branding" element={<BrandingPage />} />
         <Route path="/real-estate-photography" element={<PhotographyPage />} />
         <Route path="/real-estate-film" element={<FilmPage />} />
+        <Route path="/personal-branding-queens" element={<QueensPage />} />
+        <Route path="/personal-branding-long-island" element={<LongIslandPage />} />
         <Route path="/consultation" element={<Navigate to="/order?package=consultation" replace />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         {/* Hidden control panel: not linked anywhere on the public site. */}

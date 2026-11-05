@@ -49,6 +49,8 @@ const GROUP_ORDER = [
   "Branding page",
   "Photography page",
   "Film page",
+  "Queens page",
+  "Long Island page",
   "Booking page",
   "Work page",
   "About page",
