@@ -247,7 +247,7 @@ export const DEFAULT_COPY: CopyEntry[] = [
   { key: "branding.bc_eyebrow", group: "Branding page", label: "Brand content eyebrow", value: "Brand content" },
   { key: "branding.bc_copy", group: "Branding page", label: "Brand content copy", value: "Already have your brand but need professional content? We'll handle the production and deliver videos ready to post." },
   { key: "branding.bc_note", group: "Branding page", label: "Brand content note", value: "Content production only. Social media management is not included." },
-  { key: "branding.podcast_eyebrow", group: "Branding page", label: "Podcast eyebrow", value: "Podcast" },
+  { key: "branding.podcast_eyebrow", group: "Branding page", label: "Podcast eyebrow", value: "Personal Branding" },
   { key: "branding.podcast_copy", group: "Branding page", label: "Podcast copy", value: "One shoot at your location becomes a full podcast episode and a month of clips. We bring the whole production to you." },
   { key: "branding.podcast_note", group: "Branding page", label: "Podcast note", value: "Per episode. Content production only. Social media management is not included." },
   { key: "branding.start_eyebrow", group: "Branding page", label: "Not-sure eyebrow", value: "Not sure where to start?" },

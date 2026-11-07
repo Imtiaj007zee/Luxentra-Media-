@@ -361,7 +361,8 @@ export default function BrandingPage() {
               <div className="rounded-md bg-white/[0.03] border border-white/10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center hover:border-[#c7ff00]/40 transition-colors">
                 <div>
                   <p className="eyebrow text-[#c7ff00] mb-4">{t("branding.podcast_eyebrow")}</p>
-                  <h3 className="text-[26px] font-bold tracking-tight mb-3">{PODCAST.tagline}</h3>
+                  <h3 className="text-[34px] md:text-[40px] font-bold tracking-tight leading-none">{PODCAST.name}</h3>
+                  <p className="text-[19px] font-semibold text-[#c7ff00] mt-2 mb-3">{PODCAST.tagline}</p>
                   <p className="mb-2">
                     <span className="price-num text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
                       ${PODCAST.price.toLocaleString()}
