@@ -58,7 +58,6 @@ export default function BrandingPage() {
   const PACKAGES = brandingPlans.filter(
     (p) => p.id !== "brand-content" && p.id !== "podcast"
   );
-  const BRAND_CONTENT = getBrandingPlanById("brand-content")!;
   const PODCAST = getBrandingPlanById("podcast");
 
   const SHIFTS = useMemo(
@@ -353,45 +352,6 @@ export default function BrandingPage() {
           </Reveal>
         </div>
       </section>
-
-      {/* ── Brand Content ────────────────────────────────── */}
-      {BRAND_CONTENT && (
-        <section className="py-20 md:py-28">
-          <div className="max-w-[1200px] mx-auto px-6">
-            <Reveal>
-              <div className="rounded-md bg-white/[0.03] border border-white/10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center hover:border-[#c7ff00]/40 transition-colors">
-                <div>
-                  <p className="eyebrow text-[#c7ff00] mb-4">{t("branding.bc_eyebrow")}</p>
-                  <p className="mb-2">
-                    <span className="price-num text-[44px] md:text-[56px] font-bold tracking-[-0.03em]">
-                      ${BRAND_CONTENT.price.toLocaleString()}
-                    </span>
-                    <span className="text-white/45 text-[16px]"> /month</span>
-                  </p>
-                  <p className="text-[16px] text-white/60 leading-relaxed max-w-md">
-                    {t("branding.bc_copy")}
-                  </p>
-                  <Link to={`/order?package=${BRAND_CONTENT.id}`} className="btn-lime mt-8">
-                    {t("branding.choose")} {BRAND_CONTENT.name}{" "}
-                    <ArrowUpRight className="w-4 h-4 ml-1" />
-                  </Link>
-                </div>
-                <div>
-                  <ul className="space-y-3.5">
-                    {BRAND_CONTENT.features.map((f) => (
-                      <li key={f} className="flex items-start gap-3 text-[15px] text-white/75 leading-snug">
-                        <Check className="w-5 h-5 shrink-0 text-[#c7ff00]" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="text-[13.5px] text-white/40 mt-6">{t("branding.bc_note")}</p>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-      )}
 
       {/* ── Podcast ──────────────────────────────────────── */}
       {PODCAST && (
