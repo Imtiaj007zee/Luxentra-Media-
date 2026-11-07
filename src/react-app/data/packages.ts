@@ -156,6 +156,22 @@ export const BRANDING_PLANS: BrandingPlan[] = [
       "3-month minimum commitment",
     ],
   },
+  {
+    id: "podcast",
+    name: "Podcast",
+    price: 1900,
+    tagline: "One Shoot, A Month of Content",
+    desc: "For professionals who want a flagship show and a full month of content, from one shoot at your location.",
+    features: [
+      "1 full podcast episode, 40 to 90 minutes",
+      "Up to 10 short-form clips",
+      "90 minute session, full production brought to you",
+      "Two camera 4K filming, producer on set",
+      "Professional editing, captions on every clip",
+      "Episode thumbnail included",
+      "Ready to publish, ready to post",
+    ],
+  },
 ];
 
 export const getBrandingPlanById = (id: string | null | undefined): BrandingPlan | null =>
@@ -167,6 +183,7 @@ export const SERVICE_TYPES = [
   "Real Estate Photography",
   "Walkthrough / Cinematic Video",
   "Personal Branding",
+  "Podcast Production",
   "Drone Photos & Video",
   "3D Virtual Tour",
   "Custom Listing Flyer",

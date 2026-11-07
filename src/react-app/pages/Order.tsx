@@ -158,9 +158,11 @@ export default function OrderPage() {
   const discountAmount = !isConsultation ? DISCOUNT_CODES[enteredCode] ?? 0 : 0;
   const finalTotal = Math.max(0, totalPrice - discountAmount);
 
+  const planSuffix = (id?: string | null) => (id === "podcast" ? "/episode" : "/mo");
+
   const planLabel = () => {
     if (isConsultation) return t("order.summary_consult");
-    if (selectedBrandingData) return `${selectedBrandingData.name} · ${fmt(selectedBrandingData.price)}/mo`;
+    if (selectedBrandingData) return `${selectedBrandingData.name} · ${fmt(selectedBrandingData.price)}${planSuffix(selectedBrandingData.id)}`;
     if (selectedBundleData) return `${selectedBundleData.name} ${t("order.row_bundle_suffix").toLowerCase()} · ${fmt(selectedBundleData.price)}`;
     if (includeStandard) return `${standard?.name ?? t("order.plan_standard_name")} · ${fmt(standardPackagePrice)}`;
     return t("order.summary_no_plan");
@@ -217,7 +219,7 @@ export default function OrderPage() {
       const res = await fetch(ORDERS_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify({ form_type: "shoot", ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}/mo)` : "None", discount_code: discountAmount > 0 ? discountCode.trim().toUpperCase() : "None", total_price: fmt(finalTotal), _subject: `New Order: ${fmt(finalTotal)} from ${shootForm.name}` }),
+        body: JSON.stringify({ form_type: "shoot", ...shootForm, add_ons: selectedAddOnNames || "None", bundle: selectedBundleData ? `${selectedBundleData.name} (${fmt(selectedBundleData.price)})` : "None", branding_plan: selectedBrandingData ? `${selectedBrandingData.name} (${fmt(selectedBrandingData.price)}${planSuffix(selectedBrandingData.id)})` : "None", discount_code: discountAmount > 0 ? discountCode.trim().toUpperCase() : "None", total_price: fmt(finalTotal), _subject: `New Order: ${fmt(finalTotal)} from ${shootForm.name}` }),
       });
       if (res.ok) { setSubmitStatus("success"); resetAll(); }
       else setSubmitStatus("error");
@@ -461,7 +463,7 @@ export default function OrderPage() {
                                 <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">{plan.badge}</span>
                               )}
                             </h4>
-                            <span className="price-num font-semibold shrink-0">{fmt(plan.price)}<span className="text-white/45 text-[13px] font-normal">/mo</span></span>
+                            <span className="price-num font-semibold shrink-0">{fmt(plan.price)}<span className="text-white/45 text-[13px] font-normal">{planSuffix(plan.id)}</span></span>
                           </div>
                           <p className="text-[13px] text-white/40 mt-0.5">{plan.tagline}</p>
                         </div>
@@ -472,7 +474,7 @@ export default function OrderPage() {
                           <ul className="text-[14px] text-white/60 space-y-1.5">
                             {plan.features.map((f) => <li key={f}>• {f}</li>)}
                           </ul>
-                          <p className="text-[12.5px] text-white/40 mt-3">{t("order.plan_footnote")}</p>
+                          <p className="text-[12.5px] text-white/40 mt-3">{plan.id === "podcast" ? t("order.podcast_footnote") : t("order.plan_footnote")}</p>
                         </div>
                       )}
                     </div>
@@ -626,7 +628,7 @@ export default function OrderPage() {
                 <div className="space-y-2 text-[15px] mb-4">
                   {includeStandard && <div className="flex justify-between"><span className="text-white/60">{t("order.row_standard")}</span><span className="price-num font-medium">{fmt(standardPackagePrice)}</span></div>}
                   {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} {t("order.row_bundle_suffix")}</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
-                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name}{t("order.row_plan_suffix")}</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}/mo</span></div>}
+                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name}{selectedBrandingData.id === "podcast" ? "" : t("order.row_plan_suffix")}</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}{planSuffix(selectedBrandingData.id)}</span></div>}
                   {Array.from(selectedAddOns).map((id) => { const a = addOns.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.priceNum)}</span></div>; })}
                   {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">{t("order.staging_name")} ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="price-num font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>

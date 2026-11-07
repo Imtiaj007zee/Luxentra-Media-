@@ -33,6 +33,7 @@ export type SiteSettings = {
   price_branding_growth: number;
   price_branding_premium: number;
   price_branding_content: number;
+  price_podcast_episode: number;
 };
 
 // Hardcoded fallbacks. The live values come from the "Site Settings" tab of
@@ -57,6 +58,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   price_branding_growth: 5999,
   price_branding_premium: 7999,
   price_branding_content: 1800,
+  price_podcast_episode: 1900,
 };
 
 const CACHE_KEY = "lux_site_settings_v1";
@@ -171,6 +173,7 @@ const PLAN_PRICE_KEY: Record<string, keyof SiteSettings> = {
   growth: "price_branding_growth",
   premium: "price_branding_premium",
   "brand-content": "price_branding_content",
+  podcast: "price_podcast_episode",
 };
 
 export function useCatalog() {

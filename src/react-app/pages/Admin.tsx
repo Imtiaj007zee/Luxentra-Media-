@@ -49,6 +49,7 @@ const GROUPS: Group[] = [
       { key: "price_branding_growth", label: "Growth ($/mo)" },
       { key: "price_branding_premium", label: "Premium ($/mo)" },
       { key: "price_branding_content", label: "Brand Content ($/mo)" },
+      { key: "price_podcast_episode", label: "Podcast ($/episode)" },
     ],
   },
   {
