@@ -212,7 +212,7 @@ Personal branding Essential, $3,999 a month: 10 short-form videos, 5 carousels, 
 Personal branding Growth, $5,999 a month: 15 videos, 10 carousels, 30 stories, everything in Essential, plus a lead-generation funnel, a lead-capture page, and paid-ad strategy and management. 3-month minimum.
 Personal branding Premium, $7,999 a month: 20 videos, 15 carousels, 60 stories, everything in Growth, plus advanced funnel and retargeting, continuous testing, lead nurturing, priority support, and a 50 percent money-back guarantee if the agreed performance benchmark is not achieved, subject to campaign terms. 3-month minimum.
 Brand Content, $1,800 a month: 4 branding videos a month, strategy, scripting, filming, and editing, with 1 complimentary video in the first month.
-Podcast, $1,900 per episode: one 90-minute session at your location with the full production brought to you, 1 full podcast episode of 40 to 90 minutes, up to 10 short-form clips, two camera 4K filming with a producer on set, professional editing, captions on every clip, and an episode thumbnail. One shoot covers a month of content.
+Podcast, $1,900 per episode: one 90-minute session at your location with the full production brought to you, 1 full podcast episode of 40 to 90 minutes, up to 10 short-form clips, two to four cameras depending on the location and set, a producer on set, professional editing, captions on every clip, and an episode thumbnail. One shoot covers a month of content.
 We also do drone photos and video, 3D virtual tours, custom listing flyers, and virtual staging.
 The public offer is WELCOME25, which gives $25 off a booking. Never mention any other discount code.
 
