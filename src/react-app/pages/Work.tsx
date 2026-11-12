@@ -600,7 +600,7 @@ export default function WorkPage() {
       <section className="relative text-white py-24 md:py-32">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img
-            src="/brand/symbol-lime.png"
+            src="/brand/symbol-lime.webp"
             alt=""
             aria-hidden
             className="h-14 w-14 object-contain mx-auto mb-10"

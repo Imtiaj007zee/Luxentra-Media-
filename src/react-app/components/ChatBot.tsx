@@ -375,7 +375,7 @@ export default function ChatBot() {
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div className="flex items-center gap-2.5">
               <img
-                src="/brand/symbol-lime.png"
+                src="/brand/symbol-lime.webp"
                 alt="LuxEntra logo"
                 className="h-8 w-8 object-contain"
               />

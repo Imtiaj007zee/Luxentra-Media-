@@ -75,8 +75,8 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
             aria-label={t("nav.home_aria")}
             className="flex items-center gap-2 md:gap-3 shrink-0"
           >
-            <img src="/brand/symbol-lime.png" alt={t("nav.brand_alt")} className="h-8 w-8 md:h-9 md:w-9 object-contain" />
-            <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-5 md:h-6 object-contain" />
+            <img src="/brand/symbol-lime.webp" alt={t("nav.brand_alt")} className="h-8 w-8 md:h-9 md:w-9 object-contain" />
+            <img src="/brand/wordmark-lime.webp" alt="" aria-hidden className="h-5 md:h-6 object-contain" />
           </Link>
 
           {/* Desktop links */}

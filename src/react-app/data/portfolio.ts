@@ -18,7 +18,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "850 E 223 St",
     category: "Listing Films",
     src: "/work/850-e-223-st.mp4",
-    poster: "/work/posters/850-e-223-st.jpg",
+    poster: "/work/posters/850-e-223-st.webp",
     ratio: "portrait",
   },
   {
@@ -26,7 +26,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "2802 Miles Ave",
     category: "Listing Films",
     src: "/work/2802-miles-ave.mp4",
-    poster: "/work/posters/2802-miles-ave.jpg",
+    poster: "/work/posters/2802-miles-ave.webp",
     ratio: "portrait",
   },
   {
@@ -34,7 +34,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "25112 Maclay Ave",
     category: "Listing Films",
     src: "/work/25112-maclay-ave.mp4",
-    poster: "/work/posters/25112-maclay-ave.jpg",
+    poster: "/work/posters/25112-maclay-ave.webp",
     ratio: "portrait",
   },
   {
@@ -42,7 +42,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "3277 Park Side Place",
     category: "Listing Films",
     src: "/work/3277-park-side-place.mp4",
-    poster: "/work/posters/3277-park-side-place.jpg",
+    poster: "/work/posters/3277-park-side-place.webp",
     ratio: "portrait",
   },
   {
@@ -50,7 +50,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "324 Under Hill Ave",
     category: "Listing Films",
     src: "/work/324-under-hill-ave.mp4",
-    poster: "/work/posters/324-under-hill-ave.jpg",
+    poster: "/work/posters/324-under-hill-ave.webp",
     ratio: "portrait",
   },
   {
@@ -58,7 +58,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "3640 Palmer Ave",
     category: "Listing Films",
     src: "/work/3640-palmer-ave.mp4",
-    poster: "/work/posters/3640-palmer-ave.jpg",
+    poster: "/work/posters/3640-palmer-ave.webp",
     ratio: "portrait",
   },
   {
@@ -66,7 +66,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Kazi x CJ",
     category: "Listing Films",
     src: "/work/kazi-x-cj.mp4",
-    poster: "/work/posters/kazi-x-cj.jpg",
+    poster: "/work/posters/kazi-x-cj.webp",
     ratio: "portrait",
   },
   {
@@ -74,7 +74,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "7 Primrose Ave",
     category: "Listing Films",
     src: "/work/7-primrose-ave.mp4",
-    poster: "/work/posters/7-primrose-ave.jpg",
+    poster: "/work/posters/7-primrose-ave.webp",
     ratio: "portrait",
   },
   {
@@ -82,7 +82,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "7 Primrose Ave (Hook 3)",
     category: "Listing Films",
     src: "/work/7-primrose-ave-hook-3.mp4",
-    poster: "/work/posters/7-primrose-ave-hook-3.jpg",
+    poster: "/work/posters/7-primrose-ave-hook-3.webp",
     ratio: "portrait",
   },
   // ——— Personal Branding ———
@@ -91,7 +91,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "How I Sell",
     category: "Personal Branding",
     src: "/work/how-i-sale.mp4",
-    poster: "/work/posters/how-i-sale.jpg",
+    poster: "/work/posters/how-i-sale.webp",
     ratio: "portrait",
   },
   {
@@ -99,7 +99,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Sold It",
     category: "Personal Branding",
     src: "/work/sold-it.mp4",
-    poster: "/work/posters/sold-it.jpg",
+    poster: "/work/posters/sold-it.webp",
     ratio: "portrait",
   },
   {
@@ -107,7 +107,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Honk Me One More Time",
     category: "Personal Branding",
     src: "/work/honk-me-one-more-time.mp4",
-    poster: "/work/posters/honk-me-one-more-time.jpg",
+    poster: "/work/posters/honk-me-one-more-time.webp",
     ratio: "portrait",
   },
   {
@@ -115,7 +115,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "The Immigrant Story",
     category: "Personal Branding",
     src: "/work/the-immigrant-story.mp4",
-    poster: "/work/posters/the-immigrant-story.jpg",
+    poster: "/work/posters/the-immigrant-story.webp",
     ratio: "portrait",
   },
   {
@@ -123,7 +123,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "How I Do It All",
     category: "Personal Branding",
     src: "/work/how-i-do-it-all.mp4",
-    poster: "/work/posters/how-i-do-it-all.jpg",
+    poster: "/work/posters/how-i-do-it-all.webp",
     ratio: "portrait",
   },
   {
@@ -131,7 +131,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Truth Vs Myth",
     category: "Personal Branding",
     src: "/work/truth-vs-myth.mp4",
-    poster: "/work/posters/truth-vs-myth.jpg",
+    poster: "/work/posters/truth-vs-myth.webp",
     ratio: "portrait",
   },
   {
@@ -139,7 +139,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "I Just Need 30 Min",
     category: "Personal Branding",
     src: "/work/i-just-need-30-min.mp4",
-    poster: "/work/posters/i-just-need-30-min.jpg",
+    poster: "/work/posters/i-just-need-30-min.webp",
     ratio: "portrait",
   },
   {
@@ -147,7 +147,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Name The Real Problem",
     category: "Personal Branding",
     src: "/work/name-the-real-problem.mp4",
-    poster: "/work/posters/name-the-real-problem.jpg",
+    poster: "/work/posters/name-the-real-problem.webp",
     ratio: "portrait",
   },
   {
@@ -155,7 +155,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "AI Cannot",
     category: "Personal Branding",
     src: "/work/ai-cannot.mp4",
-    poster: "/work/posters/ai-cannot.jpg",
+    poster: "/work/posters/ai-cannot.webp",
     ratio: "portrait",
   },
   {
@@ -163,7 +163,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "We'll Talk You Out Of It",
     category: "Personal Branding",
     src: "/work/talk-you-out-of-it.mp4",
-    poster: "/work/posters/talk-you-out-of-it.jpg",
+    poster: "/work/posters/talk-you-out-of-it.webp",
     ratio: "portrait",
   },
   {
@@ -171,7 +171,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "More Than Opening Doors",
     category: "Personal Branding",
     src: "/work/more-than-opening-doors.mp4",
-    poster: "/work/posters/more-than-opening-doors.jpg",
+    poster: "/work/posters/more-than-opening-doors.webp",
     ratio: "portrait",
   },
   {
@@ -179,7 +179,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Don't Buy With Emotions",
     category: "Personal Branding",
     src: "/work/dont-buy-with-emotions.mp4",
-    poster: "/work/posters/dont-buy-with-emotions.jpg",
+    poster: "/work/posters/dont-buy-with-emotions.webp",
     ratio: "portrait",
   },
   {
@@ -187,7 +187,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "A Message To NY Realtors",
     category: "Personal Branding",
     src: "/work/message-to-ny-realtors.mp4",
-    poster: "/work/posters/message-to-ny-realtors.jpg",
+    poster: "/work/posters/message-to-ny-realtors.webp",
     ratio: "portrait",
   },
   {
@@ -195,7 +195,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Taking A Big Risk",
     category: "Personal Branding",
     src: "/work/taking-a-big-risk.mp4",
-    poster: "/work/posters/taking-a-big-risk.jpg",
+    poster: "/work/posters/taking-a-big-risk.webp",
     ratio: "portrait",
   },
   {
@@ -203,7 +203,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "The Biggest Purchase Of Your Life",
     category: "Personal Branding",
     src: "/work/biggest-purchase-of-your-life.mp4",
-    poster: "/work/posters/biggest-purchase-of-your-life.jpg",
+    poster: "/work/posters/biggest-purchase-of-your-life.webp",
     ratio: "portrait",
   },
   // ——— Brand Story ———
@@ -212,7 +212,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "The Dream Never Disappears",
     category: "Brand Story",
     src: "/work/the-dream-never-disappears.mp4",
-    poster: "/work/posters/the-dream-never-disappears.jpg",
+    poster: "/work/posters/the-dream-never-disappears.webp",
     ratio: "landscape",
   },
   {
@@ -220,7 +220,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "Home Central Capital",
     category: "Brand Story",
     src: "/work/home-central-capital.mp4",
-    poster: "/work/posters/home-central-capital.jpg",
+    poster: "/work/posters/home-central-capital.webp",
     ratio: "portrait",
   },
   {
@@ -228,7 +228,7 @@ export const PORTFOLIO: PortfolioItem[] = [
     title: "You Find the House",
     category: "Brand Story",
     src: "/work/you-find-the-house.mp4",
-    poster: "/work/posters/you-find-the-house.jpg",
+    poster: "/work/posters/you-find-the-house.webp",
     ratio: "portrait",
   },
 ];

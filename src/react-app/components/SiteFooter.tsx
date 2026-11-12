@@ -15,8 +15,8 @@ export default function SiteFooter() {
       <div className="max-w-[1280px] mx-auto px-6 py-14">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-10 border-b border-white/10">
           <Link to="/" className="flex items-center gap-3 shrink-0" aria-label={t("footer.home_aria")}>
-            <img src="/brand/symbol-lime.png" alt={t("footer.brand_alt")} className="h-9 w-9 object-contain" />
-            <img src="/brand/wordmark-lime.png" alt="" aria-hidden className="h-6 object-contain" />
+            <img src="/brand/symbol-lime.webp" alt={t("footer.brand_alt")} className="h-9 w-9 object-contain" />
+            <img src="/brand/wordmark-lime.webp" alt="" aria-hidden className="h-6 object-contain" />
           </Link>
 
           <p className="text-[15px] text-white/70">{t("footer.tagline")}</p>

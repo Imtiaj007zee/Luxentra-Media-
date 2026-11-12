@@ -279,7 +279,7 @@ export function ScrollDrivenLogo() {
   return (
     <img
       ref={imgRef}
-      src="/logo-mark-cutout.png"
+      src="/logo-mark-cutout.webp"
       alt=""
       aria-hidden="true"
       className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform"
@@ -620,24 +620,24 @@ type TrustedByEntry = {
 };
 
 const TRUSTED_BY: TrustedByEntry[] = [
-  { agent: "Imam Hassan", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
-  { agent: "Kathleen Collins", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
-  { agent: "Kazi Hussain", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.png" },
+  { agent: "Imam Hassan", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.webp" },
+  { agent: "Kathleen Collins", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.webp" },
+  { agent: "Kazi Hussain", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.webp" },
   { agent: "Andy Singh", brokerage: "Atlas One Capital" },
-  { agent: "Towhid Islam", brokerage: "Keller Williams Legendary", logo: "/trusted-by/kw-legendary.png" },
-  { agent: "Mohammad Kamal", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.png" },
-  { agent: "Maruf Rahman", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
-  { agent: "Kabir H Munshi", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
+  { agent: "Towhid Islam", brokerage: "Keller Williams Legendary", logo: "/trusted-by/kw-legendary.webp" },
+  { agent: "Mohammad Kamal", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.webp" },
+  { agent: "Maruf Rahman", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.webp" },
+  { agent: "Kabir H Munshi", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.webp" },
   { agent: "MB Chowdhury", brokerage: "Coldwell Banker American Homes", logo: "/trusted-by/coldwell-banker.svg" },
-  { agent: "Chironjit Ghosh", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.png" },
-  { agent: "Najmus Sakib Salam", brokerage: "Better Homes", logo: "/trusted-by/better-homes.png" },
-  { agent: "Mahtab Bhuiyan", brokerage: "Max/It Realty", logo: "/trusted-by/max-it-realty.png" },
-  { agent: "Niloy Das", brokerage: "Express Realty Prime", logo: "/trusted-by/express-realty-prime.png" },
-  { agent: "Nazmus Sakib", brokerage: "Keller Williams Realty of Greater Nassau", logo: "/trusted-by/kw-greater-nassau.png" },
-  { agent: "Wasif Richard", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
-  { agent: "Tahmid Rahman", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.png" },
-  { agent: "Shenu Zaman", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.png" },
-  { agent: "Mofizul Chowdhury", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.png" },
+  { agent: "Chironjit Ghosh", brokerage: "Home Central Capital", logo: "/trusted-by/home-central-capital.webp" },
+  { agent: "Najmus Sakib Salam", brokerage: "Better Homes", logo: "/trusted-by/better-homes.webp" },
+  { agent: "Mahtab Bhuiyan", brokerage: "Max/It Realty", logo: "/trusted-by/max-it-realty.webp" },
+  { agent: "Niloy Das", brokerage: "Express Realty Prime", logo: "/trusted-by/express-realty-prime.webp" },
+  { agent: "Nazmus Sakib", brokerage: "Keller Williams Realty of Greater Nassau", logo: "/trusted-by/kw-greater-nassau.webp" },
+  { agent: "Wasif Richard", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.webp" },
+  { agent: "Tahmid Rahman", brokerage: "Exit Realty Prime", logo: "/trusted-by/exit-realty-prime.webp" },
+  { agent: "Shenu Zaman", brokerage: "Exit Realty Dkc", logo: "/trusted-by/exit-realty-dkc.webp" },
+  { agent: "Mofizul Chowdhury", brokerage: "RE/MAX Luxe", logo: "/trusted-by/remax-luxe.webp" },
 ];
 
 // The strip list itself is editable in the backstage (Homepage words,
@@ -645,16 +645,16 @@ const TRUSTED_BY: TrustedByEntry[] = [
 // stay matched to the brokerage name here in code. If the backstage list
 // is ever empty or unreadable, the notebook list above is the fallback.
 const BROKERAGE_LOGOS: Record<string, string> = {
-  "Exit Realty Dkc": "/trusted-by/exit-realty-dkc.png",
-  "RE/MAX Luxe": "/trusted-by/remax-luxe.png",
-  "Keller Williams Legendary": "/trusted-by/kw-legendary.png",
-  "Home Central Capital": "/trusted-by/home-central-capital.png",
-  "Exit Realty Prime": "/trusted-by/exit-realty-prime.png",
+  "Exit Realty Dkc": "/trusted-by/exit-realty-dkc.webp",
+  "RE/MAX Luxe": "/trusted-by/remax-luxe.webp",
+  "Keller Williams Legendary": "/trusted-by/kw-legendary.webp",
+  "Home Central Capital": "/trusted-by/home-central-capital.webp",
+  "Exit Realty Prime": "/trusted-by/exit-realty-prime.webp",
   "Coldwell Banker American Homes": "/trusted-by/coldwell-banker.svg",
-  "Better Homes": "/trusted-by/better-homes.png",
-  "Max/It Realty": "/trusted-by/max-it-realty.png",
-  "Express Realty Prime": "/trusted-by/express-realty-prime.png",
-  "Keller Williams Realty of Greater Nassau": "/trusted-by/kw-greater-nassau.png",
+  "Better Homes": "/trusted-by/better-homes.webp",
+  "Max/It Realty": "/trusted-by/max-it-realty.webp",
+  "Express Realty Prime": "/trusted-by/express-realty-prime.webp",
+  "Keller Williams Realty of Greater Nassau": "/trusted-by/kw-greater-nassau.webp",
 };
 
 function parseTrustedBy(raw: string): TrustedByEntry[] {
@@ -1407,7 +1407,7 @@ export default function HomePage() {
       {/* ── CTA ──────────────────────────────────────────── */}
       <section id="about" className="bg-[#0b0b0b] text-white py-24 md:py-32 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
-          <img src="/brand/symbol-lime.png" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
+          <img src="/brand/symbol-lime.webp" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">
             {t("home.final_h2")}
           </h2>
