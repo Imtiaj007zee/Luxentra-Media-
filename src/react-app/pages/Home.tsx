@@ -131,10 +131,15 @@ function FilmCard({
   item,
   className,
   preview,
+  loadVideo = true,
 }: {
   item: PortfolioItem;
   className?: string;
   preview?: boolean;
+  // False until the page has settled: the video gets no src until then,
+  // so 17 clips do not crowd out the first paint. Defaults to true so a
+  // card used outside the strip still loads its preview.
+  loadVideo?: boolean;
 }) {
   const previewRef = useRef<HTMLVideoElement | null>(null);
 
@@ -194,11 +199,13 @@ function FilmCard({
                 el.playbackRate = 1;
               }
             }}
-            // Ring cards play a dedicated 10-second preview clip (720p,
-            // silent, a couple of MB) instead of the full film: light
+            // Ring cards play a dedicated 10-second preview clip (480p,
+            // silent, about a MB) instead of the full film: light
             // enough that every card actually autoplays and loops
             // forever. The card link still opens the full film on /work.
-            src={`/work/previews/${item.slug}.mp4`}
+            // The src arrives only once loadVideo is true (see
+            // WorkStrip): until then the card shows its poster.
+            src={loadVideo ? `/work/previews/${item.slug}.mp4` : undefined}
             autoPlay
             muted
             loop
@@ -302,6 +309,27 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
   const step = 360 / slots.length;
   const radius = Math.round((170 * 1.22) / Math.tan(Math.PI / slots.length));
   const [stripInView, setStripInView] = useState(false);
+  const [videosReady, setVideosReady] = useState(false);
+  // Preview videos wait until the page has settled before they start
+  // downloading: 17 clips fetching at once crowd out the first paint on
+  // a slow connection. The ring shows posters until then, then comes
+  // alive exactly as before. The timeout is insurance for a hung
+  // subresource holding the load event hostage; the readyState check
+  // covers arriving here by client-side navigation, where load has
+  // already fired long ago.
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setVideosReady(true);
+      return;
+    }
+    const onLoad = () => setVideosReady(true);
+    window.addEventListener("load", onLoad);
+    const fallback = window.setTimeout(() => setVideosReady(true), 5000);
+    return () => {
+      window.removeEventListener("load", onLoad);
+      window.clearTimeout(fallback);
+    };
+  }, []);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const ringRef = useRef<HTMLDivElement | null>(null);
   const phiRef = useRef(0);
@@ -434,6 +462,7 @@ export function WorkStrip({ bare = false }: { bare?: boolean } = {}) {
                 item={item}
                 className="w-full h-full"
                 preview={stripInView}
+                loadVideo={videosReady}
               />
             </div>
           ))}
