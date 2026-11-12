@@ -15,6 +15,10 @@ const ROUTE_KEYS: Record<string, { title: string; description: string }> = {
   "/privacy": { title: "seo.privacy_title", description: "seo.privacy_desc" },
 };
 
+// Pages that should never appear in search results: the admin login and
+// the preview route, which is a duplicate of the homepage.
+const NOINDEX_ROUTES = new Set(["/preview-home", "/backstage"]);
+
 /** Keeps <title>, meta description, and canonical URL in sync with the route. */
 export default function PageMeta() {
   const { pathname } = useLocation();
@@ -40,7 +44,23 @@ export default function PageMeta() {
       canonical.rel = "canonical";
       document.head.appendChild(canonical);
     }
-    canonical.href = `${siteUrl}${pathname}`;
+    // /preview-home is a duplicate of the homepage, so it points at /
+    // instead of itself.
+    const canonicalPath = pathname === "/preview-home" ? "/" : pathname;
+    canonical.href = `${siteUrl}${canonicalPath}`;
+
+    // Robots: keep the admin page and the duplicate homepage out of search.
+    let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    if (NOINDEX_ROUTES.has(pathname)) {
+      if (!robots) {
+        robots = document.createElement("meta");
+        robots.name = "robots";
+        document.head.appendChild(robots);
+      }
+      robots.content = "noindex, nofollow";
+    } else if (robots) {
+      robots.remove();
+    }
   }, [pathname, t, siteUrl]);
 
   return null;

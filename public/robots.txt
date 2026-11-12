@@ -12,5 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /backstage
 
 Sitemap: https://www.luxentramedia.com/sitemap.xml
