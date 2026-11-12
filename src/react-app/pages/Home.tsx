@@ -253,12 +253,15 @@ export function ScrollDrivenLogo() {
       // on every viewport. (The old hero-first layout interpolated
       // toward this state, which left the mark low and oversized on
       // tablet and phone sizes.)
-      // The layout size IS the painted size (300 mobile, 392 desktop,
-      // set by the size classes): no scale in the transform. Same
-      // pixels as before, 135vmin scaled down came out at exactly
-      // this size, but the page's largest-paint measurement reads
-      // layout size, and the oversized box was what it measured.
-      const size = vw >= 768 ? 392 : 300;
+      // The layout box is HALF the painted size (150 mobile, 196
+      // desktop), scaled 2x in the transform. Same pixels on screen:
+      // 300 mobile, 392 desktop, centered on the stage exactly as
+      // before. The small box matters because the page's largest-paint
+      // measurement reads the box, and at 300px the mark still edged
+      // out the mobile film cards (240x340), so it kept being
+      // measured instead of the films. At half size the front film
+      // is the largest paint, which is the real content.
+      const size = vw >= 768 ? 196 : 150;
       const centerY = stageRect.top + stageRect.height / 2;
       // True neon at low strength: a calm tint behind the ring.
       let opacity = 0.15;
@@ -267,7 +270,7 @@ export function ScrollDrivenLogo() {
         opacity *= Math.max(0, stageRect.bottom / (vh * 0.2));
       }
       img.style.opacity = `${opacity}`;
-      img.style.transform = `translate(-50%, ${centerY - size / 2}px)`;
+      img.style.transform = `translate(-50%, ${centerY - size / 2}px) scale(2)`;
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -288,7 +291,7 @@ export function ScrollDrivenLogo() {
       src="/logo-mark-cutout.webp"
       alt=""
       aria-hidden="true"
-      className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform w-[300px] h-[300px] md:w-[392px] md:h-[392px]"
+      className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform w-[150px] h-[150px] md:w-[196px] md:h-[196px]"
       style={{
         opacity: 0,
       }}
