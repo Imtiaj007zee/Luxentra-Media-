@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowUpRight, Check, Play } from "lucide-react";
 import SiteNav from "@/react-app/components/SiteNav";
@@ -235,7 +235,9 @@ function FilmCard({
 export function ScrollDrivenLogo() {
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  useEffect(() => {
+  // Layout effect, not a plain effect: the mark is positioned and
+  // visible before the first paint, never one frame late.
+  useLayoutEffect(() => {
     const img = imgRef.current;
     if (!img) return;
     let raf = 0;
@@ -251,7 +253,11 @@ export function ScrollDrivenLogo() {
       // on every viewport. (The old hero-first layout interpolated
       // toward this state, which left the mark low and oversized on
       // tablet and phone sizes.)
-      const heroSize = 1.35 * Math.min(vw, vh);
+      // The layout size IS the painted size (300 mobile, 392 desktop,
+      // set by the size classes): no scale in the transform. Same
+      // pixels as before, 135vmin scaled down came out at exactly
+      // this size, but the page's largest-paint measurement reads
+      // layout size, and the oversized box was what it measured.
       const size = vw >= 768 ? 392 : 300;
       const centerY = stageRect.top + stageRect.height / 2;
       // True neon at low strength: a calm tint behind the ring.
@@ -261,7 +267,7 @@ export function ScrollDrivenLogo() {
         opacity *= Math.max(0, stageRect.bottom / (vh * 0.2));
       }
       img.style.opacity = `${opacity}`;
-      img.style.transform = `translate(-50%, ${centerY - heroSize / 2}px) scale(${size / heroSize})`;
+      img.style.transform = `translate(-50%, ${centerY - size / 2}px)`;
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -282,13 +288,8 @@ export function ScrollDrivenLogo() {
       src="/logo-mark-cutout.webp"
       alt=""
       aria-hidden="true"
-      // This image is the page's largest paint: tell the browser it
-      // matters most. (It is also preloaded from index.html.)
-      fetchPriority="high"
-      className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform"
+      className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform w-[300px] h-[300px] md:w-[392px] md:h-[392px]"
       style={{
-        width: "135vmin",
-        height: "135vmin",
         opacity: 0,
       }}
     />
