@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Self-hosted fonts. The Google Fonts stylesheet was render-blocking
+   (third-party, ~750ms on the critical path). Same files, same
+   weights, served from this origin. Both are variable fonts: Inter
+   covers 100-900, Syne covers 400-800. */
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Syne";
+  src: url("/fonts/syne-latin.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

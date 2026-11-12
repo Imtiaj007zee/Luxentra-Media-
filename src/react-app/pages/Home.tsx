@@ -282,6 +282,9 @@ export function ScrollDrivenLogo() {
       src="/logo-mark-cutout.webp"
       alt=""
       aria-hidden="true"
+      // This image is the page's largest paint: tell the browser it
+      // matters most. (It is also preloaded from index.html.)
+      fetchPriority="high"
       className="pointer-events-none fixed left-1/2 top-0 z-[1] select-none object-contain will-change-transform"
       style={{
         width: "135vmin",
