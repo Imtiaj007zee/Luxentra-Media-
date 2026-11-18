@@ -162,7 +162,7 @@ export default function OrderPage() {
 
   const planLabel = () => {
     if (isConsultation) return t("order.summary_consult");
-    if (selectedBrandingData) return `${selectedBrandingData.name} · ${fmt(selectedBrandingData.price)}${planSuffix(selectedBrandingData.id)}`;
+    if (selectedBrandingData) return selectedBrandingData.id === "podcast" ? `${selectedBrandingData.name} · Per episode` : `${selectedBrandingData.name} · Custom plan`;
     if (selectedBundleData) return `${selectedBundleData.name} ${t("order.row_bundle_suffix").toLowerCase()} · ${fmt(selectedBundleData.price)}`;
     if (includeStandard) return `${standard?.name ?? t("order.plan_standard_name")} · ${fmt(standardPackagePrice)}`;
     return t("order.summary_no_plan");
@@ -352,7 +352,7 @@ export default function OrderPage() {
                 {planLabel()}
                 {!isConsultation && addOnCount > 0 && <span className="text-white/40"> · {t("order.summary_addons", { n: addOnCount })}</span>}
               </span>
-              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? t("order.summary_free") : fmt(finalTotal)}</span>
+              <span className="price-num text-[17px] font-semibold shrink-0">{isConsultation ? t("order.summary_free") : selectedBrandingData ? "Custom" : fmt(finalTotal)}</span>
             </div>
           )}
 
@@ -463,7 +463,11 @@ export default function OrderPage() {
                                 <span className="ml-2 text-[11px] font-bold uppercase tracking-[0.12em] bg-[#c7ff00] text-black px-2 py-0.5 rounded-full align-middle">{plan.badge}</span>
                               )}
                             </h4>
-                            <span className="price-num font-semibold shrink-0">{fmt(plan.price)}<span className="text-white/45 text-[13px] font-normal">{planSuffix(plan.id)}</span></span>
+                            {plan.id === "podcast" ? (
+                              <span className="text-white/50 text-[13px] font-normal shrink-0">Per episode</span>
+                            ) : (
+                              <span className="text-white/50 text-[13px] font-normal shrink-0">Custom plan</span>
+                            )}
                           </div>
                           <p className="text-[13px] text-white/40 mt-0.5">{plan.tagline}</p>
                         </div>
@@ -628,15 +632,15 @@ export default function OrderPage() {
                 <div className="space-y-2 text-[15px] mb-4">
                   {includeStandard && <div className="flex justify-between"><span className="text-white/60">{t("order.row_standard")}</span><span className="price-num font-medium">{fmt(standardPackagePrice)}</span></div>}
                   {selectedBundleData && <div className="flex justify-between"><span className="text-white/60">{selectedBundleData.name} {t("order.row_bundle_suffix")}</span><span className="price-num font-medium">{fmt(selectedBundleData.price)}</span></div>}
-                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name}{selectedBrandingData.id === "podcast" ? "" : t("order.row_plan_suffix")}</span><span className="price-num font-medium">{fmt(selectedBrandingData.price)}{planSuffix(selectedBrandingData.id)}</span></div>}
+                  {selectedBrandingData && <div className="flex justify-between"><span className="text-white/60">{selectedBrandingData.name}{selectedBrandingData.id === "podcast" ? "" : t("order.row_plan_suffix")}</span><span className="text-white/50 font-medium">{selectedBrandingData.id === "podcast" ? "Per episode" : "Custom plan"}</span></div>}
                   {Array.from(selectedAddOns).map((id) => { const a = addOns.find((x) => x.id === id); if (!a) return null; return <div key={id} className="flex justify-between"><span className="text-white/60">{a.name}</span><span className="price-num font-medium">{fmt(a.priceNum)}</span></div>; })}
                   {selectedStagingTier && <div className="flex justify-between"><span className="text-white/60">{t("order.staging_name")} ({stagingTiers.find((t) => t.id === selectedStagingTier)?.label})</span><span className="price-num font-medium">{fmt(stagingPrice)}</span></div>}
                 </div>
                 <div className="pt-4 border-t border-white/15">
-                  {discountAmount > 0 && (
+                  {discountAmount > 0 && !selectedBrandingData && (
                     <div className="flex justify-between text-[15px] mb-2"><span className="text-[#c7ff00]">{t("order.row_discount", { code: enteredCode })}</span><span className="price-num font-medium text-[#c7ff00]">−{fmt(discountAmount)}</span></div>
                   )}
-                  <div className="flex justify-between text-[21px] font-semibold"><span>{t("order.row_total")}</span><span className="price-num">{fmt(finalTotal)}</span></div>
+                  <div className="flex justify-between text-[21px] font-semibold"><span>{t("order.row_total")}</span><span className="price-num">{selectedBrandingData ? "Custom" : fmt(finalTotal)}</span></div>
                 </div>
                 <button type="button" onClick={() => goToLabel(0)} className="link-lime !text-[14px] mt-4">{t("order.change")}</button>
               </div>
@@ -720,7 +724,7 @@ export default function OrderPage() {
                     <ArrowLeft className="w-5 h-5 mr-1" /> {t("order.back_btn")}
                   </Button>
                   <Button type="submit" disabled={isSubmitting} className="flex-1 h-14 text-[17px] rounded-full">
-                    {isSubmitting ? t("order.sending") : t("order.submit", { total: fmt(finalTotal) })}
+                    {isSubmitting ? t("order.sending") : t("order.submit", { total: selectedBrandingData ? "Custom" : fmt(finalTotal) })}
                   </Button>
                 </div>
                 <p className="flex items-center justify-center gap-2 text-center text-[14px] text-white/45">
