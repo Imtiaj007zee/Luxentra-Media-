@@ -172,7 +172,6 @@ const PLAN_PRICE_KEY: Record<string, keyof SiteSettings> = {
   essential: "price_branding_essential",
   growth: "price_branding_growth",
   premium: "price_branding_premium",
-  "brand-content": "price_branding_content",
   podcast: "price_podcast_episode",
 };
 

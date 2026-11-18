@@ -140,20 +140,6 @@ export const BRANDING_PLANS: BrandingPlan[] = [
     ],
   },
   {
-    id: "brand-content",
-    name: "Brand Content",
-    price: 1800,
-    tagline: "Content, ready to post",
-    desc: "Already have your brand but need professional content? We'll handle the production and deliver videos ready to post.",
-    features: [
-      "4 branding videos per month",
-      "Strategy, scripting, filming, and editing",
-      "1 complimentary video in your first month",
-      "15% off additional services",
-      "3-month minimum commitment",
-    ],
-  },
-  {
     id: "podcast",
     name: "Podcast",
     price: 1900,
