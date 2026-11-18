@@ -3,30 +3,11 @@ import { Link } from "react-router";
 import { ArrowRight, X } from "lucide-react";
 import { useT } from "@/react-app/lib/siteContent";
 
-const SESSION_KEY = "luxentra_service_picker_seen_v2";
 const OPEN_EVENT = "luxentra:open-service-picker";
 
 /** Opens the service picker from anywhere (e.g. the hero trigger button). */
 export function openServicePicker() {
   window.dispatchEvent(new CustomEvent(OPEN_EVENT));
-}
-
-function hasSeen(): boolean {
-  try {
-    // localStorage (not sessionStorage): the auto-popup shows at most once
-    // per visitor, not once per tab session.
-    return localStorage.getItem(SESSION_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-function markSeen() {
-  try {
-    localStorage.setItem(SESSION_KEY, "1");
-  } catch {
-    /* ignore */
-  }
 }
 
 function OptionCard({
@@ -131,31 +112,15 @@ export default function ServicePickerModal() {
     },
   ];
 
-  // Auto-popup: once per visitor, after the visitor scrolls ~50% past the hero.
-  // A manual open (openServicePicker) never counts against the auto-popup budget.
+  // Manual open only (the "Find my service" button dispatches the event).
+  // The picker used to auto-pop on scroll, which interrupted first-time
+  // visitors alongside the discount popup. It no longer opens itself.
   useEffect(() => {
-    let triggered = false;
-    const onScroll = () => {
-      if (triggered || hasSeen()) return;
-      const hero = document.getElementById("hero");
-      if (!hero) return;
-      const rect = hero.getBoundingClientRect();
-      const heroTop = rect.top + window.scrollY;
-      if (window.scrollY >= heroTop + rect.height * 0.5) {
-        triggered = true;
-        markSeen();
-        setOpen(true);
-      }
-    };
-    // Manual opens never consume the auto-popup's
-    // once-per-visitor budget — the scroll trigger stays alive.
     const onManualOpen = () => {
       setOpen(true);
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener(OPEN_EVENT, onManualOpen);
     return () => {
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener(OPEN_EVENT, onManualOpen);
     };
   }, []);

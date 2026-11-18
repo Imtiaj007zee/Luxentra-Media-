@@ -133,12 +133,16 @@ export default function ChatBot() {
     }
   }, []);
 
-  // "Ask anything" pop-up above the chat button. It is permanent: it pops
-  // in a few seconds after the page loads and stays there whenever the
-  // chat is closed.
+  // "Ask anything" pop-up above the chat button. It pops in a few seconds
+  // after the page loads, then fades away on its own, so it draws the
+  // eye once without sitting on top of page content forever.
   useEffect(() => {
-    const tmr = window.setTimeout(() => setHintVisible(true), 2500);
-    return () => window.clearTimeout(tmr);
+    const show = window.setTimeout(() => setHintVisible(true), 2500);
+    const hide = window.setTimeout(() => setHintVisible(false), 12500);
+    return () => {
+      window.clearTimeout(show);
+      window.clearTimeout(hide);
+    };
   }, []);
 
   useEffect(() => {

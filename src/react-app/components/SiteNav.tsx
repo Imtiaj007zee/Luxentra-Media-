@@ -60,7 +60,7 @@ export default function SiteNav({ topOffset = 0 }: { topOffset?: number }) {
         style={{ top: topOffset + (scrolled ? 8 : 12) }}
       >
         <nav
-          className={`flex items-center justify-between pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)] transition-all duration-300 ${
+          className={`flex items-center justify-between pl-4 pr-2 md:pl-5 md:pr-2 rounded-full border border-white/15 bg-[#0b0b0b]/85 backdrop-blur-xl shadow-[0_10px_40px_rgba(0,0,0,0.45)] transition-all duration-300 ${
             scrolled ? "h-11 md:h-12" : "h-12 md:h-14"
           }`}
         >

@@ -99,7 +99,7 @@ export default function HomePreviewPage() {
 
       <FaqSection />
 
-      <section id="about" className="relative bg-transparent text-white py-24 md:py-32 scroll-mt-16">
+      <section id="about" className="relative bg-transparent text-white py-16 md:py-24 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img src="/brand/symbol-lime.webp" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">

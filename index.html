@@ -55,8 +55,30 @@
       }
     </script>
   </head>
-  <body>
-    <div id="root"></div>
+  <body style="margin: 0; background: #0b0b0b">
+    <div id="root">
+      <!-- Loading splash: shows instantly while the app bundle loads, so
+           the first impression is the brand, not a blank screen. React
+           replaces this whole block when it mounts. -->
+      <div
+        style="min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: #0b0b0b;"
+      >
+        <div style="position: relative; width: 54px; height: 54px;">
+          <div style="position: absolute; inset: 0; transform: rotate(45deg); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 54px; height: 12px; border-radius: 6px; background: #c7ff00;"></div>
+          </div>
+          <div style="position: absolute; inset: 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 54px; height: 12px; border-radius: 6px; background: #c7ff00;"></div>
+          </div>
+        </div>
+        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 0.35em; color: #c7ff00; padding-left: 0.35em;">
+          LUXENTRA
+        </div>
+        <div style="font-family: Arial, Helvetica, sans-serif; font-size: 11px; letter-spacing: 0.5em; color: rgba(255,255,255,0.45); padding-left: 0.5em; margin-top: -14px;">
+          MEDIA
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/react-app/main.tsx"></script>
   </body>
 </html>

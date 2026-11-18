@@ -130,7 +130,7 @@ export default function AboutPage() {
       ))}
 
       {/* CTA */}
-      <section className="relative text-white py-24 md:py-32">
+      <section className="relative text-white py-16 md:py-24">
         <div className="max-w-[820px] mx-auto px-6 text-center">
           <h2 className="text-[40px] md:text-[56px] font-semibold tracking-[-0.02em] leading-tight mb-5">
             {t("about.cta_h2")}

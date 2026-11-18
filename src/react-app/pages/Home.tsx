@@ -682,34 +682,44 @@ export function TrustedBy() {
   const t = useT();
   const parsed = parseTrustedBy(t("home.trusted_by_list"));
   const entries = parsed.length ? parsed : TRUSTED_BY;
-  const renderRow = (hidden: boolean) => (
-    <>
-      {entries.map((entry) => (
-        <div
-          key={entry.agent}
-          className="flex items-center gap-3 shrink-0 mx-7 md:mx-10"
-          aria-hidden={hidden || undefined}
-        >
-          {entry.logo && (
-            <img
-              src={entry.logo}
-              alt={entry.brokerage}
-              className="h-8 md:h-10 w-auto object-contain opacity-90"
-              draggable={false}
-            />
-          )}
-          <span className="flex flex-col leading-tight">
-            <span className="text-[15px] md:text-base font-bold text-white whitespace-nowrap">
-              {entry.agent}
-            </span>
-            <span className="text-[11px] md:text-xs font-medium text-white/55 whitespace-nowrap">
-              {entry.brokerage}
-            </span>
-          </span>
-        </div>
-      ))}
-    </>
-  );
+  // Each brokerage's logo shows once, beside its first agent in the row.
+  // Agents after that show name and brokerage text only, so the strip
+  // does not repeat the same logo four times.
+  const renderRow = (hidden: boolean) => {
+    const seenBrokerages = new Set<string>();
+    return (
+      <>
+        {entries.map((entry) => {
+          const showLogo = !!entry.logo && !seenBrokerages.has(entry.brokerage);
+          if (entry.brokerage) seenBrokerages.add(entry.brokerage);
+          return (
+            <div
+              key={entry.agent}
+              className="flex items-center gap-3 shrink-0 mx-7 md:mx-10"
+              aria-hidden={hidden || undefined}
+            >
+              {showLogo && entry.logo && (
+                <img
+                  src={entry.logo}
+                  alt={entry.brokerage}
+                  className="h-8 md:h-10 w-auto object-contain opacity-90"
+                  draggable={false}
+                />
+              )}
+              <span className="flex flex-col leading-tight">
+                <span className="text-[15px] md:text-base font-bold text-white whitespace-nowrap">
+                  {entry.agent}
+                </span>
+                <span className="text-[11px] md:text-xs font-medium text-white/55 whitespace-nowrap">
+                  {entry.brokerage}
+                </span>
+              </span>
+            </div>
+          );
+        })}
+      </>
+    );
+  };
   return (
     <section aria-label={t("home.trusted_by_label")} className="relative bg-transparent text-white overflow-hidden py-10 md:py-14">
       <p className="eyebrow text-white/50 text-center mb-8 md:mb-10">
@@ -771,7 +781,7 @@ export function ServicesGrid() {
   const t = useT();
   const SERVICES = useServices(t);
   return (
-    <section id="services" className="relative bg-transparent text-white py-20 md:py-28 scroll-mt-16">
+    <section id="services" className="relative bg-transparent text-white py-14 md:py-20 scroll-mt-16">
       <div className="max-w-[1200px] mx-auto px-6">
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-12">
           {t("home.services_h2a")}
@@ -832,7 +842,7 @@ export function ListingEssentials() {
     [t]
   );
   return (
-    <section id="pricing" className="relative bg-transparent text-white py-20 md:py-28 scroll-mt-16">
+    <section id="pricing" className="relative bg-transparent text-white py-14 md:py-20 scroll-mt-16">
       <div className="max-w-[1200px] mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
         <div>
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-6">
@@ -882,7 +892,7 @@ export function Bundles() {
   const [activePackage, setActivePackage] = useState(defaultPackage);
   return (
     <section
-      className="relative bg-transparent text-white py-20 md:py-28"
+      className="relative bg-transparent text-white py-14 md:py-20"
       onMouseLeave={() => setActivePackage(defaultPackage)}
     >
       <div className="max-w-[1200px] mx-auto px-6">
@@ -965,7 +975,7 @@ export function Bundles() {
 export function CustomCTA() {
   const t = useT();
   return (
-    <section className="relative bg-transparent text-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-14 md:py-20">
       <div className="max-w-[1200px] mx-auto px-6 text-center">
         <h2 className="text-[32px] md:text-[48px] font-bold tracking-[-0.03em] leading-tight mb-5">
           {t("home.custom_h2")}
@@ -992,7 +1002,7 @@ export function AddOns() {
   const t = useT();
   const addOns = useAddOns();
   return (
-    <section className="relative bg-transparent text-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-14 md:py-20">
       <div className="max-w-[1200px] mx-auto px-6">
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-5">
           {t("home.addons_h2a")}
@@ -1036,7 +1046,7 @@ export function AddOns() {
 export function WhyLuxEntra() {
   const t = useT();
   return (
-    <section className="relative bg-transparent text-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-14 md:py-20">
       <div className="max-w-[1200px] mx-auto px-6">
         <p className="eyebrow text-[#c7ff00] mb-6">{t("home.why_eyebrow")}</p>
         <h2 className="text-[38px] md:text-[60px] font-bold tracking-[-0.03em] leading-[1.08] mb-10 max-w-4xl">
@@ -1073,7 +1083,7 @@ export function ProcessSteps() {
   const t = useT();
   const steps = useProcessSteps(t);
   return (
-    <section className="relative bg-transparent text-white py-20 md:py-28">
+    <section className="relative bg-transparent text-white py-14 md:py-20">
       <div className="max-w-[1200px] mx-auto px-6">
         <p className="eyebrow text-[#c7ff00] mb-4">{t("home.process_eyebrow")}</p>
         <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-14">
@@ -1133,11 +1143,13 @@ function useImpactMetrics() {
         desc: t("home.metric2_desc"),
       },
       {
-        id: "success-rate",
-        value: settings.stat_success_rate || 0,
+        // Third gauge is the delivery promise, a fixed fact, not a
+        // success rate nobody can verify. The old rate is retired.
+        id: "delivery-time",
+        value: 24,
         decimals: 0,
         prefix: "",
-        suffix: "%+",
+        suffix: " hr",
         ring: 100,
         label: t("home.metric3_label"),
         desc: t("home.metric3_desc"),
@@ -1147,29 +1159,10 @@ function useImpactMetrics() {
   );
 }
 
-function useCountUp(target: number, decimals: number, start: boolean, duration = 1800) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!start) {
-      setVal(0);
-      return;
-    }
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVal(target);
-      return;
-    }
-    let raf = 0;
-    const t0 = performance.now();
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - t0) / duration);
-      const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
-      setVal(target * eased);
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [start, target, duration]);
-  return val.toFixed(decimals);
+// The stat numbers render at their final value immediately. They used to
+// count up from zero on scroll, which read as placeholder zeros mid-scroll.
+function useCountUp(target: number, decimals: number, _start: boolean) {
+  return target.toFixed(decimals);
 }
 
 function ImpactGauge({
@@ -1288,7 +1281,7 @@ export function ImpactStats() {
 
   return (
     <section className="relative bg-transparent text-white overflow-hidden border-t border-white/10">
-      <div className="relative max-w-[1200px] mx-auto px-6 py-20 md:py-28">
+      <div className="relative max-w-[1200px] mx-auto px-6 py-14 md:py-20">
         <div ref={dashboardRef}>
           <div
             className={`impact-fade transition-all duration-700 ease-out ${
@@ -1412,7 +1405,7 @@ export default function HomePage() {
       <FaqSection />
 
       {/* ── CTA ──────────────────────────────────────────── */}
-      <section id="about" className="bg-[#0b0b0b] text-white py-24 md:py-32 scroll-mt-16">
+      <section id="about" className="bg-[#0b0b0b] text-white py-16 md:py-24 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img src="/brand/symbol-lime.webp" alt="" aria-hidden className="h-14 w-14 object-contain mx-auto mb-10" />
           <h2 className="text-[44px] md:text-[64px] font-bold tracking-[-0.03em] leading-[1.05] mb-10">

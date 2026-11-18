@@ -29,7 +29,6 @@ const GROUPS: Group[] = [
     fields: [
       { key: "stat_properties", label: "Properties covered" },
       { key: "stat_value_m", label: "Property value covered ($M)", step: "0.1" },
-      { key: "stat_success_rate", label: "Marketing success rate (%)" },
     ],
   },
   {

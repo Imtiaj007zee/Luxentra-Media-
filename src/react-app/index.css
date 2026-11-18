@@ -105,6 +105,9 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    /* The whole site is dark. If any page ever overflows sideways on a
+       phone, the strip beyond the content reads dark, never white. */
+    background-color: #0b0b0b;
     font-family: "Inter", "Helvetica Neue", Helvetica, Arial, ui-sans-serif, system-ui, sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;

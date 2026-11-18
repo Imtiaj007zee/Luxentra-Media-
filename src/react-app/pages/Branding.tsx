@@ -119,43 +119,64 @@ export default function BrandingPage() {
               "radial-gradient(ellipse 70% 55% at 50% 30%, rgba(199,255,0,0.10), transparent 70%)",
           }}
         />
-        <div className="relative max-w-[1200px] mx-auto px-6">
-          <Reveal>
-            <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.hero_eyebrow")}</p>
-          </Reveal>
-          <Reveal delay={120}>
-            <h1 className="text-[48px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] max-w-4xl">
-              {t("branding.h1a")}{" "}
-              <span className="text-[#c7ff00]">{t("branding.h1b")}</span>{" "}
-              {t("branding.h1c")}
-            </h1>
-          </Reveal>
-          <Reveal delay={240}>
-            <p className="text-[18px] md:text-[21px] text-white/60 leading-relaxed max-w-2xl mt-8">
-              {t("branding.hero_sub")}
-            </p>
-          </Reveal>
-          <Reveal delay={360}>
-            <div className="flex flex-wrap items-center gap-4 mt-10">
-              <Link to="/work#films-personal-branding" className="btn-lime">
-                {t("branding.hero_films")} <ArrowUpRight className="w-4 h-4 ml-1" />
-              </Link>
-              <a
-                href="#shift"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3 text-[15px] font-bold text-white hover:border-[#c7ff00] hover:text-[#c7ff00] transition-colors"
-              >
-                {t("branding.hero_shift")}
-              </a>
-              <a href="#packages" className="btn-lime">
-                {t("branding.hero_packages")} <ArrowRight className="w-4 h-4 ml-1" />
-              </a>
+        <div className="relative max-w-[1200px] mx-auto px-6 grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-center">
+          <div>
+            <Reveal>
+              <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.hero_eyebrow")}</p>
+            </Reveal>
+            <Reveal delay={120}>
+              <h1 className="text-[48px] md:text-[88px] font-bold tracking-[-0.03em] leading-[1.02] max-w-4xl">
+                {t("branding.h1a")}{" "}
+                <span className="text-[#c7ff00]">{t("branding.h1b")}</span>{" "}
+                {t("branding.h1c")}
+              </h1>
+            </Reveal>
+            <Reveal delay={240}>
+              <p className="text-[18px] md:text-[21px] text-white/60 leading-relaxed max-w-2xl mt-8">
+                {t("branding.hero_sub")}
+              </p>
+            </Reveal>
+            <Reveal delay={360}>
+              <div className="flex flex-wrap items-center gap-4 mt-10">
+                <Link to="/work#films-personal-branding" className="btn-lime">
+                  {t("branding.hero_films")} <ArrowUpRight className="w-4 h-4 ml-1" />
+                </Link>
+                <a
+                  href="#shift"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3 text-[15px] font-bold text-white hover:border-[#c7ff00] hover:text-[#c7ff00] transition-colors"
+                >
+                  {t("branding.hero_shift")}
+                </a>
+                <a href="#packages" className="btn-lime">
+                  {t("branding.hero_packages")} <ArrowRight className="w-4 h-4 ml-1" />
+                </a>
+              </div>
+            </Reveal>
+          </div>
+          {/* A real brand film beside the headline, so the hero is not
+              type floating in empty black on desktop. */}
+          <Reveal delay={300} className="hidden lg:block">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+              <video
+                src="/work/how-i-sale.mp4"
+                poster="/work/posters/how-i-sale.webp"
+                className="w-full aspect-[4/5] object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-5 pt-10 pb-4">
+                <p className="text-[13px] font-semibold text-white">How I Sell</p>
+                <p className="text-[12px] text-white/60">A LuxEntra brand film</p>
+              </div>
             </div>
           </Reveal>
         </div>
       </section>
 
       {/* ── The market is becoming people-first ───────────── */}
-      <section className="py-20 md:py-28">
+      <section className="py-14 md:py-20">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.why_eyebrow")}</p>
@@ -181,7 +202,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── The Shift ────────────────────────────────────── */}
-      <section id="shift" className="py-20 md:py-28 scroll-mt-16">
+      <section id="shift" className="py-14 md:py-20 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.shift_eyebrow")}</p>
@@ -213,7 +234,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── We handle everything ─────────────────────────── */}
-      <section className="pt-20 md:pt-28 pb-10 md:pb-14">
+      <section className="pt-14 md:pt-20 pb-10 md:pb-14">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <h2 className="text-[36px] md:text-[56px] font-bold tracking-[-0.03em] leading-[1.05]">
@@ -240,7 +261,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Personal branding for realtors, NYC & Long Island ── */}
-      <section className="py-20 md:py-28">
+      <section className="py-14 md:py-20">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.local_eyebrow")}</p>
@@ -270,7 +291,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Packages ─────────────────────────────────────── */}
-      <section id="packages" className="pt-10 md:pt-14 pb-20 md:pb-28 scroll-mt-16">
+      <section id="packages" className="pt-10 md:pt-14 pb-14 md:pb-20 scroll-mt-16">
         <div className="max-w-[1200px] mx-auto px-6">
           <Reveal>
             <p className="eyebrow text-[#c7ff00] mb-6">{t("branding.pkg_eyebrow")}</p>
@@ -282,11 +303,11 @@ export default function BrandingPage() {
             </p>
           </Reveal>
 
-          <div className="grid lg:grid-cols-3 gap-5 mt-14 items-stretch">
+          <div className="grid lg:grid-cols-3 gap-5 mt-14 items-start">
             {PACKAGES.map((p, i) => (
-              <Reveal key={p.id} delay={i * 140} className="h-full">
+              <Reveal key={p.id} delay={i * 140}>
                 <div
-                  className={`relative rounded-md p-8 flex flex-col h-full transition-transform duration-300 hover:-translate-y-1.5 ${
+                  className={`relative rounded-md p-8 flex flex-col transition-transform duration-300 hover:-translate-y-1.5 ${
                     p.featured
                       ? "bg-[#101010] border-2 border-[#c7ff00] shadow-[0_0_60px_-12px_rgba(199,255,0,0.45)]"
                       : "bg-white/[0.03] border border-white/10 hover:border-white/25"
@@ -352,7 +373,7 @@ export default function BrandingPage() {
 
       {/* ── Podcast ──────────────────────────────────────── */}
       {PODCAST && (
-        <section className="py-20 md:py-28">
+        <section className="py-14 md:py-20">
           <div className="max-w-[1200px] mx-auto px-6">
             <Reveal>
               <div className="rounded-md bg-white/[0.03] border border-white/10 p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center hover:border-[#c7ff00]/40 transition-colors">
@@ -392,7 +413,7 @@ export default function BrandingPage() {
       )}
 
       {/* ── Not sure where to start ──────────────────────── */}
-      <section className="py-20 md:py-28">
+      <section className="py-14 md:py-20">
         <div className="max-w-[900px] mx-auto px-6">
           <Reveal>
             <div
@@ -427,7 +448,7 @@ export default function BrandingPage() {
       </section>
 
       {/* ── Final CTA ────────────────────────────────────── */}
-      <section className="py-24 md:py-32 relative overflow-hidden">
+      <section className="py-16 md:py-24 relative overflow-hidden">
         <div
           aria-hidden
           className="absolute inset-0 pointer-events-none"

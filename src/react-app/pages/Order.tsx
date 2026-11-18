@@ -291,6 +291,17 @@ export default function OrderPage() {
             <p className="text-[19px] text-white/60">
               {t("order.sub")}
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-6 text-[13px] text-white/50">
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-[#c7ff00]" /> 24-hour delivery
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-[#c7ff00]" /> No payment today
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-[#c7ff00]" /> Trusted by agents across NYC and Long Island
+              </span>
+            </div>
           </div>
 
           {submitStatus === "success" && (
@@ -327,7 +338,7 @@ export default function OrderPage() {
               const active = i === labelIndex;
               return (
                 <div key={label} className="flex items-center gap-2 md:gap-3">
-                  {i > 0 && <div className={`w-8 md:w-16 h-[2px] rounded ${done || active ? "bg-[#c7ff00]" : "bg-white/15"}`} />}
+                  {i > 0 && <div className={`w-4 md:w-16 h-[2px] rounded ${done || active ? "bg-[#c7ff00]" : "bg-white/15"}`} />}
                   <button
                     type="button"
                     disabled={!done}
@@ -338,7 +349,7 @@ export default function OrderPage() {
                     <span className={`w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-bold ${done ? "bg-[#c7ff00] text-black" : active ? "border-2 border-[#c7ff00] text-[#c7ff00]" : "border-2 border-white/15 text-white/40"}`}>
                       {done ? <Check className="w-4 h-4" /> : i + 1}
                     </span>
-                    <span className={`text-[14px] font-medium ${active ? "text-white" : done ? "text-white/70" : "text-white/40"}`}>{label}</span>
+                    <span className={`text-[14px] font-medium whitespace-nowrap ${active ? "text-white" : done ? "text-white/70" : "text-white/40"}`}>{label}</span>
                   </button>
                 </div>
               );

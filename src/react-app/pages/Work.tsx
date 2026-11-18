@@ -180,8 +180,7 @@ function PhotoLightbox({
         onClick={(e) => e.stopPropagation()}
       >
         <div>
-          <p className="eyebrow text-[#c7ff00] mb-1">{item.label}</p>
-          <h3 className="text-white text-[20px] font-bold tracking-tight">{item.title}</h3>
+          <h3 className="text-white text-[20px] font-bold tracking-tight">{item.label}</h3>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-white/40 text-[14px] tabular-nums">
@@ -426,7 +425,7 @@ export default function WorkPage() {
                 className={`px-6 py-2.5 rounded-full text-[15px] font-semibold transition-colors ${
                   tab === tb
                     ? "bg-[#c7ff00] text-black"
-                    : "bg-white/5 text-white/60 hover:bg-white/10"
+                    : "bg-white/10 text-white/75 hover:bg-white/15"
                 }`}
               >
                 {tb === "films"
@@ -553,10 +552,7 @@ export default function WorkPage() {
                         />
                         <span className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent opacity-90" />
                         <span className="absolute bottom-0 left-0 right-0 p-5">
-                          <span className="eyebrow text-[#c7ff00] block mb-1">{item.label}</span>
-                          <span className="text-white text-[17px] font-bold tracking-tight block">
-                            {item.title}
-                          </span>
+                          <span className="eyebrow text-[#c7ff00] block">{item.label}</span>
                         </span>
                       </button>
                     ))}
@@ -583,10 +579,7 @@ export default function WorkPage() {
                       <Maximize2 className="w-4 h-4" />
                     </span>
                     <span className="absolute bottom-0 left-0 right-0 p-5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span className="eyebrow text-[#c7ff00] block mb-1">{item.label}</span>
-                      <span className="text-white text-[17px] font-bold tracking-tight block">
-                        {item.title}
-                      </span>
+                      <span className="eyebrow text-[#c7ff00] block">{item.label}</span>
                     </span>
                   </button>
                 ))}
@@ -597,7 +590,7 @@ export default function WorkPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative text-white py-24 md:py-32">
+      <section className="relative text-white py-16 md:py-24">
         <div className="max-w-[1200px] mx-auto px-6 text-center">
           <img
             src="/brand/symbol-lime.webp"
