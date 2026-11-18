@@ -309,11 +309,8 @@ export default function BrandingPage() {
                     {p.desc}
                   </p>
 
-                  <p className="mb-8">
-                    <span className="price-num text-[44px] font-bold tracking-[-0.03em] text-white">
-                      ${p.price.toLocaleString()}
-                    </span>
-                    <span className="text-white/45 text-[15px]"> /month</span>
+                  <p className="mb-8 text-[15px] text-white/50">
+                    Custom plan
                   </p>
 
                   <ul className="space-y-3 mb-10">
