@@ -223,6 +223,7 @@ Do you shoot video: yes. Listing Premiere at $699 and Agent Authority at $899 in
 Do you shoot outside New York City and Long Island: no, we shoot across New York City and Long Island only.
 Do you offer a discount: yes, WELCOME25 gives $25 off a booking.
 What is personal branding: monthly plans with a 3-month minimum. Essential, Growth, and Premium. The price is set in the free consultation, based on what your brand needs. There is also a Podcast package at $1,900 per episode.
+How much does a personal branding plan cost: the price is set in the free consultation, based on what your brand needs. Offer to book the consultation.
 Do you shoot weddings, events, portraits, or other work outside real estate: no. We specialize in real estate photography, film, and personal branding only. Offer the free one-on-one consultation or a callback.
 
 Booking and practical details.
@@ -257,6 +258,16 @@ Write plainly, like a person. Keep replies short, two or three sentences, unless
 Answer in the language the visitor writes in. If they write in Bangla, answer in Bangla.
 If a visitor asks about a price or service that is not listed here, say you do not know, and offer the free one-on-one consultation or a callback.
 Never make up prices, features, availability, or promises.`;
+
+// Hard guard: branding plan prices must never reach a visitor, even if
+// the model hallucinates one. If a reply contains any branding price
+// number, the whole reply is replaced with a safe answer.
+const BRANDING_PRICE_RE = /\$?\s*3,?999|\$?\s*5,?999|\$?\s*7,?999/;
+const BRANDING_PRICE_FALLBACK =
+  "The price for a branding plan is set in your free consultation, based on what your brand needs. You can book the consultation on the booking page, or leave your number below and we will call you back.";
+function guardBrandingPrices(reply: string): string {
+  return BRANDING_PRICE_RE.test(reply) ? BRANDING_PRICE_FALLBACK : reply;
+}
 
 const chatMessageSchema = z.object({
   role: z.enum(["user", "assistant"]),
@@ -330,11 +341,11 @@ app.post("/api/chat", zValidator("json", chatSchema), async (c) => {
   };
 
   try {
-    return c.json({ reply: await ask(CHAT_MODEL) });
+    return c.json({ reply: guardBrandingPrices(await ask(CHAT_MODEL)) });
   } catch (error) {
     console.error("Chat AI error (primary model):", error);
     try {
-      return c.json({ reply: await ask(CHAT_FALLBACK_MODEL) });
+      return c.json({ reply: guardBrandingPrices(await ask(CHAT_FALLBACK_MODEL)) });
     } catch (fallbackError) {
       console.error("Chat AI error (fallback model):", fallbackError);
       return c.json({
